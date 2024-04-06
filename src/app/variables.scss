@@ -1,0 +1,120 @@
+$dark: #8f8f8f;
+$bg: #f4ede3;
+
+$info: #5576c7;
+$danger: #e46d6d;
+$danger-dark: #a53131;
+$danger-light: #fae0e0;
+
+$primary: #eca452;
+
+/*
+    Josh's Custom CSS Reset
+    https://www.joshwcomeau.com/css/custom-css-reset/
+  */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+* {
+	margin: 0;
+}
+body {
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+input,
+textarea,
+select {
+	/* font: inherit; */
+	color: #626262;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+#root,
+#__next {
+	isolation: isolate;
+}
+
+html,
+body {
+	background-color: #f4ede3;
+	color: #626262;
+}
+
+@mixin for-phone-only {
+	@media (max-width: 599px) {
+		@content;
+	}
+}
+@mixin for-tablet-portrait-up {
+	@media (min-width: 600px) {
+		@content;
+	}
+}
+@mixin for-tablet-landscape-up {
+	@media (min-width: 900px) {
+		@content;
+	}
+}
+@mixin for-desktop-up {
+	@media (min-width: 1200px) {
+		@content;
+	}
+}
+@mixin for-big-desktop-up {
+	@media (min-width: 1800px) {
+		@content;
+	}
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+	border: 1px solid $dark;
+	padding: 20px;
+	border-radius: 10px;
+	background-color: #f1f1f1;
+}
+
+.error-message {
+	color: #e46d6d !important;
+	font-weight: 600;
+	font-size: 14px;
+	padding-top: 4px;
+}
+
+section {
+	display: flex;
+	justify-content: center;
+	@include for-tablet-landscape-up {
+		justify-content: unset;
+	}
+}
+
+.hide {
+	display: none;
+}
+
+.danger {
+	color: $danger;
+}

@@ -1,0 +1,31 @@
+@import "../../variables.scss";
+.content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 60px;
+	width: 100%;
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+	@include for-tablet-landscape-up {
+		gap: 10px;
+		flex-direction: row;
+	}
+	.filters {
+		.search {
+			background-color: #fff;
+			border: none;
+			padding: 15px 25px;
+			border-radius: 20px;
+			box-shadow: -3px 3px 0 #00000010;
+			min-width: 400pglx;
+		}
+	}
+}
+.admin-table {
+	width: inherit;
+	background-color: #fff;
+}

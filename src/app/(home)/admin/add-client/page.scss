@@ -1,0 +1,46 @@
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+// .account-number-modal {
+// 	position: absolute;
+// 	top: 0;
+// 	left: 0;
+// 	height: 100%;
+// 	width: 100%;
+// 	backdrop-filter: blur(5px);
+// 	z-index: 9;
+// 	background-color: #00000036;
+// 	display: flex;
+// 	flex-direction: column;
+// 	justify-content: center;
+// 	align-items: center;
+// 	opacity: 0;
+// 	display: none;
+// 	transition: 0.2s;
+// 	&.show {
+// 		display: flex;
+// 		opacity: 1;
+// 	}
+// 	.card {
+// 		display: flex;
+// 		flex-direction: column;
+// 		justify-content: center;
+// 		align-items: center;
+// 		background-color: #fff;
+// 		border-radius: 10px;
+// 		height: 200px;
+// 		width: 400px;
+// 		box-shadow: -5px 5px 0 #00000050;
+// 		> span {
+// 			font-size: 14px;
+// 			justify-content: center;
+// 			gap: 20px;
+// 			align-items: center;
+// 		}
+// 		button {
+// 			margin-top: 20px;
+// 		}
+// 	}
+// }

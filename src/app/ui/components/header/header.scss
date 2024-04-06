@@ -1,0 +1,119 @@
+@import "../../../variables.scss";
+
+header {
+	width: auto;
+	height: 70px;
+	margin: 10px;
+	display: flex;
+	position: relative;
+	justify-content: space-between;
+	.logo {
+		gap: 10px;
+		display: flex;
+		margin-left: 20px;
+		align-items: center;
+	}
+	.user-details {
+		display: flex;
+		position: relative;
+		flex-direction: column;
+		justify-content: center;
+		&::before {
+			height: 0;
+			top: 60px;
+			left: 50%;
+			z-index: 2;
+			content: "";
+			position: absolute;
+			border: 0 solid transparent;
+			border-bottom-color: #fff;
+			transform: translateX(-50%);
+		}
+		.user-button {
+			color: $dark;
+			border: none;
+			background: none;
+			text-align: right;
+			position: relative;
+			padding-right: 25px;
+			> * {
+				line-height: 24px;
+			}
+			h1 {
+				color: $info;
+				font-weight: 800;
+			}
+			span {
+				font-size: 14px;
+				font-size: 12px;
+				letter-spacing: 3px;
+				text-transform: uppercase;
+			}
+			.caret {
+				right: 0;
+				top: 50%;
+				width: auto;
+				height: 15px;
+				position: absolute;
+				transform: translateY(-50%);
+			}
+		}
+		.user-option-list {
+			right: 0;
+			top: 80px;
+			height: 0;
+			z-index: 2;
+			width: 200px;
+			overflow: hidden;
+			position: absolute;
+			border-radius: 10px;
+			background-color: #fff;
+			transition: 0.1s ease-in-out;
+			box-shadow: -3px 3px 0 #00000020;
+			a {
+				color: $dark;
+				font-weight: 800;
+				text-decoration: none;
+			}
+			ul {
+				display: flex;
+				padding: 10px;
+				list-style-type: none;
+				flex-direction: column;
+				li {
+					margin: 8px;
+					transition: 0.05s ease-in-out;
+					a {
+						gap: 5px;
+						display: flex;
+						align-items: center;
+						.icon {
+							width: 20px;
+							fill: $dark;
+							height: 20px;
+							stroke: $dark;
+						}
+					}
+					&:hover {
+						padding-left: 5px;
+						a {
+							color: $info;
+							.icon {
+								fill: $info;
+								stroke: $info;
+							}
+						}
+					}
+				}
+			}
+		}
+		&.active {
+			.user-option-list {
+				height: 180px;
+			}
+			&::before {
+				border-width: 10px;
+			}
+		}
+	}
+}

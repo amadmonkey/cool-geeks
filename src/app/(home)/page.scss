@@ -1,0 +1,31 @@
+@import "../variables.scss";
+main {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	.content {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 60px;
+		form {
+			display: flex;
+			flex-direction: column;
+			gap: 20px;
+		}
+		section:first-child {
+			align-self: center;
+		}
+		@include for-tablet-landscape-up {
+			flex-direction: row;
+			section:first-child {
+				align-self: unset;
+			}
+		}
+	}
+	.home-tale {
+		// width: 600px;
+	}
+}

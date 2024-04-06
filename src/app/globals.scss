@@ -1,0 +1,99 @@
+@import "./variables.scss";
+@font-face {
+	font-family: "Raleway";
+	src: url("./ui/fonts/Raleway/Raleway-VariableFont_wght.ttf") format("truetype");
+}
+
+html,
+body {
+	font-family: "Raleway", sans-serif;
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(
+		1px 1px 1px 1px
+	); /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+	clip: rect(1px, 1px, 1px, 1px); /*maybe deprecated but we need to support legacy browsers */
+	clip-path: inset(50%); /*modern browsers, clip-path works inwards from each corner*/
+	white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+}
+
+a {
+	text-decoration: none;
+	color: $info;
+	font-size: 14px;
+}
+
+::-webkit-scrollbar-track {
+	// -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	// border-radius: 10px;
+	background-color: $bg;
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+	background-color: $dark;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	background-color: #555;
+}
+
+button {
+	cursor: pointer;
+}
+
+.section-title {
+	color: #e39d69;
+	font-size: 25px;
+	font-weight: 800;
+	margin-bottom: 20px;
+}
+
+.cg-table {
+	width: 100%;
+	background-color: #fff;
+	border-radius: 15px;
+	border-collapse: collapse;
+	table {
+		width: inherit;
+		thead {
+			position: relative;
+			&::before {
+				content: "";
+				position: absolute;
+				height: 2px;
+				width: 100%;
+				background-color: #dddddd;
+				bottom: 0;
+				border-radius: 5px;
+			}
+			th {
+				padding: 0 5px 20px 5px;
+				font-size: 14px;
+				font-weight: 800;
+				color: #a8a8a8;
+			}
+		}
+		tbody {
+			tr {
+				text-align: center;
+				td {
+					padding: 15px 5px;
+					font-weight: 600;
+					color: $dark;
+					text-align: center;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,127 @@
+@import "../../../variables.scss";
+
+.input-container {
+	position: relative;
+	&.mini-dropdown {
+		.text-input {
+			padding-left: 90px;
+		}
+	}
+	&.tel {
+		&::before {
+			content: "(+63)";
+			position: absolute;
+			font-weight: 800;
+			font-size: 20px;
+			left: 15px;
+			top: 10px;
+			color: $dark;
+		}
+		.text-input {
+			padding-left: 70px;
+		}
+	}
+	.text-input {
+		height: 50px;
+		width: 100%;
+		padding: 10px;
+		font-weight: 800;
+		font-size: 20px;
+		box-sizing: border-box;
+		color: $dark;
+		border: 2px solid $dark;
+		border-radius: 5px;
+		background-color: transparent;
+		box-shadow: -3px 3px 0 #00000030;
+	}
+	.error {
+		border-color: $danger;
+		background-color: #fae0e0;
+		color: $danger;
+	}
+	.mini-dropdown {
+		padding: 0 10px;
+		position: absolute;
+		top: 0;
+		&.active {
+			.refDropdown {
+				height: auto;
+				padding: 5px;
+			}
+		}
+		button {
+			width: 70px;
+			height: 50px;
+			background-color: transparent;
+			z-index: 2;
+			border: none;
+			box-shadow: none;
+			top: 0;
+			img: {
+				height: 25px;
+			}
+			.down {
+				display: inline-block;
+				position: relative;
+				width: 0;
+				top: 5px;
+				height: 0;
+				z-index: 2;
+				right: -10px;
+				border: 5px solid transparent;
+				border-top-color: $dark;
+			}
+		}
+		.refDropdown {
+			height: 0;
+			padding: 0px;
+			transition: 0.1s;
+			overflow: hidden;
+			margin: 0;
+			top: 40px;
+			padding: 0;
+			z-index: 1;
+			left: 10px;
+			width: 80px;
+			display: flex;
+			position: absolute;
+			border-radius: 5px;
+			align-items: center;
+			list-style-type: none;
+			flex-direction: column;
+			justify-content: center;
+			background-color: #f7f7f7;
+			box-shadow: -3px 3px 0 #00000030;
+			li {
+				padding: 10px;
+				cursor: pointer;
+				position: relative;
+				border-radius: 5px;
+				&.active,
+				&:hover,
+				&:focus {
+					background-color: #e4e4e4;
+				}
+				&:not(:last-child) {
+					// &::after {
+					// 	left: 50%;
+					// 	width: 80%;
+					// 	height: 3px;
+					// 	content: "";
+					// 	bottom: -2px;
+					// 	display: flex;
+					// 	position: absolute;
+					// 	border-radius: 3px;
+					// 	transform: translateX(-50%);
+					// 	background-color: #e4e4e4;
+					// }
+				}
+			}
+			img {
+				width: auto;
+				height: 40px;
+				object-fit: contain;
+			}
+		}
+	}
+}

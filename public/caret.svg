@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="512"
+    height="512" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve">
+    <style>
+        .caret-svg {
+            fill: #7e7e7e
+        }
+    </style>
+    <g>
+        <path class="caret-svg" d="M5 7a1 1 0 0 0-.753 1.659l7 8a1 1 0 0 0 1.505 0l7-8A1 1 0 0 0 19 7z" opacity="1">
+        </path>
+    </g>
+</svg>

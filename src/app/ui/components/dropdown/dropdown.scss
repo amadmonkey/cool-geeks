@@ -1,0 +1,171 @@
+@import "../../../variables.scss";
+.dropdown {
+	list-style-type: none;
+	position: relative;
+	padding: 0;
+	margin: 0;
+	height: 50px;
+	border: 2px solid $dark;
+	border-radius: 5px;
+	box-shadow: -3px 3px 0 #00000030;
+	&.error {
+		border-color: $danger;
+		background-color: #fae0e0;
+		.list-container {
+			&::before {
+				background-color: #fae0e0;
+			}
+		}
+		&__search {
+			color: $danger;
+			::-webkit-input-placeholder {
+				/* WebKit, Blink, Edge */
+				color: #909;
+			}
+			:-moz-placeholder {
+				/* Mozilla Firefox 4 to 18 */
+				color: #909;
+				opacity: 1;
+			}
+			::-moz-placeholder {
+				/* Mozilla Firefox 19+ */
+				color: #909;
+				opacity: 1;
+			}
+			:-ms-input-placeholder {
+				/* Internet Explorer 10-11 */
+				color: #909;
+			}
+			::-ms-input-placeholder {
+				/* Microsoft Edge */
+				color: #909;
+			}
+
+			::placeholder {
+				/* Most modern browsers support this now. */
+				color: #909;
+			}
+		}
+	}
+	&__search {
+		height: 47px;
+		padding: 16px;
+		font-weight: 800;
+		font-size: 14px;
+		color: $dark;
+		width: 100%;
+		border: none;
+		background-color: transparent;
+	}
+	&__list {
+		position: relative;
+		overflow: hidden;
+		height: 0;
+		max-height: 200px;
+		width: calc(100% + 4px);
+		top: -6px;
+		left: -2px;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		box-sizing: border-box;
+		border: 2px solid $dark;
+		border-radius: 5px;
+		background-color: #f4ede3;
+		transition: height 0.1s ease-in-out, padding-top 0.1s ease-in-out;
+		li {
+			display: flex;
+			height: 50px;
+			padding: 5px;
+			font-weight: bold;
+			font-size: 14px;
+			cursor: pointer;
+			.option-wrapper {
+				padding: 5px 15px;
+				border-radius: 10px;
+				line-height: 30px;
+				width: 100%;
+				transition: 0.1s;
+			}
+			&.active,
+			&:hover,
+			&:focus {
+				.option-wrapper {
+					color: #fff;
+					background-color: #8b8b8b;
+				}
+			}
+		}
+		&.active {
+			height: 100% !important;
+			border-color: $dark;
+			padding-top: 10px;
+			z-index: 2;
+			box-shadow: -3px 3px 0 #00000020;
+			overflow-y: auto;
+		}
+	}
+	.list-container {
+		position: relative;
+		&::before {
+			content: "";
+			position: absolute;
+			height: 5px;
+			width: 100%;
+			top: -6px;
+			border-bottom-left-radius: 3px;
+			border-bottom-right-radius: 3px;
+			background-color: #f4ede3;
+			z-index: 1;
+		}
+		&.active {
+			&::before {
+				z-index: 3;
+			}
+			&::after {
+				opacity: 1;
+			}
+		}
+		&::after {
+			content: "";
+			opacity: 0;
+			left: 50%;
+			transform: translateX(-50%);
+			position: absolute;
+			border-radius: 10px;
+			height: 3px;
+			width: 70%;
+			top: -2px;
+			z-index: 3;
+			background-color: #6c6c6c;
+			transition: 0.2s;
+		}
+	}
+	&::after {
+		content: "";
+		position: absolute;
+		height: 0;
+		width: 0;
+		right: 15px;
+		top: 22px;
+		border: 5px solid transparent;
+		border-top-color: $dark;
+	}
+	&.disabled {
+		border: 2px solid #cccccc;
+		background-color: #e6e6e6;
+		&::after {
+			border-top-color: #cccccc;
+		}
+		.list-container::before {
+			background-color: #e6e6e6;
+		}
+		.dropdown__list {
+			border-color: #cccccc;
+		}
+	}
+	&.inline {
+		position: absolute;
+		top: 0;
+	}
+}

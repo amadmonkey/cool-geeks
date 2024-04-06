@@ -1,0 +1,99 @@
+@import "../../../variables.scss";
+.history-table {
+	height: 600px;
+	width: 100%;
+	margin-bottom: 50px;
+	tbody {
+		display: flex;
+		flex-direction: column;
+		gap: 25px;
+		tr {
+			display: grid;
+			grid-template-columns: 35% 10% 35% 10% 10%;
+			align-items: center;
+			justify-content: center;
+			td {
+				display: flex;
+				text-align: center;
+				justify-content: center;
+				align-items: center;
+			}
+			td:first-child {
+				justify-content: end;
+				position: relative;
+				text-align: right;
+				padding-right: 40px;
+				&::after {
+					content: "";
+					position: absolute;
+					height: 20px;
+					width: 20px;
+					border-radius: 50%;
+					background-color: $info;
+					right: 5px;
+					top: 10px;
+				}
+			}
+			td:last-child {
+				display: flex;
+				align-items: center;
+			}
+			&:not(:last-child) {
+				td:first-child::before {
+					content: "";
+					position: absolute;
+					height: 57px;
+					top: 22px;
+					right: 14px;
+					border: 1px dashed $dark;
+				}
+			}
+			.rate {
+				font-weight: 800;
+				font-size: 16px;
+			}
+			.date {
+				position: relative;
+				background-color: #fff;
+				padding: 5px 10px;
+				border-radius: 5px;
+				box-shadow: -3px 3px 0 #00000030;
+				text-align: right;
+				&::before {
+					content: "";
+					position: absolute;
+					top: 10px;
+					right: -15px;
+					height: 0;
+					width: 0;
+					border: 8px solid transparent;
+					border-left-color: #fff;
+				}
+			}
+			.refNo {
+				display: inline-flex;
+				align-items: center;
+			}
+			button {
+				padding: 0;
+				margin: 0;
+				width: auto;
+				border: none;
+				background: none;
+			}
+		}
+	}
+}
+
+.empty-container {
+	height: 400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	h1 {
+		font-size: 15px;
+		letter-spacing: 5px;
+		color: #3588b8;
+	}
+}
