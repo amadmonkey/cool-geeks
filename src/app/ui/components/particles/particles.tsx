@@ -45,7 +45,7 @@ const TSParticles = () => {
 						quantity: 4,
 					},
 					repulse: {
-						distance: 100,
+						distance: 150,
 						duration: 1000,
 					},
 				},

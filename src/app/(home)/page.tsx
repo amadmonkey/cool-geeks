@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import Link from "next/link";
@@ -11,23 +11,42 @@ import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import FileInput from "@/app/ui/components/file-input/file-input";
+import Card from "@/app/ui/components/card/card";
 import IconQR from "../../../public/qr.svg";
+import IconLoading from "../../../public/loading.svg";
+
 import "./page.scss";
+import { GET_STATUS_ICON } from "@/utility";
+
+const defaultForm = {
+	receipt: "",
+	receiptName: "",
+	referenceType: {
+		id: 1,
+		name: "gcash",
+		icon: "", // blob
+	},
+	referenceNumber: "",
+};
+
+type Payment = {
+	_id: string;
+	userRef: string;
+	planRef: string;
+	referenceType: object;
+	referenceNumber: string;
+	receiptName: string;
+	status: string;
+	createdAt: string;
+	updatedAt: string;
+};
 
 export default function Home() {
 	const { push } = useRouter();
-	const [currentPayment, setCurrentPayment] = useState(null);
+	const [formShown, setFormShown] = useState<Boolean | null>(null);
+	const [currentPayment, setCurrentPayment] = useState<Payment | null>(null);
 	const [historyList, setHistoryList] = useState<any>(null);
-	const [form, setForm] = useState({
-		receipt: "",
-		receiptName: "",
-		referenceType: {
-			id: 1,
-			name: "gcash",
-			icon: "", // blob
-		},
-		referenceNumber: "",
-	});
+	const [form, setForm] = useState(defaultForm);
 
 	const updateForm = (e: any) => {
 		let { name, value, type } = e.target;
@@ -55,6 +74,9 @@ export default function Home() {
 			case 200:
 				console.log("payment submit 200", data);
 				setHistoryList([data, ...historyList]);
+				setFormShown(false);
+				setCurrentPayment(data);
+				setForm(defaultForm);
 				break;
 			case 400:
 				// handle errors
@@ -81,7 +103,13 @@ export default function Home() {
 	);
 
 	const getHistoryList = async () => {
-		return await fetch("/api/payment", {
+		const searchOptions = new URLSearchParams({
+			page: "1",
+			limit: "10",
+			sortBy: "createdAt",
+			sortOrder: "DESC",
+		});
+		return await fetch(`/api/payment?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -96,11 +124,12 @@ export default function Home() {
 			.then((res) => {
 				if (mounted) {
 					const { code, data } = res;
-					console.log("getHistoryList", data);
+					console.log(data);
 					switch (code) {
 						case 200:
-							setCurrentPayment(data.currentPayment);
 							setHistoryList(data.list);
+							setCurrentPayment(data.currentPayment);
+							setFormShown(data.currentPayment ? false : true);
 							break;
 						case 401:
 							push("/login");
@@ -129,8 +158,59 @@ export default function Home() {
 					}}
 				>
 					<h1 className="section-title">Submit Payment Receipt</h1>
-					{currentPayment ? (
-						"paid"
+					{formShown === null ? (
+						<div className="empty-container">
+							<IconLoading />
+						</div>
+					) : !formShown ? (
+						<Card className="payment-status-container">
+							{/* <Image
+								alt="qr"
+								height={0}
+								width={0}
+								src={`/${currentPayment && currentPayment.status}.svg`}
+							/> */}
+							{GET_STATUS_ICON(currentPayment?.status, {
+								height: "100px",
+								marginBottom: "20px",
+							})}
+							{currentPayment!.status === "ACCEPTED" ? (
+								<Fragment>
+									<h1>Receipt accepted</h1>
+									<p>You&apos;re good! Next payment range will be on [date here] to [date here]</p>
+								</Fragment>
+							) : (
+								<Fragment>
+									<h1>Receipt submitted</h1>
+									<p>Please wait while we take a look at your receipt</p>
+								</Fragment>
+							)}
+							<ul className="summary">
+								<li className="summary__item">
+									<span>DATE SUBMITTED</span>
+									<p>
+										{currentPayment && new Date(currentPayment.createdAt.toString()).toDateString()}
+									</p>
+								</li>
+								<li className="summary__item">
+									<span>RATE</span>
+									<p>P1000</p>
+								</li>
+								<li className="summary__item">
+									<span>RECEIPT</span>
+									<p>
+										<Link href="">Show receipt</Link>
+									</p>
+								</li>
+							</ul>
+							<FormGroup style={{ marginTop: "40px", textAlign: "center" }}>
+								<p>Wanna pay/already paid in advance?</p>
+								<Button className="info" type="button" onClick={() => setFormShown(true)}>
+									Show Form
+								</Button>
+							</FormGroup>
+							{/* <pre>{JSON.stringify(currentPayment, undefined, 2)}</pre> */}
+						</Card>
 					) : (
 						<form onSubmit={handleSubmit} style={{ gap: "30px" }} encType="multipart/form">
 							<FormGroup
@@ -189,7 +269,9 @@ export default function Home() {
 								</div>
 							</div>
 							<FormGroup>
-								<Button type="submit">SEND RECEIPT</Button>
+								<Button type="submit" className="info">
+									SEND RECEIPT
+								</Button>
 							</FormGroup>
 						</form>
 					)}
@@ -198,11 +280,10 @@ export default function Home() {
 				<section
 					style={{
 						flexDirection: "column",
-						flexBasis: "600px",
+						flexBasis: "800px",
 						padding: "0 20px",
 					}}
 				>
-					<h1 className="section-title"></h1>
 					<div
 						style={{
 							display: "flex",
@@ -249,7 +330,7 @@ export default function Home() {
 					<div className="home-table">
 						<Table list={historyList} />
 					</div>
-					<pre>{JSON.stringify(historyList, null, 2)}</pre>
+					{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
 				</section>
 			</div>
 		</main>

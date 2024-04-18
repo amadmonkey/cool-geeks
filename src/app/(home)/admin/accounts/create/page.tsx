@@ -23,13 +23,13 @@ type Subd = {
 
 type Plan = {
 	_id: string;
-	subdId: string;
+	subdRef: string;
 	name: string;
 	description: string;
 	price: string;
 };
 
-export default function AddClient() {
+export default function AddAccount() {
 	const [form, setForm] = useState({
 		firstName: "",
 		middleName: "",
@@ -202,7 +202,7 @@ export default function AddClient() {
 					<div
 						style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}
 					>
-						<FormGroup label="Subd" double>
+						<FormGroup label="Subd">
 							<Dropdown
 								list={subdList}
 								value={form.subd}

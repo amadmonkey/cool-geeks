@@ -21,11 +21,27 @@ main {
 		@include for-tablet-landscape-up {
 			flex-direction: row;
 			section:first-child {
-				align-self: unset;
+				align-self: start;
 			}
 		}
 	}
-	.home-tale {
-		// width: 600px;
+}
+
+.payment-status-container {
+	display: flex;
+	flex-direction: column;
+	> img {
+		height: 150px;
+		width: auto;
+		margin-bottom: 20px;
+	}
+	> h1 {
+		text-align: center;
+		font-weight: 800;
+	}
+	> p {
+		text-align: center;
+		font-size: 14px;
+		margin-bottom: 20px;
 	}
 }

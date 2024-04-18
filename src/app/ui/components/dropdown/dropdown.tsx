@@ -3,6 +3,7 @@
 import React, { useEffect, useId, useState } from "react";
 
 import "./dropdown.scss";
+import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
 
 const Dropdown = (props: any) => {
 	const ENTER = "Enter";
@@ -87,7 +88,7 @@ const Dropdown = (props: any) => {
 	}, [props.list]);
 
 	return (
-		<React.Fragment>
+		<DetectOutsideClick action={() => setNameFocused(false)} style={{ display: "flex" }}>
 			<ul
 				className={`dropdown ${isDisabled() ? "disabled" : ""} ${errors.length ? "error" : ""} ${
 					props.className
@@ -129,7 +130,7 @@ const Dropdown = (props: any) => {
 				</li>
 			</ul>
 			{errors.length > 0 && <p className="error-message">{errors[0]}</p>}
-		</React.Fragment>
+		</DetectOutsideClick>
 	);
 };
 

@@ -1,9 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./modal.scss";
+import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
 
 const Modal = (props: any) => {
-	return <div className={`modal ${props.isOpen ? "show" : ""}`}>{props.children}</div>;
+	useEffect(() => {
+		document.getElementsByTagName("body")[0].style.overflow = props.isShown ? "hidden" : "auto";
+	}, [props.isShown]);
+
+	return (
+		<div className={`modal-container ${props.isShown ? "show" : ""}`}>
+			<DetectOutsideClick action={() => props.close && props.close()}>
+				{props.children}
+			</DetectOutsideClick>
+		</div>
+	);
 };
 
 export default Modal;

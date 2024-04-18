@@ -1,37 +1,37 @@
 @import "../../../variables.scss";
 .history-table {
-	height: 600px;
 	width: 100%;
+	height: 600px;
 	margin-bottom: 50px;
 	tbody {
+		gap: 25px;
 		display: flex;
 		flex-direction: column;
-		gap: 25px;
 		tr {
 			display: grid;
-			grid-template-columns: 35% 10% 35% 10% 10%;
 			align-items: center;
 			justify-content: center;
+			grid-template-columns: 35% 10% 35% 10% 10%;
 			td {
 				display: flex;
 				text-align: center;
-				justify-content: center;
 				align-items: center;
+				justify-content: center;
 			}
 			td:first-child {
-				justify-content: end;
-				position: relative;
 				text-align: right;
+				position: relative;
 				padding-right: 40px;
+				justify-content: end;
 				&::after {
+					top: 10px;
+					right: 5px;
 					content: "";
-					position: absolute;
-					height: 20px;
 					width: 20px;
+					height: 20px;
+					position: absolute;
 					border-radius: 50%;
 					background-color: $info;
-					right: 5px;
-					top: 10px;
 				}
 			}
 			td:last-child {
@@ -40,60 +40,40 @@
 			}
 			&:not(:last-child) {
 				td:first-child::before {
-					content: "";
-					position: absolute;
-					height: 57px;
 					top: 22px;
+					content: "";
 					right: 14px;
+					height: 57px;
+					position: absolute;
 					border: 1px dashed $dark;
 				}
 			}
 			.rate {
-				font-weight: 800;
 				font-size: 16px;
+				font-weight: 800;
 			}
 			.date {
-				position: relative;
-				background-color: #fff;
 				padding: 5px 10px;
-				border-radius: 5px;
-				box-shadow: -3px 3px 0 #00000030;
 				text-align: right;
+				position: relative;
+				border-radius: 5px;
+				background-color: #fff;
+				box-shadow: -3px 3px 0 #00000030;
 				&::before {
-					content: "";
-					position: absolute;
-					top: 10px;
-					right: -15px;
-					height: 0;
 					width: 0;
-					border: 8px solid transparent;
+					top: 10px;
+					height: 0;
+					content: "";
+					right: -15px;
+					position: absolute;
 					border-left-color: #fff;
+					border: 8px solid transparent;
 				}
 			}
 			.refNo {
-				display: inline-flex;
 				align-items: center;
-			}
-			button {
-				padding: 0;
-				margin: 0;
-				width: auto;
-				border: none;
-				background: none;
+				display: inline-flex;
 			}
 		}
-	}
-}
-
-.empty-container {
-	height: 400px;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	h1 {
-		font-size: 15px;
-		letter-spacing: 5px;
-		color: #3588b8;
 	}
 }

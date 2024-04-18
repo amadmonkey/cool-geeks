@@ -56,6 +56,9 @@
 		width: 100%;
 		border: none;
 		background-color: transparent;
+		&::placeholder {
+			color: rgb(182, 182, 182);
+		}
 	}
 	&__list {
 		position: relative;

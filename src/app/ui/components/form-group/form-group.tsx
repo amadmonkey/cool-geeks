@@ -9,7 +9,7 @@ import Button from "../button/button";
 const FormGroup = (props: any) => {
 	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<div className="form-group">
+		<div className="form-group" style={{ ...props.style }}>
 			{props.label && (
 				<label htmlFor="text-input">
 					<span>{`${props.label} ${props.required ? "*" : ""}`}</span>

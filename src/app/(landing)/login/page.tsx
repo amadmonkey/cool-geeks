@@ -37,9 +37,11 @@ const LoginForm = () => {
 			switch (code) {
 				case 200:
 					setCookie("user", data.user);
-					setCookie("subd", data.subd);
-					setCookie("plan", data.plan);
-					push("/");
+					if (!data.user.admin) {
+						setCookie("subd", data.subd);
+						setCookie("plan", data.plan);
+					}
+					push(data.user.admin ? "/admin" : "/");
 					break;
 				case 400:
 					setError(data.general);
@@ -118,7 +120,9 @@ const LoginForm = () => {
 					{error}
 				</p>
 				<FormGroup>
-					<Button type="submit">LOGIN</Button>
+					<Button type="submit" className="info lg">
+						LOGIN
+					</Button>
 				</FormGroup>
 				{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 			</form>

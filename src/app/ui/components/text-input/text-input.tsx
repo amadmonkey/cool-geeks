@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { enforceFormat, isModifierKey, removeSpaces } from "@/utility";
+import { ENHANCE_FORMAT, IS_MODIFIER_KEY, REMOVE_SPACES } from "@/utility";
 
 import "./text-input.scss";
 
@@ -24,11 +24,11 @@ const TextInput = (props: any) => {
 	useEffect(() => {
 		// https://jsfiddle.net/rafj3md0/ then edited
 		const formatToPhone = (event: any) => {
-			if (isModifierKey(event)) return;
+			if (IS_MODIFIER_KEY(event)) return;
 			if (props.maxLength && event.target.value.length >= props.maxLength) return;
 
 			const { target } = event;
-			const input = removeSpaces(event.target.value).substring(0, props.minLength);
+			const input = REMOVE_SPACES(event.target.value).substring(0, props.minLength);
 
 			const parts = {
 				first: "",
@@ -73,7 +73,7 @@ const TextInput = (props: any) => {
 			}
 		};
 		if (props.type === "tel" || props.type === "mini-dropdown") {
-			inputRef.current?.addEventListener("keydown", (e) => enforceFormat(e, props.maxLength));
+			inputRef.current?.addEventListener("keydown", (e) => ENHANCE_FORMAT(e, props.maxLength));
 			inputRef.current?.addEventListener("keyup", formatToPhone);
 		}
 	}, [miniDropdownVal.name, props.minLength, props.maxLength, props.type]);

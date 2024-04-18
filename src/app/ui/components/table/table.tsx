@@ -3,14 +3,14 @@ import Image from "next/image";
 import IconLoading from "../../../../../public/loading.svg";
 
 import "./table.scss";
+import { GET_STATUS_ICON } from "@/utility";
 
 const Table = (props: any) => {
-	const [filteredList, setFilteredList] = useState<any>(null);
 	// null = loading
 	// [] = empty
 	// [...] = show table
+	const [filteredList, setFilteredList] = useState<any>(null);
 	useEffect(() => {
-		console.log(props.list);
 		setFilteredList(props.list);
 	}, [props.list]);
 
@@ -32,8 +32,8 @@ const Table = (props: any) => {
 							<tr key={index}>
 								<td>
 									<span className="date">
-										{new Date(item.createdAt).toLocaleString("default", { month: "long" })}&nbsp;
-										{new Date(item.createdAt).toLocaleString("default", { year: "numeric" })}
+										{new Date(item.paymentDate).toLocaleString("default", { month: "long" })}&nbsp;
+										{new Date(item.paymentDate).toLocaleString("default", { year: "numeric" })}
 									</span>
 								</td>
 								<td>
@@ -42,7 +42,7 @@ const Table = (props: any) => {
 								<td>
 									<span className="refNo">
 										<Image
-											src={`/${JSON.parse(item.referenceType).name}.png`}
+											src={item.referenceType && `/${JSON.parse(item.referenceType).name}.png`}
 											height={0}
 											width={0}
 											style={{ height: "20px", width: "auto", marginRight: "10px" }}
@@ -53,7 +53,7 @@ const Table = (props: any) => {
 									</span>
 								</td>
 								<td>
-									<button>
+									<button className="invisible">
 										<Image
 											src={`/image.svg`}
 											height={0}
@@ -64,16 +64,7 @@ const Table = (props: any) => {
 										/>
 									</button>
 								</td>
-								<td>
-									<Image
-										src={`/${item.status === "DONE" ? "done" : "wait"}.svg`}
-										height={0}
-										width={0}
-										style={{ height: "20px", width: "auto", marginRight: "10px" }}
-										sizes="100vw"
-										alt="Picture of the author"
-									/>
-								</td>
+								<td>{GET_STATUS_ICON(item.status, null)}</td>
 							</tr>
 						);
 					})}

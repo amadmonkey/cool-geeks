@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import Image from "next/image";
 
-const isNumericInput = (event: any): Boolean => {
+import IconAccepted from "../public/done.svg";
+import IconDenied from "../public/denied.svg";
+import IconPending from "../public/pending.svg";
+
+const IS_NUMERIC_INPUT = (event: any): Boolean => {
 	return event.key >= 0 && event.key <= 9;
 };
 
-const isModifierKey = (event: any): Boolean => {
+const IS_MODIFIER_KEY = (event: any): Boolean => {
 	const { key } = event;
 	return (
 		event.shiftKey ||
@@ -24,24 +29,21 @@ const isModifierKey = (event: any): Boolean => {
 	);
 };
 
-const enforceFormat = (event: any, maxLength: number) => {
+const ENHANCE_FORMAT = (event: any, maxLength: number) => {
 	if (maxLength && event.target.value.length >= maxLength) {
 		return;
 	}
-	if (!isNumericInput(event) && !isModifierKey(event)) {
+	if (!IS_NUMERIC_INPUT(event) && !IS_MODIFIER_KEY(event)) {
 		event.preventDefault();
 	}
 };
 
-const removeSpaces = (text: string): string => {
-	return text.replace(/\D/g, "");
-};
+const REMOVE_SPACES = (text: string): string => text.replace(/\D/g, "");
 
-const headers = (req: NextRequest, accessToken: string): HeadersInit => {
+const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	const contentType = req.headers.get("Content-Type")?.includes(";")
 		? req.headers.get("Content-Type")?.split(";")[0]
 		: req.headers.get("Content-Type");
-	console.log(req.headers.get("Content-Type"));
 	switch (contentType) {
 		case "multipart/form-data":
 			return { Authorization: accessToken ? `bearer ${accessToken}` : "" };
@@ -50,6 +52,36 @@ const headers = (req: NextRequest, accessToken: string): HeadersInit => {
 				"Content-Type": "application/json",
 				Authorization: accessToken ? `bearer ${accessToken}` : "",
 			};
+	}
+};
+
+const GET_STATUS_BADGE = (status: any) => {
+	switch (status) {
+		case "ACCEPTED":
+			return <div className="badge badge__accepted">ACCEPTED</div>;
+		case "PENDING":
+			return <div className="badge">PENDING</div>;
+		case "FAILED":
+			return <div className="badge badge__denied">FAILED</div>;
+		default:
+			return <div className="badge badge__denied">DENIED</div>;
+	}
+};
+
+const GET_STATUS_ICON = (status: any, styles: any) => {
+	let test = {
+		height: "20px",
+		width: "auto",
+		marginRight: "10px",
+	};
+	if (styles) test = { ...test, ...styles };
+	switch (status.toUpperCase()) {
+		case "PENDING":
+			return <IconPending style={{ ...test, ...{ fill: "#b6b6b6" } }} height="20" />;
+		case "ACCEPTED":
+			return <IconAccepted style={{ ...test }} />;
+		case "DENIED":
+			return <IconDenied style={test} />;
 	}
 };
 
@@ -68,31 +100,27 @@ const tokenRefresh = async (token: string | undefined) => {
 
 const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
-		const accessToken = req.cookies.get("accessToken")
-			? req.cookies.get("accessToken")
-			: await (
-					await fetch("http://localhost:4000/token/refresh", {
-						method: "POST",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						body: JSON.stringify({ token: req.cookies.get("refreshToken")?.value }),
-						credentials: "include",
-					})
-			  ).json();
-		return await fetch(url, {
+		let accessToken: any = req.cookies.get("accessToken")?.value;
+		let refreshResponse: any = null;
+		if (!accessToken) {
+			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
+			if (refreshResponse.status !== 200) return refreshResponse;
+			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		}
+		const apiResponse = await fetch(url, {
 			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-				Authorization: accessToken ? `bearer ${accessToken.value}` : "",
-			},
+			headers: HEADERS(req, accessToken),
 			credentials: "include",
 		});
+		const res = await apiResponse.json();
+		const newResponse = NextResponse.json(res);
+		refreshResponse &&
+			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
+		return newResponse;
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
 		let accessToken: any = req.cookies.get("accessToken")?.value;
 		let refreshResponse: any = null;
-
 		if (!accessToken) {
 			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
 			if (refreshResponse.status !== 200) return refreshResponse;
@@ -101,7 +129,7 @@ const REQUEST = {
 
 		const apiResponse = await fetch(url, {
 			method: "POST",
-			headers: headers(req, accessToken),
+			headers: HEADERS(req, accessToken),
 			body: body,
 			credentials: "include",
 		});
@@ -113,4 +141,13 @@ const REQUEST = {
 	},
 };
 
-export { REQUEST, isNumericInput, headers, isModifierKey, enforceFormat, removeSpaces };
+export {
+	REQUEST,
+	HEADERS,
+	REMOVE_SPACES,
+	ENHANCE_FORMAT,
+	GET_STATUS_BADGE,
+	GET_STATUS_ICON,
+	IS_MODIFIER_KEY,
+	IS_NUMERIC_INPUT,
+};
