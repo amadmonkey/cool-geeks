@@ -1,0 +1,79 @@
+@import "../../../variables.scss";
+.history-table {
+	width: 100%;
+	height: 600px;
+	margin-bottom: 50px;
+	tbody {
+		gap: 25px;
+		display: flex;
+		flex-direction: column;
+		tr {
+			display: grid;
+			align-items: center;
+			justify-content: center;
+			grid-template-columns: 35% 10% 35% 10% 10%;
+			td {
+				display: flex;
+				text-align: center;
+				align-items: center;
+				justify-content: center;
+			}
+			td:first-child {
+				text-align: right;
+				position: relative;
+				padding-right: 40px;
+				justify-content: end;
+				&::after {
+					top: 10px;
+					right: 5px;
+					content: "";
+					width: 20px;
+					height: 20px;
+					position: absolute;
+					border-radius: 50%;
+					background-color: $info;
+				}
+			}
+			td:last-child {
+				display: flex;
+				align-items: center;
+			}
+			&:not(:last-child) {
+				td:first-child::before {
+					top: 22px;
+					content: "";
+					right: 14px;
+					height: 57px;
+					position: absolute;
+					border: 1px dashed $dark;
+				}
+			}
+			.rate {
+				font-size: 16px;
+				font-weight: 800;
+			}
+			.date {
+				padding: 5px 10px;
+				text-align: right;
+				position: relative;
+				border-radius: 5px;
+				background-color: #fff;
+				box-shadow: -3px 3px 0 #00000030;
+				&::before {
+					width: 0;
+					top: 10px;
+					height: 0;
+					content: "";
+					right: -15px;
+					position: absolute;
+					border-left-color: #fff;
+					border: 8px solid transparent;
+				}
+			}
+			.refNo {
+				align-items: center;
+				display: inline-flex;
+			}
+		}
+	}
+}

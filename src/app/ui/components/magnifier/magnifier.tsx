@@ -6,12 +6,11 @@ const Magnifier = (props: any) => {
 	const zoomLevel = 3;
 	const [img, setImage] = useState(props.imageRef);
 	const magnifierRef = useRef<HTMLDivElement>(null);
-	const magnifierContainerRef = useRef<HTMLDivElement>(null);
 	const hasImage = img.current && !img.current.src.includes("file-upload.svg");
 
 	// https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
 	useEffect(() => {
-		if (hasImage) {
+		if (hasImage && !props.disabled) {
 			let w,
 				h,
 				bw = 0;
@@ -81,7 +80,12 @@ const Magnifier = (props: any) => {
 
 	return (
 		<div className="magnifier-container">
-			{hasImage && <div className="magnifier-glass" ref={magnifierRef}></div>}
+			{hasImage && (
+				<div
+					className={`magnifier-glass ${props.disabled ? "disabled" : ""}`}
+					ref={magnifierRef}
+				></div>
+			)}
 			{props.children}
 		</div>
 	);

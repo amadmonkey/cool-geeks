@@ -13,7 +13,7 @@ const LoginForm = () => {
 	const { push } = useRouter();
 	const [error, setError] = useState("");
 	const [form, setForm] = useState({
-		emailAccountNo: "111",
+		emailAccountNo: "admin",
 		password: "wootwoot",
 	});
 

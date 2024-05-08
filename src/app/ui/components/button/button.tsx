@@ -5,6 +5,7 @@ import "./button.scss";
 const Button = (props: any) => {
 	return (
 		<button
+			name={props.name}
 			className={`cg-button ${props.className} ${props.mini ? "mini" : ""} ${
 				props.danger ? "danger" : ""
 			}`}

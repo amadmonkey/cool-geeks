@@ -1,35 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import Card from "@/app/ui/components/card/card";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 import Button from "@/app/ui/components/button/button";
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
-import Modal from "@/app/ui/components/modal/modal";
 
 import "./page.scss";
 
-type Subd = {
-	_id: string;
-	name: string;
-	code: string;
-	gcash: {
-		qr: Object;
-		number: string;
-	};
-};
-
-type Plan = {
-	_id: string;
-	subdRef: string;
-	name: string;
-	description: string;
-	price: string;
-};
-
 export default function AddAccount() {
+	const { push } = useRouter();
 	const [form, setForm] = useState({
 		firstName: "",
 		middleName: "",
@@ -37,6 +20,7 @@ export default function AddAccount() {
 		address: "",
 		contactNo: "",
 		email: "",
+		cutoff: "",
 		subd: { price: "" },
 		plan: { price: "" },
 	});
@@ -48,7 +32,7 @@ export default function AddAccount() {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
 		if (selectId === "subd") {
 			newFormObj = { ...newFormObj, ...{ plan: { price: "" } } };
-			setPlanList(newVal.planList);
+			setPlanList(newVal.plans);
 		}
 		setForm(newFormObj);
 	};
@@ -58,202 +42,258 @@ export default function AddAccount() {
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
 
-	useMemo(() => {
-		const subd: any[] = [
-			{
-				id: 1,
-				name: "Saint Mary Homes",
-				gcashNo: ["09451785414"],
-				planList: [
-					{
-						id: 1,
-						name: "15Mbps",
-						description: "",
-						price: "700",
-					},
-					{
-						id: 2,
-						name: "20Mbps",
-						description: "",
-						price: "1000",
-					},
-					{
-						id: 3,
-						name: "50Mbps",
-						description: "",
-						price: "1500",
-					},
-					{
-						id: 4,
-						name: "250Mbps",
-						description: "",
-						price: "2500",
-					},
-				],
+	const getSubds = async () => {
+		const searchOptions = new URLSearchParams({
+			page: "1",
+			limit: "5",
+			sort: JSON.stringify({
+				name: "asc",
+				code: "asc",
+			}),
+		});
+		return await fetch(`http://localhost:3000/api/subd?${searchOptions}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
 			},
-			{
-				id: 2,
-				name: "Pilar Executive",
-				gcashNo: ["09190928359"],
-				planList: [
-					{
-						id: 1,
-						name: "50Mbps",
-						description: "",
-						price: "1000",
-					},
-					{
-						id: 2,
-						name: "100Mbps",
-						description: "",
-						price: "1500",
-					},
-					{
-						id: 3,
-						name: "150Mbps",
-						description: "",
-						price: "2000",
-					},
-					{
-						id: 4,
-						name: "250Mbps",
-						description: "",
-						price: "2500",
-					},
-				],
-			},
-		];
-		setSubdList(subd);
-	}, []);
+			credentials: "include",
+		}).then((res) => res.json());
+	};
 
-	const handleSubmit = (e: any) => {
-		e.preventDefault();
+	useEffect(() => {
+		getSubds()
+			.then((res) => {
+				const { code, data } = res;
+				switch (code) {
+					case 200:
+						setSubdList(data);
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						console.log("getSubds default", data);
+						push("/login");
+						break;
+				}
+			})
+			.catch((err) => console.error(err));
+	}, [push]);
+
+	const handleSubmit = async (e: any) => {
+		try {
+			e.preventDefault();
+			const res = await fetch("/api/user/create", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify(form),
+			});
+			const { code, data } = await res.json();
+			switch (code) {
+				case 200:
+					// setCookie("user", data.user);
+					// if (!data.user.admin) {
+					// 	setCookie("subd", data.subd);
+					// 	setCookie("plan", data.plan);
+					// }
+					// push(data.user.admin ? "/admin" : "/");
+					break;
+				case 400:
+					// setError(data.general);
+					break;
+				default:
+					break;
+			}
+		} catch (err) {
+			console.error(err);
+		}
 	};
 
 	return (
-		<section style={{ width: "100%" }}>
-			<Card style={{ display: "flex", justifyContent: "center" }}>
-				<form
-					onSubmit={handleSubmit}
-					style={{ display: "flex", flexDirection: "column", gap: 20, width: "400px" }}
+		<section
+			style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
+		>
+			<div className="page-header">
+				<h1
+					className="section-title"
+					style={{
+						marginBottom: "unset",
+					}}
 				>
-					<FormGroup label="First Name">
-						<TextInput
-							type="text"
-							name="firstName"
-							value={form.firstName}
-							minLength="2"
-							onChange={updateForm}
-							required
-						/>
-					</FormGroup>
-					<div
-						style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}
-					>
-						<FormGroup label="Middle Name/Initial">
-							<TextInput
-								type="text"
-								name="middleName"
-								value={form.middleName}
-								onChange={updateForm}
-							/>
-						</FormGroup>
-						<FormGroup label="Last Name">
-							<TextInput
-								type="text"
-								name="lastName"
-								value={form.lastName}
-								minLength="2"
-								onChange={updateForm}
-								required
-							/>
-						</FormGroup>
-					</div>
-					<FormGroup label="Address">
-						<TextInput
-							type="text"
-							name="address"
-							value={form.address}
-							minLength="10"
-							onChange={updateForm}
-							required
-						/>
-					</FormGroup>
-					<FormGroup label="Contact No">
-						<TextInput
-							type="tel"
-							name="contactNo"
-							value={form.contactNo}
-							minLength="12"
-							maxLength="12"
-							onChange={updateForm}
-							required
-						/>
-					</FormGroup>
-					<FormGroup label="Email Address">
-						<TextInput
-							type="email"
-							name="email"
-							value={form.email}
-							onChange={updateForm}
-							required
-						/>
-					</FormGroup>
-					<div
-						style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}
-					>
-						<FormGroup label="Subd">
-							<Dropdown
-								list={subdList}
-								value={form.subd}
-								onChange={(newVal: any) => onSelect(newVal, "subd")}
-								placeholder="Select Subdivision"
-								required
-							/>
-						</FormGroup>
-						<FormGroup label="Plan">
-							<Dropdown
-								list={planList}
-								value={form.plan}
-								onChange={(newVal: any) => onSelect(newVal, "plan")}
-								placeholder="Select Plan"
-								required
-							/>
-						</FormGroup>
-					</div>
-					{form.subd && form.plan.price && (
-						<div className="summary">
+					Create New Account
+				</h1>
+			</div>
+			<div style={{ display: "flex", gap: 50 }}>
+				<form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 50 }}>
+					<div style={{ display: "flex", flexDirection: "row", gap: 50 }}>
+						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
+							<FormGroup label="First Name">
+								<TextInput
+									type="text"
+									name="firstName"
+									value={form.firstName}
+									minLength="2"
+									onChange={updateForm}
+									required
+								/>
+							</FormGroup>
 							<div
 								style={{
 									display: "flex",
-									justifyContent: "center",
-									alignItems: "center",
-									gap: "20px",
+									width: "100%",
+									justifyContent: "space-between",
+									gap: "10px",
 								}}
 							>
-								<span
-									style={{
-										textAlign: "right",
-										width: "100%",
-										fontSize: "16px",
-										letterSpacing: "8px",
-									}}
-								>
-									RATE
-								</span>
-								<p style={{ width: "100%", fontWeight: "800", fontSize: "40px" }}>
-									₱{form.plan.price}
-								</p>
+								<FormGroup label="Middle Name/Initial">
+									<TextInput
+										type="text"
+										name="middleName"
+										value={form.middleName}
+										onChange={updateForm}
+									/>
+								</FormGroup>
+								<FormGroup label="Last Name">
+									<TextInput
+										type="text"
+										name="lastName"
+										value={form.lastName}
+										minLength="2"
+										onChange={updateForm}
+										required
+									/>
+								</FormGroup>
 							</div>
+							<FormGroup label="Address">
+								<TextInput
+									type="text"
+									name="address"
+									value={form.address}
+									minLength="10"
+									onChange={updateForm}
+									required
+								/>
+							</FormGroup>
+							<FormGroup label="Contact No">
+								<TextInput
+									type="tel"
+									name="contactNo"
+									value={form.contactNo}
+									minLength="12"
+									maxLength="12"
+									onChange={updateForm}
+									required
+								/>
+							</FormGroup>
+							<FormGroup label="Email Address">
+								<TextInput
+									type="email"
+									name="email"
+									value={form.email}
+									onChange={updateForm}
+									required
+								/>
+							</FormGroup>
 						</div>
-					)}
-					<FormGroup>
-						<Button type="submit">ADD CLIENT</Button>
+						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
+							<div
+								style={{
+									display: "flex",
+									width: "100%",
+									justifyContent: "space-between",
+									gap: "10px",
+								}}
+							>
+								<FormGroup label="Subd">
+									<Dropdown
+										list={subdList}
+										value={form.subd}
+										onChange={(newVal: any) => onSelect(newVal, "subd")}
+										placeholder="Select Subdivision"
+										required
+									/>
+								</FormGroup>
+								<FormGroup label="Plan">
+									<Dropdown
+										list={planList}
+										value={form.plan}
+										onChange={(newVal: any) => onSelect(newVal, "plan")}
+										placeholder="Select Plan"
+										required
+									/>
+								</FormGroup>
+							</div>
+							{form.subd && form.plan.price && (
+								<div className="summary">
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "center",
+											alignItems: "center",
+											gap: "20px",
+										}}
+									>
+										<span
+											style={{
+												textAlign: "right",
+												width: "100%",
+												fontSize: "16px",
+												letterSpacing: "8px",
+											}}
+										>
+											RATE
+										</span>
+										<p style={{ width: "100%", fontWeight: "800", fontSize: "40px" }}>
+											₱{form.plan.price}
+										</p>
+									</div>
+								</div>
+							)}
+							<FormGroup label="Preferred Cutoff">
+								<div className="payment-date-container">
+									<label className={form.cutoff === "MID" ? "active" : ""} tabIndex={0}>
+										<Image
+											src={`/midmonth.svg`}
+											height={0}
+											width={0}
+											sizes="100vw"
+											alt="Picture of the author"
+										/>
+										<input type="radio" name="cutoff" value="MID" onChange={updateForm} />
+										MIDMONTH
+									</label>
+									<label className={form.cutoff === "END" ? "active" : ""} tabIndex={0}>
+										<Image
+											src={`/end-of-month.svg`}
+											height={0}
+											width={0}
+											sizes="100vw"
+											alt="Picture of the author"
+										/>
+										<input type="radio" name="cutoff" value="END" onChange={updateForm} />
+										END OF MONTH
+									</label>
+								</div>
+								<p className="input-info">
+									Midmonth warns every 15<sup>th</sup> and cuts every 19<sup>th</sup>. End of month
+									warns at whatever the last day of the month is and cuts at the 4<sup>th</sup> the
+									following month.
+								</p>
+							</FormGroup>
+						</div>
+					</div>
+					<FormGroup style={{ width: "300px", alignSelf: "end" }}>
+						<Button type="submit" className="info">
+							ADD CLIENT
+						</Button>
 					</FormGroup>
-					<pre>{JSON.stringify(form, undefined, 2)}</pre>
+					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 				</form>
-			</Card>
-			<Modal>
+			</div>
+			{/* <Modal>
 				<Card style={{ width: "400px" }}>
 					<span>ACCOUNT NUMBER</span>
 					<h1>123456789</h1>
@@ -261,7 +301,7 @@ export default function AddAccount() {
 						<span>CONTINUE</span>
 					</Link>
 				</Card>
-			</Modal>
+			</Modal> */}
 		</section>
 	);
 }

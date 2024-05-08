@@ -9,6 +9,10 @@
 		position: absolute;
 		border-radius: 50%;
 		border: 10px solid #000;
+		opacity: 0;
+		&.disabled {
+			cursor: unset;
+		}
 	}
 	.magnifier-glass::before {
 		content: "";

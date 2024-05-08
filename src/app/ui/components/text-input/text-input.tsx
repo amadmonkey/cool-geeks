@@ -75,6 +75,11 @@ const TextInput = (props: any) => {
 		if (props.type === "tel" || props.type === "mini-dropdown") {
 			inputRef.current?.addEventListener("keydown", (e) => ENHANCE_FORMAT(e, props.maxLength));
 			inputRef.current?.addEventListener("keyup", formatToPhone);
+		} else {
+			inputRef.current?.addEventListener("keydown", (e) => {
+				console.log(props.maxLength && inputRef.current!.value.length >= props.maxLength);
+				if (props.maxLength && inputRef.current!.value.length >= props.maxLength) return;
+			});
 		}
 	}, [miniDropdownVal.name, props.minLength, props.maxLength, props.type]);
 
@@ -150,7 +155,12 @@ const TextInput = (props: any) => {
 	};
 
 	return (
-		<div className={`input-container ${props.type}`}>
+		<div
+			className={`input-container ${props.type} ${props.mini ? "mini" : ""} ${
+				props.line ? "line" : ""
+			}`}
+			style={props.style}
+		>
 			{props.type === "mini-dropdown" && (
 				<div className={`mini-dropdown ${refNoActive ? "active" : ""}`}>
 					<button className="cg-button" type="button" onClick={toggleMiniDropdown} tabIndex={0}>
@@ -195,9 +205,9 @@ const TextInput = (props: any) => {
 				maxLength={props.maxLength}
 				className={`${errors.length ? "error" : ""} text-input`}
 				placeholder={props.placeholder}
+				style={props.style}
 				onKeyUp={delayValidate}
 				onChange={props.onChange}
-				// onBlur={delayValidate}
 				required={props.required}
 			/>
 			{errors.length > 0 && <p className="error-message">{errors[0]}</p>}

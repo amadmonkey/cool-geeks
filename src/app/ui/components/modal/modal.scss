@@ -1,5 +1,5 @@
 .modal-container {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	height: 100%;
@@ -13,9 +13,15 @@
 	align-items: center;
 	opacity: 0;
 	display: none;
-	transition: 0.2s;
+	transition: 3s ease;
+	&.clear {
+		background: none;
+		backdrop-filter: unset;
+	}
 	&.show {
 		display: flex;
 		opacity: 1;
+	}
+	&__content {
 	}
 }

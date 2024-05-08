@@ -1,10 +1,12 @@
-$dark: #8f8f8f;
+$dark: #696969;
 $bg: #f4ede3;
 
 $info: #5576c7;
 $danger: #e46d6d;
 $danger-dark: #a53131;
 $danger-light: #fae0e0;
+
+$success: #5cbe5c;
 
 $primary: #eca452;
 
@@ -92,14 +94,14 @@ pre {
 	word-wrap: break-word; /* Internet Explorer 5.5+ */
 	border: 1px solid $dark;
 	padding: 20px;
-	border-radius: 10px;
+	border-radius: 15px;
 	background-color: #f1f1f1;
 }
 
 .error-message {
 	color: #e46d6d !important;
 	font-weight: 600;
-	font-size: 14px;
+	font-size: 12px;
 	padding-top: 4px;
 }
 
@@ -117,4 +119,30 @@ section {
 
 .danger {
 	color: $danger;
+}
+
+@keyframes wiggle {
+	0%,
+	7% {
+		transform: rotateZ(0);
+	}
+	15% {
+		transform: rotateZ(-13deg);
+	}
+	20% {
+		transform: rotateZ(9deg);
+	}
+	25% {
+		transform: rotateZ(-10deg);
+	}
+	30% {
+		transform: rotateZ(7deg);
+	}
+	35% {
+		transform: rotateZ(-2deg);
+	}
+	40%,
+	100% {
+		transform: rotateZ(0);
+	}
 }

@@ -20,13 +20,23 @@
 		.text-input {
 			padding-left: 70px;
 		}
+		&.mini {
+			&::before {
+				font-size: 14px;
+				top: 5px;
+				left: 10px;
+			}
+			.text-input {
+				padding-left: 50px;
+			}
+		}
 	}
 	.text-input {
 		height: 50px;
 		width: 100%;
 		padding: 10px;
 		font-weight: 800;
-		font-size: 20px;
+		font-size: 16px;
 		box-sizing: border-box;
 		color: $dark;
 		border: 2px solid $dark;
@@ -122,6 +132,20 @@
 				height: 40px;
 				object-fit: contain;
 			}
+		}
+	}
+	&.mini {
+		> input {
+			height: 30px;
+			font-size: 14px;
+		}
+	}
+	&.line {
+		> input {
+			border: none;
+			border-bottom: 2px solid $dark;
+			border-radius: unset;
+			box-shadow: none;
 		}
 	}
 }

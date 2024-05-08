@@ -1,0 +1,36 @@
+@import "../../../variables.scss";
+
+.content {
+	&__subds {
+		display: grid !important;
+		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		gap: 20px !important;
+
+		.add-subdivision {
+			color: $dark;
+			font-size: 20px;
+			font-weight: 600;
+			position: relative;
+			border-radius: 10px;
+			border: 3px dashed $dark;
+			transition: 0.1s ease;
+			> svg {
+				transition: 0.1s ease;
+				fill: $dark;
+			}
+			> span {
+				position: relative;
+				top: 30px;
+			}
+			&:hover {
+				color: $primary;
+				border-color: $primary;
+				background-color: lighten($primary, 25%);
+				border-style: solid;
+				> svg {
+					fill: $primary;
+				}
+			}
+		}
+	}
+}

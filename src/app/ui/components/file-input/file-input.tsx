@@ -1,39 +1,47 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import "./file-input.scss";
 import Magnifier from "../magnifier/magnifier";
+import { VALID_IMG_TYPES } from "@/utility";
 
-interface Props {
-	name: string;
-	value: FormDataEntryValue | null;
-	onChange: (e: any) => void;
-}
-
-const fileTypes = ["image/jpeg", "image/png", "application/pdf"];
-
-const FileInput = (props: Props) => {
+const FileInput = (props: any) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
-	const [file, setFile] = useState(null);
-	const handleFileChange = (e: any) => {
-		const file = e.currentTarget.files[0];
-		if (fileTypes.includes(file.type)) {
+	const [file, setFile] = useState<File | null>(null);
+	const defaultSrc = "/file-upload.svg";
+
+	const handleFileChange = (file: File) => {
+		console.log("handleFileChange file", file);
+		if (VALID_IMG_TYPES.includes(file.type)) {
 			imageRef.current!.src = URL.createObjectURL(file);
 			setFile(file);
-			props.onChange({ target: { name: props.name, value: inputRef, type: "file" } });
+			props.onChange({
+				target: {
+					name: props.name,
+					value: inputRef.current?.files?.length ? inputRef.current?.files[0] : file,
+					type: "file",
+				},
+			});
 		}
 	};
+
 	const removeFile = (e: any) => {
 		e.stopPropagation();
-		imageRef.current!.src = "/file-upload.svg";
+		imageRef.current!.src = defaultSrc;
 		setFile(null);
 		inputRef.current!.value = "";
 	};
 
+	useEffect(() => {
+		if (props.value) {
+			handleFileChange(props.value);
+		}
+	}, [props.value]);
+
 	return (
 		<div
-			className="file-upload"
+			className={`file-upload ${props.mini ? "mini" : ""}`}
 			role="button"
 			tabIndex={0}
 			onClick={() => inputRef.current!.click()}
@@ -43,21 +51,25 @@ const FileInput = (props: Props) => {
 				ref={inputRef}
 				type="file"
 				accept=".png,.jpg,.jpeg,.pdf"
-				onChange={handleFileChange}
+				onChange={(e: any) => handleFileChange(e.currentTarget.files[0])}
 			/>
-			<div className="label">
-				<Magnifier imageRef={imageRef}>
+			<div className="label" style={{ gap: "5px" }}>
+				<Magnifier imageRef={imageRef} disabled={props.mini ? true : false}>
 					<Image
 						className={file ? "has-image" : ""}
 						ref={imageRef}
-						src={`/file-upload.svg`}
+						src={file ? URL.createObjectURL(file) : "/file-upload.svg"}
 						height={0}
 						width={0}
 						sizes="100vw"
-						alt="Picture of the author"
+						alt=""
 					/>
 				</Magnifier>
-				<p className={`${file ? "hide" : ""}`}>DROP IMAGE HERE OR CLICK TO BROWSE</p>
+				{!props.mini && (
+					<p className={`${file ? "hide" : ""}`}>
+						{props.label || "DROP IMAGE HERE OR CLICK TO BROWSE"}
+					</p>
+				)}
 				{file && (
 					<button className="cg-button __circle" onClick={removeFile}>
 						<span className="sr-only">Remove File</span>

@@ -1,0 +1,72 @@
+@import "../../../variables.scss";
+
+.cg-card {
+	position: relative;
+	> header {
+		position: absolute;
+		top: -10px;
+		right: 20px;
+		opacity: 0;
+		display: flex;
+		transition: 0.1s ease;
+		pointer-events: none;
+		> * {
+			transition: 0.1s ease;
+			top: 0px;
+		}
+		&.active {
+			opacity: 1;
+			pointer-events: unset;
+			> * {
+				top: -15px;
+			}
+		}
+		> button {
+			position: relative;
+			transition-delay: 0.04s;
+			svg {
+				width: 45px;
+				height: auto;
+				border-radius: 50%;
+				box-shadow: -5px 5px 0 lighten($dark, 30%);
+			}
+			&:hover {
+				transform: scale(110%);
+				svg {
+					animation: wiggle 1s ease-in infinite;
+				}
+			}
+		}
+		> .cg-card {
+			border-radius: 20px;
+			border: 1px solid lighten($dark, 40%);
+		}
+	}
+	h1 {
+		font-size: 20px;
+		display: flex;
+		gap: 10px;
+		> span {
+			font-weight: 800;
+			color: $danger;
+		}
+	}
+	span {
+		font-weight: 600;
+		color: lighten($dark, 10%);
+	}
+	> .cg-table {
+		margin-top: 10px;
+	}
+
+	.general-error {
+		color: $danger;
+		font-weight: 800;
+		box-shadow: none;
+		grid-template-columns: 100%;
+		border-radius: 10px;
+		text-align: center;
+		padding: 10px;
+		font-size: 14px;
+	}
+}

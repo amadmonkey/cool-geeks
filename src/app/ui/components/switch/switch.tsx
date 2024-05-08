@@ -1,24 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import "./switch.scss";
 
 const Switch = (props: any) => {
+	const id = `switch-${props.name}-${props.id}`;
+	const [isChecked, setIsChecked] = useState(false);
+
+	const handleOnChange = () => {
+		setIsChecked(!isChecked);
+		props.onChange();
+	};
+
+	useEffect(() => setIsChecked(props.checked), [props.checked]);
+
 	return (
-		<div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-			<div className="switch" style={props.style}>
-				<input id="switch-1" type="checkbox" className="switch-input" />
-				<label htmlFor="switch-1" className="switch-label">
-					Switch
-				</label>
-			</div>
-			<label htmlFor="switch-1" className="sr-only">
-				Switch
-			</label>
+		<div
+			className={`switch-container ${props.mini ? "mini" : ""}`}
+			style={{ display: "flex", gap: 10, alignItems: "center", height: "30px" }}
+		>
 			<label
-				htmlFor="switch-1"
-				style={{ fontSize: "13px", display: props.label ? "block" : "none", cursor: "pointer" }}
+				htmlFor={id}
+				className="switch-label"
+				style={{
+					fontSize: "13px",
+					display: props.label ? "block" : "none",
+					cursor: "pointer",
+					fontWeight: 800,
+					userSelect: "none",
+				}}
 			>
 				{props.label}
+			</label>
+			<div className="switch" style={props.style}>
+				<input
+					name={props.name}
+					id={id}
+					type="checkbox"
+					className="switch-input"
+					checked={isChecked}
+					onChange={() => handleOnChange()}
+				/>
+				<label htmlFor={id} className="switch-ui"></label>
+				<label htmlFor={id} className="sr-only"></label>
+			</div>
+			<label htmlFor={id} className="switch-label">
+				{isChecked ? "ON" : "OFF"}
 			</label>
 		</div>
 	);

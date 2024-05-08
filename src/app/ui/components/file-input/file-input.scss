@@ -35,6 +35,18 @@
 			}
 		}
 	}
+	&.mini {
+		min-height: 50px;
+		.label {
+			flex-direction: row;
+			img {
+				height: 50px;
+			}
+			p {
+				font-size: 9px;
+			}
+		}
+	}
 	&.active,
 	&:hover,
 	&::before,

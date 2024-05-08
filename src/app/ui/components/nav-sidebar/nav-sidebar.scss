@@ -1,18 +1,21 @@
 @import "../../../variables.scss";
 
+$header-height: 100px;
+
 .nav-sidebar {
 	flex-grow: 0;
-	width: 250px;
+	width: 270px;
 	height: 500px;
 	padding: 10px;
 	flex-shrink: 0;
-	border-radius: 10px;
+	border-radius: 15px;
 	background-color: #fdfdfd;
 	box-shadow: -5px 5px 0 #00000010;
 	&__header {
+		height: $header-height;
 		display: flex;
 		flex-direction: column;
-		margin: 20px 10px 40px 10px;
+		margin: 10px;
 		> span {
 			font-size: 11px;
 			color: #a8a8a8;
@@ -43,8 +46,8 @@
 	}
 
 	&__list {
+		height: calc(100% - ($header-height + 30px));
 		padding: 0;
-		height: 350px;
 		position: relative;
 		list-style-type: none;
 		li {
@@ -55,10 +58,14 @@
 			cursor: pointer;
 			font-weight: 800;
 			position: relative;
-			padding: 15px 25px;
 			align-items: center;
 			border-top-left-radius: 30px;
 			border-bottom-left-radius: 30px;
+			transition: 0.05s ease;
+			a {
+				padding: 15px 25px;
+				width: 100%;
+			}
 			svg {
 				fill: $dark;
 				width: 25px;
@@ -86,11 +93,13 @@
 				position: absolute;
 				justify-content: center;
 			}
-			&:not(.active):not(:last-child):hover {
+			&:not(.active):hover {
 				color: darken($bg, 40%);
+				transform: scale(105%);
 				svg {
 					stroke: darken($bg, 40%);
 					fill: darken($bg, 40%);
+					animation: wiggle 1s ease-in infinite;
 				}
 			}
 		}

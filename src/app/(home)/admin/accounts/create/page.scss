@@ -1,6 +1,69 @@
+@import "../../../../variables.scss";
+
 form {
 	display: flex;
 	flex-direction: column;
+}
+
+.payment-date-container {
+	gap: 10px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	> label {
+		gap: 10px;
+		width: 50%;
+		display: flex;
+		padding: 20px;
+		cursor: pointer;
+		border-radius: 10px;
+		align-items: center;
+		flex-direction: column;
+		border: 2px dashed $dark;
+		transition: background-color 0.1s ease-in-out;
+		position: relative;
+		&::before {
+			content: "";
+			height: 25px;
+			width: 25px;
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			border-radius: 50%;
+			border: 1px solid $dark;
+		}
+		img {
+			height: auto;
+			width: 50px;
+		}
+		input {
+			display: none;
+		}
+		&.active {
+			border-color: $info;
+			border-style: solid;
+			background-color: #e7e7f0;
+			&::after {
+				content: url(../../../../../../public/done.svg);
+				height: 19px;
+				width: 19px;
+				position: absolute;
+				right: 8px;
+				top: 8px;
+			}
+		}
+		&:not(.active):hover {
+			border-style: solid;
+			background-color: lighten($bg, 5%);
+		}
+	}
+}
+
+.summary__item {
+	span {
+		width: 200px;
+	}
 }
 
 // .account-number-modal {

@@ -4,7 +4,7 @@ function OnOutsideClick(ref: any, props: any) {
 	useEffect(() => {
 		const handleClickOutside = (event: any) => {
 			if (ref.current && !ref.current.contains(event.target)) {
-				props.action();
+				props.action && props.action();
 			}
 		};
 		// Bind the event listener

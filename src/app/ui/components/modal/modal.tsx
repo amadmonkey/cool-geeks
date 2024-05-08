@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 import "./modal.scss";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -9,10 +9,10 @@ const Modal = (props: any) => {
 	}, [props.isShown]);
 
 	return (
-		<div className={`modal-container ${props.isShown ? "show" : ""}`}>
-			<DetectOutsideClick action={() => props.close && props.close()}>
-				{props.children}
-			</DetectOutsideClick>
+		<div className={`modal-container ${props.isShown ? "show" : ""} ${props.clear ? "clear" : ""}`}>
+			<div className="modal-container__content">
+				<DetectOutsideClick action={props.close}>{props.children}</DetectOutsideClick>
+			</div>
 		</div>
 	);
 };

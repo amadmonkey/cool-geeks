@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import Image from "next/image";
 
 import IconAccepted from "../public/done.svg";
 import IconDenied from "../public/denied.svg";
@@ -126,7 +125,6 @@ const REQUEST = {
 			if (refreshResponse.status !== 200) return refreshResponse;
 			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
 		}
-
 		const apiResponse = await fetch(url, {
 			method: "POST",
 			headers: HEADERS(req, accessToken),
@@ -134,6 +132,28 @@ const REQUEST = {
 			credentials: "include",
 		});
 		const res = await apiResponse.json();
+
+		const newResponse = NextResponse.json(res);
+		refreshResponse &&
+			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
+		return newResponse;
+	},
+	put: async (url: string, req: NextRequest, body?: any) => {
+		let accessToken: any = req.cookies.get("accessToken")?.value;
+		let refreshResponse: any = null;
+		if (!accessToken) {
+			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
+			if (refreshResponse.status !== 200) return refreshResponse;
+			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		}
+		const apiResponse = await fetch(url, {
+			method: "PUT",
+			headers: HEADERS(req, accessToken),
+			body: body,
+			credentials: "include",
+		});
+		const res = await apiResponse.json();
+
 		const newResponse = NextResponse.json(res);
 		refreshResponse &&
 			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
@@ -141,13 +161,100 @@ const REQUEST = {
 	},
 };
 
+const TABLE_HEADERS = {
+	receipts: {
+		user: {},
+		plan: {},
+		cutoff_date: {},
+		date_submitted: {},
+		ref_number: {},
+		receipt: {},
+		status: {},
+	},
+	plans: {
+		name: {},
+		price: {},
+		description: {},
+	},
+	accounts: {
+		user: {
+			sort: {
+				by: ["firstName", "middleName", "lastName", "accountNumber"],
+				order: "asc",
+			},
+		},
+		address: {
+			sort: {
+				by: ["address"],
+				order: "asc",
+			},
+		},
+		contact: {
+			sort: {
+				by: ["contactNo", "email"],
+				order: "asc",
+			},
+		},
+		// email: {
+		// 	sort: {
+		// 		by: ["email"],
+		// 		order: "asc",
+		// 	},
+		// },
+		plan: {
+			sort: {
+				by: ["planRef.name"],
+				order: "asc",
+			},
+		},
+		subd: {
+			sort: {
+				by: ["subdRef.name"],
+				order: "asc",
+			},
+		},
+		created_at: {
+			sort: {
+				by: ["createdAt"],
+				order: "desc",
+			},
+		},
+		updated_at: {
+			sort: {
+				by: ["updatedAt"],
+				order: "desc",
+			},
+		},
+	},
+};
+
+const DEFAULT_VALUES = {
+	planForm: {
+		name: "",
+		price: "",
+		description: "",
+	},
+	subdForm: {
+		name: "",
+		code: "",
+		number: "",
+		plans: [],
+		qr: "",
+	},
+};
+
+const VALID_IMG_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/pdf"];
+
 export {
 	REQUEST,
 	HEADERS,
 	REMOVE_SPACES,
 	ENHANCE_FORMAT,
+	TABLE_HEADERS,
+	DEFAULT_VALUES,
 	GET_STATUS_BADGE,
 	GET_STATUS_ICON,
 	IS_MODIFIER_KEY,
 	IS_NUMERIC_INPUT,
+	VALID_IMG_TYPES,
 };

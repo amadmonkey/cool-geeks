@@ -115,8 +115,8 @@ const Dropdown = (props: any) => {
 							return (
 								<li
 									role="button"
-									id={listItem.id}
-									key={listItem.id}
+									id={listItem._id}
+									key={`${listItem._id}-${index}`}
 									className={`dropdown__list-item ${activeIndex === index ? "active" : ""}`}
 									tabIndex={-1}
 									onSelect={() => onSelect(listItem)}

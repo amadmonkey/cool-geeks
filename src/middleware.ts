@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 const outRoutes = ["/login", "/register"];
 
-export async function middleware(req: NextRequest) {
+export function middleware(req: NextRequest) {
 	const { origin, pathname } = req.nextUrl;
 	const userToken = req.cookies.get("user");
 
@@ -16,13 +16,21 @@ export async function middleware(req: NextRequest) {
 		if (admin && !pathname.includes("admin"))
 			return NextResponse.redirect(new URL("/admin", origin).toString());
 	} else {
-		// not logged in
-		// console.log(req.nextUrl);
 		if (!outRoutes.includes(pathname))
 			return NextResponse.redirect(new URL("/login", origin).toString());
 	}
 }
 
 export const config = {
-	matcher: ["/admin", "/"],
+	matcher: [
+		/*
+		 * Match all request paths except for the ones starting with:
+		 * - api (API routes)
+		 * - _next/static (static files)
+		 * - _next/image (image optimization files)
+		 * - favicon.ico (favicon file)
+		 */
+		// "/((?!api|_next/static|_next/image|.*\\..*|favicon.ico|).*)",
+		"/((?!api|static|_next|.*\\..*|).*)",
+	],
 };

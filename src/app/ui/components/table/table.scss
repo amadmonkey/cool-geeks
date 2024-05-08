@@ -1,78 +1,168 @@
 @import "../../../variables.scss";
-.history-table {
+
+.cg-table {
 	width: 100%;
-	height: 600px;
-	margin-bottom: 50px;
-	tbody {
-		gap: 25px;
-		display: flex;
-		flex-direction: column;
-		tr {
-			display: grid;
+	border-radius: 15px;
+	border-collapse: collapse;
+	table {
+		width: inherit;
+		font-size: 12px;
+		tr:not(.loading) {
+			padding: 10px;
+			border-radius: 10px;
 			align-items: center;
-			justify-content: center;
-			grid-template-columns: 35% 10% 35% 10% 10%;
-			td {
-				display: flex;
-				text-align: center;
-				align-items: center;
-				justify-content: center;
+			background-color: #fff;
+			box-shadow: -3px 3px 0 #96969640;
+			&.border {
+				border: 1px solid lighten($dark, 50%);
 			}
-			td:first-child {
-				text-align: right;
-				position: relative;
-				padding-right: 40px;
-				justify-content: end;
-				&::after {
-					top: 10px;
-					right: 5px;
-					content: "";
-					width: 20px;
-					height: 20px;
+			&.accounts {
+				grid-template-columns: 20% 30% 10% 10% 10% 10% 10%;
+			}
+			&.receipts {
+				grid-template-columns: 20% 10% 10% 15% 15% 10% 10% 10%;
+			}
+			&.plans {
+				cursor: pointer;
+				grid-template-columns: 30% 20% 50%;
+				&.create {
+					grid-template-columns: 30% 20% 40% 10%;
+					input {
+						text-align: center;
+					}
+				}
+				.actions {
 					position: absolute;
-					border-radius: 50%;
-					background-color: $info;
+					right: -30px;
+					display: none;
+					top: 0;
+					> button {
+						height: 55px;
+						width: 40px;
+						box-shadow: none;
+						border-radius: 10px;
+					}
+				}
+				&:hover {
+					.actions {
+						display: block;
+					}
 				}
 			}
-			td:last-child {
-				display: flex;
-				align-items: center;
-			}
-			&:not(:last-child) {
-				td:first-child::before {
-					top: 22px;
-					content: "";
-					right: 14px;
-					height: 57px;
-					position: absolute;
-					border: 1px dashed $dark;
-				}
-			}
-			.rate {
-				font-size: 16px;
+		}
+		thead {
+			position: relative;
+			th {
+				height: 20px;
+				color: #a8a8a8;
 				font-weight: 800;
 			}
-			.date {
-				padding: 5px 10px;
-				text-align: right;
+			tr {
+				display: grid;
+				background-color: #f3f3f3 !important;
+				grid-template-columns: 20% 10% 10% 15% 15% 10% 10% 10%;
+			}
+			margin-bottom: 20px;
+		}
+		tbody {
+			gap: 10px;
+			display: flex;
+			padding-top: 10px;
+			font-size: 14px;
+			flex-direction: column;
+			tr {
+				right: 0px;
 				position: relative;
-				border-radius: 5px;
-				background-color: #fff;
-				box-shadow: -3px 3px 0 #00000030;
-				&::before {
-					width: 0;
-					top: 10px;
-					height: 0;
-					content: "";
-					right: -15px;
-					position: absolute;
-					border-left-color: #fff;
-					border: 8px solid transparent;
+				display: grid;
+				text-align: center;
+				align-items: center;
+				transition: 0.1s ease-in-out;
+				grid-template-columns: 20% 10% 10% 15% 15% 10% 10% 10%;
+				td {
+					font-weight: 600;
+					color: $dark;
+					text-align: center;
+				}
+				&:not(.loading):not(.row-failed):not(.error):hover {
+					background-color: #f5f5f5;
+				}
+				&.row-failed {
+					grid-template-columns: 20% 10% 10% 50% 10%;
+					background-color: $danger-light;
+					// box-shadow: none;
+					border: 1px solid $danger;
+					td {
+						color: $danger !important;
+					}
 				}
 			}
-			.refNo {
-				align-items: center;
-				display: inline-flex;
+			.loading {
+				display: flex;
+				height: 500px;
+				justify-content: center;
+			}
+			.button__action {
+				position: relative;
+				transition: 0.2s ease-in-out;
+				bottom: 0;
+				> svg {
+					height: 30px;
+				}
+				&[name="deny"] {
+					&::before {
+						content: "deny";
+					}
+				}
+				&[name="accept"] {
+					&::before {
+						content: "accept";
+					}
+				}
+				&[name="add"] {
+					&::before {
+						content: "add";
+					}
+				}
+				&[name="remove"] {
+					&::before {
+						content: "remove";
+					}
+				}
+				&::before {
+					content: "";
+					display: none;
+					position: absolute;
+					height: 25px;
+					width: auto;
+					background-color: #fff;
+					padding: 4px 5px;
+					box-sizing: border-box;
+					box-shadow: -3px 3px 0 #77777740;
+					border-radius: 4px;
+					left: 50%;
+					transform: translateX(-50%);
+					top: -30px;
+					font-weight: 600;
+					color: $dark;
+				}
+				&:hover {
+					&::before {
+						display: block;
+					}
+				}
+			}
+		}
+	}
+	&.plans {
+		tbody {
+			max-height: 280px;
+			min-height: 280px;
+			overflow: auto;
+			padding: 5px;
+			td {
+				input {
+					text-align: center;
+				}
 			}
 		}
 	}

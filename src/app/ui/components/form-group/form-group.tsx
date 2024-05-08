@@ -7,14 +7,14 @@ import "./form-group.scss";
 import Button from "../button/button";
 
 const FormGroup = (props: any) => {
-	const [isOpen, setIsOpen] = useState(false);
+	const [isShown, setIsShown] = useState(false);
 	return (
 		<div className="form-group" style={{ ...props.style }}>
 			{props.label && (
 				<label htmlFor="text-input">
 					<span>{`${props.label} ${props.required ? "*" : ""}`}</span>
 					{props.help && (
-						<button type="button" onClick={() => setIsOpen(true)}>
+						<button type="button" onClick={() => setIsShown(true)}>
 							<span className="sr-only">Help</span>
 							{props.help && props.help.icon}
 						</button>
@@ -22,7 +22,7 @@ const FormGroup = (props: any) => {
 				</label>
 			)}
 			{props.children}
-			<Modal isOpen={isOpen}>
+			<Modal isShown={isShown} close={() => setIsShown(false)}>
 				<Card
 					style={{
 						width: "400px",
@@ -33,10 +33,11 @@ const FormGroup = (props: any) => {
 				>
 					{props.help && props.help.body}
 					<Button
-						onClick={() => setIsOpen(false)}
+						onClick={() => setIsShown(false)}
 						style={{
 							marginTop: "20px",
 						}}
+						className="info"
 					>
 						CLOSE
 					</Button>

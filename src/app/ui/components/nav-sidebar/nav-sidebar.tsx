@@ -4,9 +4,10 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import SignOut from "../../../../../public/signout.svg";
 import IconAccounts from "../../../../../public/users.svg";
-import IconReceipt from "../../../../../public/receipt.svg";
+import IconReceipt from "../../../../../public/receipt2.svg";
 import IconSettings from "../../../../../public/settings.svg";
 import IconDashboard from "../../../../../public/dashboard.svg";
+import IconSubd from "../../../../../public/subd.svg";
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {
@@ -29,7 +30,7 @@ const NavSidebar = () => {
 			<header className="nav-sidebar__header">
 				<span>SERVER TIME</span>
 				<h1 style={{ display: "flex", flexDirection: "row" }}>
-					<time>06:92</time>
+					<time>06:72</time>
 					<div>
 						<span>:55</span>
 						<span>am</span>
@@ -44,22 +45,28 @@ const NavSidebar = () => {
 						Dashboard
 					</Link>
 				</li>
-				<li className={`${activePage === "/admin/accounts" ? "active" : ""}`}>
-					<Link href="/admin/accounts" className="strip" onClick={redirect}>
-						<IconAccounts />
-						Accounts
-					</Link>
-				</li>
-				<li className={`${activePage === "/admin/receipts" ? "active" : ""}`}>
+				<li className={`${activePage.includes("/admin/receipts") ? "active" : ""}`}>
 					<Link href="/admin/receipts" className="strip" onClick={redirect}>
 						<IconReceipt />
 						Receipts
 					</Link>
 				</li>
-				<li className={`${activePage === "/admin/settings" ? "active" : ""}`}>
+				<li className={`${activePage.includes("/admin/accounts") ? "active" : ""}`}>
+					<Link href="/admin/accounts" className="strip" onClick={redirect}>
+						<IconAccounts />
+						Accounts
+					</Link>
+				</li>
+				<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
+					<Link href="/admin/subds" className="strip" onClick={redirect}>
+						<IconSubd />
+						Subdivisions
+					</Link>
+				</li>
+				<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
 					<Link href="/admin/settings" className="strip" onClick={(e) => redirect(e)}>
 						<IconSettings />
-						Settings
+						Alert Settings
 					</Link>
 				</li>
 				<li>

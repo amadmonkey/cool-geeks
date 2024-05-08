@@ -4,5 +4,8 @@
 	border-radius: 10px;
 	box-shadow: -5px 5px 0 #00000010;
 	border-collapse: collapse;
-	padding: 30px;
+	padding: 30px 25px;
+	&.mini {
+		padding: 6px 10px;
+	}
 }
