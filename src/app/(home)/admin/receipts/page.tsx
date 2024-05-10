@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GET_STATUS_BADGE, TABLE_HEADERS } from "@/utility";
+import { GET_STATUS_BADGE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
 
 import Image from "next/image";
 import Table from "@/app/ui/components/table/table";
@@ -17,32 +17,15 @@ import Modal from "@/app/ui/components/modal/modal";
 import Card from "@/app/ui/components/card/card";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import Button from "@/app/ui/components/button/button";
+import Skeleton from "@/app/ui/components/skeleton/skeleton-table/skeleton-table";
 
 export default function Receipts(props: any) {
 	const { push } = useRouter();
+	const mounted = useRef(false);
 	const [modalIsShown, setModalIsShown] = useState(false);
 	const [selectedPayment, setSelectedPayment] = useState<any>(null);
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
-
-	const getHistoryList = async () => {
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "10",
-			sortBy: "createdAt",
-			sortOrder: "DESC",
-		});
-		return await fetch(
-			`http://localhost:3000/api/receipt?${props.searchOptions || searchOptions}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-			}
-		).then((res) => res.json());
-	};
 
 	const confirmUpdatePayment = (item: any, accepted: boolean) => {
 		setSelectedPayment({ ...item, ...{ accepted } });
@@ -61,25 +44,38 @@ export default function Receipts(props: any) {
 			}),
 			credentials: "include",
 		}).then((res) => res.json());
-
 		const updatedList = list.map((item: any) => (item._id === selectedPayment._id ? data : item));
 		setList(updatedList);
 		setFilteredList(updatedList);
 		setModalIsShown(false);
 	};
 
-	useEffect(() => {
-		let mounted = true;
-		getHistoryList()
+	const getHistoryList = useCallback(async () => {
+		setList(null);
+		setFilteredList(null);
+		const searchOptions = new URLSearchParams({
+			page: "1",
+			limit: "10",
+			sortBy: "createdAt",
+			sortOrder: "DESC",
+		});
+		return await fetch(
+			`${process.env.NEXT_PUBLIC_MID}/api/receipt?${props.searchOptions || searchOptions}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		)
+			.then((res) => res.json())
 			.then((res) => {
-				if (mounted) {
+				if (mounted.current) {
 					const { code, data } = res;
-					const { list, users, plans } = data;
+					const { list } = data;
 					switch (code) {
 						case 200:
-							console.log("list", list);
-							console.log("users", users);
-							console.log("plans", plans);
 							setList(list);
 							setFilteredList(list);
 							break;
@@ -94,23 +90,19 @@ export default function Receipts(props: any) {
 				}
 			})
 			.catch((err) => console.error(err));
+	}, [props.searchOptions, push]);
+
+	useEffect(() => {
+		mounted.current = true;
+		getHistoryList();
 		return () => {
-			mounted = false;
+			mounted.current = false;
 		};
-	}, [push]);
+	}, []);
 
 	return (
 		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<div
-				className="page-header"
-				// style={{
-				// 	display: "flex",
-				// 	justifyContent: "space-between",
-				// 	alignItems: "center",
-				// 	marginBottom: "10px",
-				// 	width: "100%",
-				// }}
-			>
+			<div className="page-header">
 				<h1
 					className="section-title"
 					style={{
@@ -126,9 +118,14 @@ export default function Receipts(props: any) {
 					{props.title || "Receipts"}
 				</h1>
 			</div>
-			<Table className="receipts" headers={TABLE_HEADERS.receipts}>
+			<Table
+				type="receipts"
+				headers={TABLE_HEADERS.receipts}
+				className={filteredList === null ? "loading" : ""}
+			>
+				{/* {true ? ( */}
 				{filteredList === null ? (
-					<Loading />
+					<Skeleton type={SKELETON_TYPES.RECEIPTS} />
 				) : filteredList.length ? (
 					filteredList?.map((item: any, index: number) => {
 						const paymentDate = new Date(item.paymentDate);
@@ -226,7 +223,17 @@ export default function Receipts(props: any) {
 											NO RECEIPT SUBMITTED
 										</td>
 										<td>
-											<Switch />
+											<Switch
+												name="edit"
+												id={item._id}
+												label={
+													<div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+														User Status
+													</div>
+												}
+												onChange={() => console.log("change user status")}
+												mini
+											/>
 										</td>
 									</>
 								)}

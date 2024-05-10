@@ -1,46 +1,43 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
-import Loading from "@/app/ui/components/table/loading/loading";
 import Table from "@/app/ui/components/table/table";
 
-import { TABLE_HEADERS } from "@/utility";
+import { SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
 
 import IconAddUser from "../../../../../public/add-user.svg";
 import IconAccounts from "../../../../../public/users.svg";
+import Skeleton from "@/app/ui/components/skeleton/skeleton";
 
 export default function Accounts() {
 	const { push } = useRouter();
+	const mounted = useRef(false);
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 
-	const getAccounts = async () => {
+	const getAccounts = useCallback(() => {
 		const searchOptions = new URLSearchParams({
 			page: "1",
 			limit: "10",
 			sortBy: "createdAt",
 			sortOrder: "DESC",
 		});
-		return await fetch(`http://localhost:3000/api/user?${searchOptions}`, {
+		return fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			credentials: "include",
-		}).then((res) => res.json());
-	};
-
-	useEffect(() => {
-		let mounted = true;
-		getAccounts()
+		})
+			.then((res) => res.json())
 			.then((res) => {
 				if (mounted) {
 					const { code, data } = res;
-					const { list, users, plans } = data;
+					const { list } = data;
 					switch (code) {
 						case 200:
 							setList(list);
@@ -56,23 +53,19 @@ export default function Accounts() {
 				}
 			})
 			.catch((err) => console.error(err));
-		return () => {
-			mounted = false;
-		};
 	}, [push]);
+
+	useEffect(() => {
+		mounted.current = true;
+		getAccounts();
+		return () => {
+			mounted.current = false;
+		};
+	}, []);
 
 	return (
 		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<div
-				className="page-header"
-				// style={{
-				// 	display: "flex",
-				// 	justifyContent: "space-between",
-				// 	alignItems: "center",
-				// 	marginBottom: "10px",
-				// 	width: "100%",
-				// }}
-			>
+			<div className="page-header">
 				<h1
 					className="section-title"
 					style={{
@@ -94,9 +87,13 @@ export default function Accounts() {
 					</Link>
 				</div>
 			</div>
-			<Table className="accounts" headers={TABLE_HEADERS.accounts}>
+			<Table
+				type="accounts"
+				headers={TABLE_HEADERS.accounts}
+				className={filteredList === null ? "loading" : ""}
+			>
 				{filteredList === null ? (
-					<Loading />
+					<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
 				) : filteredList.length ? (
 					filteredList?.map((user: any, index: number) => {
 						return (

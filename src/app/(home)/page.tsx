@@ -14,6 +14,7 @@ import FileInput from "@/app/ui/components/file-input/file-input";
 import Card from "@/app/ui/components/card/card";
 import IconQR from "../../../public/qr.svg";
 import IconLoading from "../../../public/loading.svg";
+import IconDownload from "../../../public/download.svg";
 
 import "./page.scss";
 import { GET_STATUS_ICON } from "@/utility";
@@ -43,10 +44,11 @@ type Receipt = {
 
 export default function Home() {
 	const { push } = useRouter();
+	const [form, setForm] = useState(defaultForm);
+	const [historyList, setHistoryList] = useState<any>(null);
 	const [formShown, setFormShown] = useState<Boolean | null>(null);
 	const [currentReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
-	const [historyList, setHistoryList] = useState<any>(null);
-	const [form, setForm] = useState(defaultForm);
+	const user = getCookie("user") && JSON.parse(getCookie("user")!);
 
 	const updateForm = (e: any) => {
 		const { name, value } = e.target;
@@ -55,7 +57,6 @@ export default function Home() {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		const user = JSON.parse(getCookie("user")!);
 		const formData = new FormData();
 		formData.append("referenceType", JSON.stringify(form.referenceType));
 		formData.append("referenceNumber", form.referenceNumber);
@@ -87,16 +88,30 @@ export default function Home() {
 		}
 	};
 
+	const downloadQR = () => {};
+
 	const helpTemplate = () => (
 		<div className="qr-container">
 			<Image
 				alt="qr"
 				height={0}
 				width={0}
-				src="/qr.png"
+				src={
+					user ? `${process.env.NEXT_PUBLIC_API}/qr/${user.subdRef.gcash.qr.filename}` : "/qr.png"
+				}
 				unoptimized
-				style={{ height: "150px", width: "auto" }}
+				style={{ height: "90%", width: "auto", borderRadius: 10 }}
 			/>
+			<Button
+				onClick={() => downloadQR()}
+				style={{
+					marginTop: "20px",
+				}}
+				className="info"
+			>
+				<IconDownload height="18" />
+				&nbsp;DOWNLOAD
+			</Button>
 		</div>
 	);
 

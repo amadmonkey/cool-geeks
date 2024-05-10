@@ -1,27 +1,31 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+
 import Modal from "@/app/ui/components/modal/modal";
 import SubdCard from "@/app/ui/components/subd-card/subd-card";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 
 import IconSubd from "../../../../../public/subd.svg";
-import IconSubdAdd from "../../../../../public/subd-add.svg";
 import IconLoading from "../../../../../public/loading.svg";
+import IconSubdAdd from "../../../../../public/subd-add.svg";
 
 import "./page.scss";
+import Skeleton from "@/app/ui/components/skeleton/skeleton";
+import { SKELETON_TYPES } from "@/utility";
 
 const Subds = () => {
 	const { push } = useRouter();
+	const mounted = useRef(false);
 	const [list, setList] = useState<any>(null);
-	const [filteredList, setFilteredList] = useState<any>(null);
 	const [createIsShown, setCreateIsShown] = useState(false);
+	const [filteredList, setFilteredList] = useState<any>(null);
 
 	const handleSubmit = async (e: any, form: any) => {
-		setCreateIsShown(false);
 		e && e.preventDefault();
-		console.log("form", form);
+		setCreateIsShown(false);
+		// validate
 		if (!form.plans.length) {
 			return;
 		}
@@ -40,9 +44,8 @@ const Subds = () => {
 		}).then((res) => res.json());
 		switch (code) {
 			case 200:
-				const updatedList = list.map((subd: any) => (subd._id === data._id ? data : subd));
-				setList(updatedList);
-				setFilteredList(updatedList);
+				console.log("data", data);
+				getSubds();
 				// show success toast
 				break;
 			case 400:
@@ -50,13 +53,15 @@ const Subds = () => {
 				console.log("subd submit 400", data);
 				break;
 			default:
+				// show failed toast
 				console.log("subd submit default", data);
 				break;
 		}
-		// show toast
 	};
 
-	useEffect(() => {
+	const getSubds = useCallback(() => {
+		setList(null);
+		setFilteredList(null);
 		const searchOptions = new URLSearchParams({
 			page: "1",
 			limit: "5",
@@ -65,7 +70,7 @@ const Subds = () => {
 				code: "asc",
 			}),
 		});
-		fetch(`http://localhost:3000/api/subd?${searchOptions}`, {
+		fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -73,26 +78,38 @@ const Subds = () => {
 			credentials: "include",
 		})
 			.then((res) => res.json())
-			.then((res) => {
-				const { code, data } = res;
-				console.log(data);
-				switch (code) {
-					case 200:
-						console.log("subd list", data);
-						setList(data);
-						setFilteredList(data);
-						break;
-					case 401:
-						push("/login");
-						break;
-					default:
-						console.log("get subds default", data);
-						push("/login");
-						break;
+			.then(async (res) => {
+				if (mounted.current) {
+					const { code, data } = res;
+					switch (code) {
+						case 200:
+							setList(data);
+							setFilteredList(data);
+							break;
+						case 401:
+							push("/login");
+							break;
+						default:
+							console.log("get subds default", data);
+							push("/login");
+							break;
+					}
 				}
 			})
 			.catch((err) => console.log("getSubds catch", err));
 	}, [push]);
+
+	const handleDelete = () => {
+		alert("delete");
+	};
+
+	useEffect(() => {
+		mounted.current = true;
+		getSubds();
+		return () => {
+			mounted.current = false;
+		};
+	}, []);
 
 	return (
 		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
@@ -118,27 +135,29 @@ const Subds = () => {
 					</button>
 				</div>
 			</header>
-			<div className="content content__subds">
+			<div className={`content content__subds ${filteredList === null ? "loading" : ""}`}>
+				{/* {filteredList === null ? ( */}
 				{filteredList === null ? (
-					<IconLoading />
+					<Skeleton type={SKELETON_TYPES.SUBD} />
 				) : filteredList.length ? (
 					<>
 						{filteredList.map((subd: any, i: number) => {
-							return <SubdCard key={subd._id + i} subd={subd} handleSubmit={handleSubmit} />;
+							return (
+								<SubdCard
+									key={subd._id + i}
+									subd={subd}
+									handleSubmit={handleSubmit}
+									handleDelete={handleDelete}
+								/>
+							);
 						})}
 						<button
-							style={{
-								height: "500px",
-								display: "flex",
-								flexDirection: "column",
-								justifyContent: "center",
-								alignItems: "center",
-							}}
 							className="add-subdivision invisible"
 							onClick={() => setCreateIsShown(true)}
+							style={{ height: 500 }}
 						>
 							<IconSubdAdd style={{ height: "100px", width: "auto" }} />
-							<span>NEW SUBDIVISION</span>
+							<span style={{ fontWeight: 800, fontSize: 30 }}>ADD SUBDIVISION</span>
 						</button>
 					</>
 				) : (

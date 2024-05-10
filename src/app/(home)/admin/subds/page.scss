@@ -2,34 +2,53 @@
 
 .content {
 	&__subds {
+		gap: 20px !important;
 		display: grid !important;
 		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-		gap: 20px !important;
 
 		.add-subdivision {
+			// height: 500px;
 			color: $dark;
+			display: flex;
 			font-size: 20px;
 			font-weight: 600;
 			position: relative;
+			align-items: center;
 			border-radius: 10px;
-			border: 3px dashed $dark;
 			transition: 0.1s ease;
+			flex-direction: column;
+			justify-content: center;
+			border: 3px dashed $dark;
 			> svg {
-				transition: 0.1s ease;
 				fill: $dark;
+				transition: 0.1s ease;
 			}
 			> span {
-				position: relative;
 				top: 30px;
+				position: relative;
 			}
 			&:hover {
 				color: $primary;
+				border-style: solid;
 				border-color: $primary;
 				background-color: lighten($primary, 25%);
-				border-style: solid;
 				> svg {
 					fill: $primary;
 				}
+			}
+		}
+		&.loading {
+			position: relative;
+			&::after {
+				content: "";
+				left: -10px;
+				width: 110%;
+				height: 50%;
+				bottom: -10px;
+				position: absolute;
+				background-color: black;
+				background: rgb(2, 0, 36);
+				background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
 			}
 		}
 	}

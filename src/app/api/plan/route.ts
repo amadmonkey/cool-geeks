@@ -4,7 +4,7 @@ import { REQUEST } from "@/utility";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		return await REQUEST.get(`http://localhost:4000/plan?${searchParams.toString()}`, req);
+		return await REQUEST.get(`${process.env.NEXT_PUBLIC_API}/plan?${searchParams.toString()}`, req);
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
 	// console.log(req);
 	// const body = await req.json();
-	// const apiResponse = await fetch("http://localhost:4000/subd/login", {
+	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/login`, {
 	// 	method: "POST",
 	// 	headers: {
 	// 		"Content-Type": "application/json",
@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-	// const apiResponse = await fetch("http://localhost:4000/subd/logout", {
+	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/logout`, {
 	// 	method: "DELETE",
 	// 	headers: {
 	// 		"Content-Type": "application/json",

@@ -9,7 +9,7 @@ const Button = (props: any) => {
 			className={`cg-button ${props.className} ${props.mini ? "mini" : ""} ${
 				props.danger ? "danger" : ""
 			}`}
-			type={props.type ? props.type : "button"}
+			type={props.type || "button"}
 			style={props.style}
 			onClick={props.onClick}
 		>

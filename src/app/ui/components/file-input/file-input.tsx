@@ -12,7 +12,6 @@ const FileInput = (props: any) => {
 	const defaultSrc = "/file-upload.svg";
 
 	const handleFileChange = (file: File) => {
-		console.log("handleFileChange file", file);
 		if (VALID_IMG_TYPES.includes(file.type)) {
 			imageRef.current!.src = URL.createObjectURL(file);
 			setFile(file);

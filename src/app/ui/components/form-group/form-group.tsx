@@ -37,7 +37,6 @@ const FormGroup = (props: any) => {
 						style={{
 							marginTop: "20px",
 						}}
-						className="info"
 					>
 						CLOSE
 					</Button>

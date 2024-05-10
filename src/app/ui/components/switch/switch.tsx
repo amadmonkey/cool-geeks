@@ -16,7 +16,13 @@ const Switch = (props: any) => {
 	return (
 		<div
 			className={`switch-container ${props.mini ? "mini" : ""}`}
-			style={{ display: "flex", gap: 10, alignItems: "center", height: "30px" }}
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				gap: 10,
+				alignItems: "center",
+				height: "30px",
+			}}
 		>
 			<label
 				htmlFor={id}
@@ -44,7 +50,7 @@ const Switch = (props: any) => {
 				<label htmlFor={id} className="sr-only"></label>
 			</div>
 			<label htmlFor={id} className="switch-label">
-				{isChecked ? "ON" : "OFF"}
+				{isChecked ? props.on || "ON" : props.off || "OFF"}
 			</label>
 		</div>
 	);

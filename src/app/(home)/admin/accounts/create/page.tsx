@@ -9,6 +9,8 @@ import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
 
+import IconAddUser from "../../../../../../public/add-user.svg";
+
 import "./page.scss";
 
 export default function AddAccount() {
@@ -21,14 +23,14 @@ export default function AddAccount() {
 		contactNo: "",
 		email: "",
 		cutoff: "",
-		subd: { price: "" },
+		subd: { price: "", code: "" },
 		plan: { price: "" },
 	});
 
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
 
-	const onSelect = (newVal: any, selectId: any) => {
+	const onSelect = (selectId: any, newVal: any) => {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
 		if (selectId === "subd") {
 			newFormObj = { ...newFormObj, ...{ plan: { price: "" } } };
@@ -51,7 +53,7 @@ export default function AddAccount() {
 				code: "asc",
 			}),
 		});
-		return await fetch(`http://localhost:3000/api/subd?${searchOptions}`, {
+		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -81,30 +83,31 @@ export default function AddAccount() {
 	}, [push]);
 
 	const handleSubmit = async (e: any) => {
+		e.preventDefault();
+
+		console.log(form);
 		try {
-			e.preventDefault();
 			const res = await fetch("/api/user/create", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 				},
 				credentials: "include",
-				body: JSON.stringify(form),
+				body: JSON.stringify({
+					...form,
+					accountNumber: `${form.subd.code}-${new Date().getFullYear()}-${Date.now()}`,
+				}),
 			});
 			const { code, data } = await res.json();
 			switch (code) {
 				case 200:
-					// setCookie("user", data.user);
-					// if (!data.user.admin) {
-					// 	setCookie("subd", data.subd);
-					// 	setCookie("plan", data.plan);
-					// }
-					// push(data.user.admin ? "/admin" : "/");
+					push("/admin/accounts");
 					break;
 				case 400:
 					// setError(data.general);
 					break;
 				default:
+					push("/login");
 					break;
 			}
 		} catch (err) {
@@ -211,7 +214,7 @@ export default function AddAccount() {
 									<Dropdown
 										list={subdList}
 										value={form.subd}
-										onChange={(newVal: any) => onSelect(newVal, "subd")}
+										onChange={(newVal: any) => onSelect("subd", newVal)}
 										placeholder="Select Subdivision"
 										required
 									/>
@@ -220,7 +223,7 @@ export default function AddAccount() {
 									<Dropdown
 										list={planList}
 										value={form.plan}
-										onChange={(newVal: any) => onSelect(newVal, "plan")}
+										onChange={(newVal: any) => onSelect("plan", newVal)}
 										placeholder="Select Plan"
 										required
 									/>
@@ -240,14 +243,36 @@ export default function AddAccount() {
 											style={{
 												textAlign: "right",
 												width: "100%",
-												fontSize: "16px",
+												fontSize: "12px",
 												letterSpacing: "8px",
 											}}
 										>
 											RATE
 										</span>
-										<p style={{ width: "100%", fontWeight: "800", fontSize: "40px" }}>
+										<p style={{ width: "100%", fontWeight: "800", fontSize: "20px" }}>
 											₱{form.plan.price}
+										</p>
+									</div>
+									<div
+										style={{
+											display: "flex",
+											justifyContent: "center",
+											alignItems: "center",
+											gap: "20px",
+										}}
+									>
+										<span
+											style={{
+												textAlign: "right",
+												width: "100%",
+												fontSize: "12px",
+												letterSpacing: "8px",
+											}}
+										>
+											ACCOUNT NUMBER
+										</span>
+										<p style={{ width: "100%", fontWeight: "800", fontSize: "20px" }}>
+											{`${form.subd.code}-${new Date().getFullYear()}-${Date.now()}`}
 										</p>
 									</div>
 								</div>
@@ -286,11 +311,12 @@ export default function AddAccount() {
 						</div>
 					</div>
 					<FormGroup style={{ width: "300px", alignSelf: "end" }}>
-						<Button type="submit" className="info">
+						<Button type="submit" className="info" style={{ display: "flex", gap: 10 }}>
+							<IconAddUser style={{ height: "25px", width: "auto" }} />
 							ADD CLIENT
 						</Button>
 					</FormGroup>
-					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
+					<pre>{JSON.stringify(form, undefined, 2)}</pre>
 				</form>
 			</div>
 			{/* <Modal>

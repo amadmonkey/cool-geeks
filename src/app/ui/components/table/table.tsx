@@ -2,12 +2,12 @@ import React, { useState } from "react";
 
 import "./table.scss";
 
-const Table = ({ children, headers, className }: any) => {
+const Table = ({ children, headers, className, type }: any) => {
 	return (
-		<div className={`cg-table ${className}`}>
+		<div className={`cg-table ${type} ${className}`}>
 			<table>
 				<thead>
-					<tr className={className}>
+					<tr className={type}>
 						{Object.keys(headers).map((header, i) => {
 							if (header.includes("nbsp")) return <th key={i}>&nbsp;</th>;
 							return <th key={i}>{header.split("_").join(" ").toUpperCase()}</th>;

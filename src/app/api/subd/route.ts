@@ -4,7 +4,7 @@ import { REQUEST } from "@/utility";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		return await REQUEST.get(`http://localhost:4000/subd?${searchParams.toString()}`, req);
+		return await REQUEST.get(`${process.env.NEXT_PUBLIC_API}/subd?${searchParams.toString()}`, req);
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
 	try {
 		const formData = await req.formData();
-		return await REQUEST.post("http://localhost:4000/subd/create", req, formData);
+		return await REQUEST.post(`${process.env.NEXT_PUBLIC_API}/subd/create`, req, formData);
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
 	try {
 		const formData = await req.formData();
-		return await REQUEST.put("http://localhost:4000/subd/update", req, formData);
+		return await REQUEST.put(`${process.env.NEXT_PUBLIC_API}/subd/update`, req, formData);
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
@@ -32,7 +32,7 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-	// const apiResponse = await fetch("http://localhost:4000/subd/logout", {
+	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/logout`, {
 	// 	method: "DELETE",
 	// 	headers: {
 	// 		"Content-Type": "application/json",

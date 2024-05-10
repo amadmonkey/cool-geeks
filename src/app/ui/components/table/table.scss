@@ -2,6 +2,7 @@
 
 .cg-table {
 	width: 100%;
+	position: relative;
 	border-radius: 15px;
 	border-collapse: collapse;
 	table {
@@ -87,10 +88,9 @@
 					background-color: #f5f5f5;
 				}
 				&.row-failed {
-					grid-template-columns: 20% 10% 10% 50% 10%;
+					grid-template-columns: 20% 10% 10% 40% 20%;
 					background-color: $danger-light;
-					// box-shadow: none;
-					border: 1px solid $danger;
+					border: 1px solid lighten($danger, 23%);
 					td {
 						color: $danger !important;
 					}
@@ -164,6 +164,19 @@
 					text-align: center;
 				}
 			}
+		}
+	}
+	&.loading {
+		&::after {
+			content: "";
+			left: -2px;
+			width: 100%;
+			height: 50%;
+			bottom: -2px;
+			position: absolute;
+			background-color: black;
+			background: rgb(2, 0, 36);
+			background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
 		}
 	}
 }

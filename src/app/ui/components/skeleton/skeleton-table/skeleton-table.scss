@@ -1,0 +1,30 @@
+@import "../../../../variables.scss";
+
+.skeleton-container {
+	position: relative;
+	&::before {
+		position: absolute;
+		content: "";
+		display: block;
+		height: 50px;
+		width: 100%;
+		background-color: black;
+	}
+}
+
+td > .skeleton {
+	width: 100%;
+	display: inline-block;
+	width: 97%;
+	animation: skeleton-loading 1s linear infinite alternate;
+	border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+	0% {
+		background-color: hsl(200, 20%, 80%);
+	}
+	100% {
+		background-color: hsl(200, 20%, 90%);
+	}
+}

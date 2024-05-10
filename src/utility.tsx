@@ -87,7 +87,7 @@ const GET_STATUS_ICON = (status: any, styles: any) => {
 const GET_TOKEN = (cookie: string) => cookie.split(";")[0].split("=")[1];
 
 const tokenRefresh = async (token: string | undefined) => {
-	return await fetch("http://localhost:4000/token/refresh", {
+	return await fetch(`${process.env.NEXT_PUBLIC_API}/token/refresh`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -118,25 +118,28 @@ const REQUEST = {
 		return newResponse;
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
-		let accessToken: any = req.cookies.get("accessToken")?.value;
-		let refreshResponse: any = null;
-		if (!accessToken) {
-			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-			if (refreshResponse.status !== 200) return refreshResponse;
-			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		try {
+			let accessToken: any = req.cookies.get("accessToken")?.value;
+			let refreshResponse: any = null;
+			if (!accessToken) {
+				refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
+				if (refreshResponse.status !== 200) return refreshResponse;
+				accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+			}
+			const apiResponse = await fetch(url, {
+				method: "POST",
+				headers: HEADERS(req, accessToken),
+				body: body,
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log("apiResponse", apiResponse);
+			const newResponse = NextResponse.json(apiResponse);
+			refreshResponse &&
+				newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
+			return newResponse;
+		} catch (e) {
+			return NextResponse.json(NextResponse.json(e));
 		}
-		const apiResponse = await fetch(url, {
-			method: "POST",
-			headers: HEADERS(req, accessToken),
-			body: body,
-			credentials: "include",
-		});
-		const res = await apiResponse.json();
-
-		const newResponse = NextResponse.json(res);
-		refreshResponse &&
-			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
-		return newResponse;
 	},
 	put: async (url: string, req: NextRequest, body?: any) => {
 		let accessToken: any = req.cookies.get("accessToken")?.value;
@@ -159,6 +162,13 @@ const REQUEST = {
 			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
 		return newResponse;
 	},
+};
+
+const SKELETON_TYPES = {
+	RECEIPTS: "receipts",
+	ACCOUNTS: "accounts",
+	SUBD: "subd",
+	PLAN: "plan",
 };
 
 const TABLE_HEADERS = {
@@ -257,4 +267,5 @@ export {
 	IS_MODIFIER_KEY,
 	IS_NUMERIC_INPUT,
 	VALID_IMG_TYPES,
+	SKELETON_TYPES,
 };

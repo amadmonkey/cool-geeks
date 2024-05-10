@@ -92,17 +92,23 @@ const SubdCard = (props: any) => {
 						mini
 					/>
 				</Card>
-				<button className="invisible">
+				<button type="button" className="invisible" onClick={props.handleDelete}>
 					<IconTrash />
 				</button>
 			</header>
 		);
 	};
 
-	const getImage = async () =>
-		await fetch(`http://localhost:4000/qr/${props.subd.gcash.qr.filename}`, {
+	const getImage = async () => {
+		// const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
+		// 	type: "qr",
+		// 	filename: props.subd.gcash.qr.filename,
+		// })}`;
+		const url = `http://localhost:4000/qr/${props.subd.gcash.qr.filename}`;
+		return await fetch(url, {
 			method: "GET",
 		});
+	};
 
 	const handleSubmit = () => {
 		toggleEditMode(false);
@@ -127,7 +133,7 @@ const SubdCard = (props: any) => {
 				})
 				.catch((error) => console.error(error));
 		}
-	}, [props.subd, isEditMode]);
+	}, [props.subd]);
 
 	// if has form
 	//    if has value edit
@@ -135,7 +141,6 @@ const SubdCard = (props: any) => {
 	// else no form
 	return (
 		<>
-			{/* if has form */}
 			{isEditMode ? (
 				<Card
 					className="subd"
@@ -203,7 +208,7 @@ const SubdCard = (props: any) => {
 											<FileInput name="qr" value={form.qr} onChange={updateForm} mini />
 										</div>
 									</div>
-									<Table className="plans create" headers={TABLE_HEADERS.plans}>
+									<Table type="plans" className="create" headers={TABLE_HEADERS.plans}>
 										{plans &&
 											plans.map((plan: any, i: any) => {
 												return (
@@ -326,14 +331,14 @@ const SubdCard = (props: any) => {
 										alt="qr"
 										height={0}
 										width={0}
-										src={`http://localhost:4000/qr/${subd.gcash.qr.filename}`}
+										src={`${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`}
 										unoptimized
 										style={{ height: "100px", width: "auto", borderRadius: 10 }}
 									/>
 								</div>
 							</div>
 						</div>
-						<Table className="plans" headers={TABLE_HEADERS.plans}>
+						<Table type="plans" className="" headers={TABLE_HEADERS.plans}>
 							{subd.plans &&
 								subd.plans.map((plan: any, i: any) => {
 									return (

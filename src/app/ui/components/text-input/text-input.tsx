@@ -77,7 +77,6 @@ const TextInput = (props: any) => {
 			inputRef.current?.addEventListener("keyup", formatToPhone);
 		} else {
 			inputRef.current?.addEventListener("keydown", (e) => {
-				console.log(props.maxLength && inputRef.current!.value.length >= props.maxLength);
 				if (props.maxLength && inputRef.current!.value.length >= props.maxLength) return;
 			});
 		}

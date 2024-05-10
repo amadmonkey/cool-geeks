@@ -30,7 +30,7 @@ const Admin = () => {
 			sortBy: "createdAt",
 			sortOrder: "DESC",
 		});
-		return await fetch(`http://localhost:3000/api/receipt?${searchOptions}`, {
+		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/receipt?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
