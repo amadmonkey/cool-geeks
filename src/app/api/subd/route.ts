@@ -32,14 +32,15 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/logout`, {
-	// 	method: "DELETE",
-	// 	headers: {
-	// 		"Content-Type": "application/json",
-	// 	},
-	// 	credentials: "include",
-	// });
-	// const data = await apiResponse.json();
-	// const newResponse = NextResponse.json(data);
-	// return newResponse;
+	try {
+		const body = await req.json();
+		return await REQUEST.delete(
+			`${process.env.NEXT_PUBLIC_API}/subd/delete`,
+			req,
+			JSON.stringify(body)
+		);
+	} catch (error: any) {
+		console.log(error);
+		return Response.json({ message: error });
+	}
 }

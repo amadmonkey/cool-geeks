@@ -67,6 +67,22 @@ const SubdCard = (props: any) => {
 		);
 	};
 
+	const deleteTemplate = () => {
+		return (
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				<h1 style={{ marginBottom: "10px" }}>DELETING SUBDIVISION</h1>
+				<p style={{ margin: "20px 0" }}>Continue?</p>
+			</div>
+		);
+	};
+
 	const headerTemplate = () => {
 		return (
 			<header className={isHeaderShown ? "active" : ""} style={{ gap: 5 }}>
@@ -92,9 +108,19 @@ const SubdCard = (props: any) => {
 						mini
 					/>
 				</Card>
-				<button type="button" className="invisible" onClick={props.handleDelete}>
-					<IconTrash />
-				</button>
+				<ConfirmModal
+					className="delete-container"
+					template={deleteTemplate}
+					continue={props.handleDelete}
+				>
+					{(showConfirmModal: any) => {
+						return (
+							<button type="button" className="delete-button invisible" onClick={showConfirmModal}>
+								<IconTrash />
+							</button>
+						);
+					}}
+				</ConfirmModal>
 			</header>
 		);
 	};
@@ -113,6 +139,34 @@ const SubdCard = (props: any) => {
 	const handleSubmit = () => {
 		toggleEditMode(false);
 		props.handleSubmit(null, { ...form, ...{ plans: plans } });
+	};
+
+	const validate = (e: any) => {
+		// REFACTOR: this is shit
+		e.preventDefault();
+		if (!form.name) {
+			setGeneralError("Name is required");
+			return false;
+		}
+		if (!form.code) {
+			setGeneralError("Code is required");
+			return false;
+		}
+		if (!form.number) {
+			setGeneralError("Number is required");
+			return false;
+		}
+		if (!form.qr) {
+			setGeneralError("QR image is required");
+			return false;
+		}
+		if (!plans.length) {
+			setGeneralError("Please add at least 1(one) plan");
+			return false;
+		}
+		setGeneralError("");
+		return true;
+		// REFACTOR: this is shit
 	};
 
 	useEffect(() => {
@@ -153,7 +207,7 @@ const SubdCard = (props: any) => {
 						{(showConfirmModal: any) => {
 							return (
 								<form
-									onSubmit={showConfirmModal}
+									onSubmit={(e) => validate(e) && showConfirmModal(e)}
 									style={{ display: "flex", flexDirection: "column", gap: "20px" }}
 								>
 									<div style={{ width: "100%", display: "flex", gap: 20 }}>
@@ -228,7 +282,9 @@ const SubdCard = (props: any) => {
 																onClick={() => removePlan(i)}
 																className="invisible button__action"
 															>
-																<IconRemove style={{ height: "28px" }} />
+																<IconRemove
+																	style={{ display: "flex", justifyContent: "center", height: 20 }}
+																/>
 															</button>
 														</td>
 													</tr>
@@ -279,7 +335,9 @@ const SubdCard = (props: any) => {
 													onClick={addPlan}
 													className="invisible button__action"
 												>
-													<IconAdd style={{ height: "28px" }} />
+													<IconAdd
+														style={{ display: "flex", justifyContent: "center", height: 20 }}
+													/>
 												</button>
 											</td>
 										</tr>

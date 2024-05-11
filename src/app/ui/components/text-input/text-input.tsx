@@ -73,8 +73,11 @@ const TextInput = (props: any) => {
 			}
 		};
 		if (props.type === "tel" || props.type === "mini-dropdown") {
-			inputRef.current?.addEventListener("keydown", (e) => ENHANCE_FORMAT(e, props.maxLength));
-			inputRef.current?.addEventListener("keyup", formatToPhone);
+			// inputRef.current?.addEventListener("keydown", (e) => ENHANCE_FORMAT(e, props.maxLength));
+			inputRef.current?.addEventListener("keypress", (e) => {
+				ENHANCE_FORMAT(e, props.maxLength);
+				formatToPhone(e);
+			});
 		} else {
 			inputRef.current?.addEventListener("keydown", (e) => {
 				if (props.maxLength && inputRef.current!.value.length >= props.maxLength) return;

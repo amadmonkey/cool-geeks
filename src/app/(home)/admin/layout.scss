@@ -2,6 +2,7 @@
 .admin-layout {
 	display: flex;
 	flex-direction: column;
+	gap: 20px;
 	@include for-tablet-landscape-up {
 		flex-direction: row;
 		justify-content: center;

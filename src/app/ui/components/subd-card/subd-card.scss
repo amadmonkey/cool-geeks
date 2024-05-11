@@ -21,19 +21,24 @@
 				top: -15px;
 			}
 		}
-		> button {
+		.delete-container {
+			display: flex;
 			position: relative;
 			transition-delay: 0.04s;
-			svg {
-				width: 45px;
-				height: auto;
-				border-radius: 50%;
-				box-shadow: -5px 5px 0 lighten($dark, 30%);
-			}
 			&:hover {
-				transform: scale(110%);
+				.delete-button {
+					transform: scale(110%);
+					svg {
+						animation: wiggle 1s ease-in infinite;
+					}
+				}
+			}
+			.delete-button {
 				svg {
-					animation: wiggle 1s ease-in infinite;
+					width: 45px;
+					height: auto;
+					border-radius: 50%;
+					box-shadow: -5px 5px 0 lighten($dark, 30%);
 				}
 			}
 		}

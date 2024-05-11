@@ -258,12 +258,12 @@ export default function Receipts(props: any) {
 							<h1 style={{ fontSize: "25px", marginBottom: "30px" }}>
 								{selectedPayment.accepted ? "Accept" : "Deny"} this payment?
 							</h1>
-							<div>
+							{/* <div>
 								<Switch
 									style={{ transform: "scale(0.6)" }}
 									label="Don't ask me again until next session"
 								/>
-							</div>
+							</div> */}
 							<div
 								style={{
 									display: "flex",

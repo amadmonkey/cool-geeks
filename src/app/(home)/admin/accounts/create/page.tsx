@@ -316,7 +316,7 @@ export default function AddAccount() {
 							ADD CLIENT
 						</Button>
 					</FormGroup>
-					<pre>{JSON.stringify(form, undefined, 2)}</pre>
+					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 				</form>
 			</div>
 			{/* <Modal>

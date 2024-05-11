@@ -24,14 +24,9 @@ const Subds = () => {
 
 	const handleSubmit = async (e: any, form: any) => {
 		e && e.preventDefault();
-		setCreateIsShown(false);
-		// validate
-		if (!form.plans.length) {
-			return;
-		}
 		const formData = new FormData();
 		form._id && formData.append("_id", form._id);
-		form.qr && formData.append("qr", form.qr);
+		formData.append("qr", form.qr);
 		formData.append("name", form.name);
 		formData.append("code", form.code);
 		formData.append("number", form.number);
@@ -44,8 +39,10 @@ const Subds = () => {
 		}).then((res) => res.json());
 		switch (code) {
 			case 200:
-				console.log("data", data);
-				getSubds();
+				const updatedData = list.map((subd: any) => (subd._id === data._id ? data : subd));
+				setList(updatedData);
+				setFilteredList(updatedData);
+				setCreateIsShown(false);
 				// show success toast
 				break;
 			case 400:
@@ -99,8 +96,38 @@ const Subds = () => {
 			.catch((err) => console.log("getSubds catch", err));
 	}, [push]);
 
-	const handleDelete = () => {
-		alert("delete");
+	const handleDelete = (id: string) => {
+		fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ _id: id }),
+			credentials: "include",
+		})
+			.then((res) => res.json())
+			.then(async (res) => {
+				if (mounted.current) {
+					const { code, data } = res;
+					switch (code) {
+						case 200:
+							// const updatedData = list.map((subd: any) => (subd._id === data._id ? data : subd));
+							const updatedData = list.filter((subd: any) => subd._id !== data._id);
+							setList(updatedData);
+							setFilteredList(updatedData);
+							setCreateIsShown(false);
+							break;
+						case 401:
+							push("/login");
+							break;
+						default:
+							console.log("get subds default", data);
+							push("/login");
+							break;
+					}
+				}
+			})
+			.catch((err) => console.log("getSubds catch", err));
 	};
 
 	useEffect(() => {
@@ -147,7 +174,7 @@ const Subds = () => {
 									key={subd._id + i}
 									subd={subd}
 									handleSubmit={handleSubmit}
-									handleDelete={handleDelete}
+									handleDelete={() => handleDelete(subd._id)}
 								/>
 							);
 						})}

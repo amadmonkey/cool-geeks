@@ -4,9 +4,9 @@ import "./layout.scss";
 
 export default function AdminNav({ children }: { children: React.ReactNode }) {
 	return (
-		<section className="admin-layout" style={{ gap: "30px" }}>
+		<section className="admin-layout">
 			<NavSidebar />
-			<div style={{ maxWidth: "1200px", width: "100%" }}>
+			<div style={{ maxWidth: "1000px", width: "100%" }}>
 				<main>{children}</main>
 			</div>
 		</section>

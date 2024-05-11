@@ -23,7 +23,7 @@ const ConfirmModal = (props: any) => {
 
 	return (
 		<>
-			<div>{props.children(showConfirmModal)}</div>
+			<div className="delete-container">{props.children(showConfirmModal)}</div>
 			<DetectOutsideClick action={closeConfirmModal}>
 				<Modal isShown={modalIsShown} close={closeConfirmModal}>
 					<Card>

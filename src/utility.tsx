@@ -97,70 +97,85 @@ const tokenRefresh = async (token: string | undefined) => {
 	});
 };
 
+const refreshToken = async (req: NextRequest) => {
+	let accessToken: any = req.cookies.get("accessToken")?.value;
+	let refreshResponse: any = null;
+	if (!accessToken) {
+		refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
+		if (refreshResponse.status !== 200) return refreshResponse;
+		accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+	}
+	return {
+		accessToken,
+		refreshResponse,
+	};
+};
+
+const newResponse = async (res: any, refreshResponse: any) => {
+	const newResponse = NextResponse.json(res);
+	refreshResponse && newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
+	return newResponse;
+};
+
 const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
-		let accessToken: any = req.cookies.get("accessToken")?.value;
-		let refreshResponse: any = null;
-		if (!accessToken) {
-			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-			if (refreshResponse.status !== 200) return refreshResponse;
-			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		try {
+			const { accessToken, refreshResponse } = await refreshToken(req);
+			const apiResponse = await fetch(url, {
+				method: "GET",
+				headers: HEADERS(req, accessToken),
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log("GET:", apiResponse);
+			return newResponse(apiResponse, refreshResponse);
+		} catch (e) {
+			return NextResponse.json(NextResponse.json(e));
 		}
-		const apiResponse = await fetch(url, {
-			method: "GET",
-			headers: HEADERS(req, accessToken),
-			credentials: "include",
-		});
-		const res = await apiResponse.json();
-		const newResponse = NextResponse.json(res);
-		refreshResponse &&
-			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
-		return newResponse;
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
 		try {
-			let accessToken: any = req.cookies.get("accessToken")?.value;
-			let refreshResponse: any = null;
-			if (!accessToken) {
-				refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-				if (refreshResponse.status !== 200) return refreshResponse;
-				accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
-			}
+			const { accessToken, refreshResponse } = await refreshToken(req);
 			const apiResponse = await fetch(url, {
 				method: "POST",
 				headers: HEADERS(req, accessToken),
 				body: body,
 				credentials: "include",
 			}).then((res) => res.json());
-			console.log("apiResponse", apiResponse);
-			const newResponse = NextResponse.json(apiResponse);
-			refreshResponse &&
-				newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
-			return newResponse;
+			console.log("POST:", apiResponse);
+			return newResponse(apiResponse, refreshResponse);
 		} catch (e) {
 			return NextResponse.json(NextResponse.json(e));
 		}
 	},
 	put: async (url: string, req: NextRequest, body?: any) => {
-		let accessToken: any = req.cookies.get("accessToken")?.value;
-		let refreshResponse: any = null;
-		if (!accessToken) {
-			refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-			if (refreshResponse.status !== 200) return refreshResponse;
-			accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		try {
+			const { accessToken, refreshResponse } = await refreshToken(req);
+			const apiResponse = await fetch(url, {
+				method: "PUT",
+				headers: HEADERS(req, accessToken),
+				body: body,
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log("PUT:", apiResponse);
+			return newResponse(apiResponse, refreshResponse);
+		} catch (e) {
+			return NextResponse.json(NextResponse.json(e));
 		}
-		const apiResponse = await fetch(url, {
-			method: "PUT",
-			headers: HEADERS(req, accessToken),
-			body: body,
-			credentials: "include",
-		});
-		const res = await apiResponse.json();
-
-		const newResponse = NextResponse.json(res);
-		refreshResponse &&
-			newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
-		return newResponse;
+	},
+	delete: async (url: string, req: NextRequest, body?: any) => {
+		try {
+			const { accessToken, refreshResponse } = await refreshToken(req);
+			const apiResponse = await fetch(url, {
+				method: "DELETE",
+				headers: HEADERS(req, accessToken),
+				body: body,
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log("DELETE", apiResponse);
+			return newResponse(apiResponse, refreshResponse);
+		} catch (e) {
+			return NextResponse.json(NextResponse.json(e));
+		}
 	},
 };
 
