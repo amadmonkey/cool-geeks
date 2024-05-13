@@ -123,9 +123,13 @@ export default function AddAccount() {
 				<h1
 					className="section-title"
 					style={{
+						display: "flex",
 						marginBottom: "unset",
+						gap: "5px",
+						alignItems: "center",
 					}}
 				>
+					<IconAddUser style={{ height: "35px", width: "auto" }} />
 					Create New Account
 				</h1>
 			</div>

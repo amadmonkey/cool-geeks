@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Card from "@/app/ui/components/card/card";
 import Table from "@/app/ui/components/table/table";
@@ -14,17 +14,20 @@ import IconAdd from "../../../../../public/add.svg";
 import IconRemove from "../../../../../public/denied.svg";
 import IconEdit from "../../../../../public/edit.svg";
 
-import { DEFAULT_VALUES, TABLE_HEADERS } from "@/utility";
+import { DATE_READABLE, DEFAULT_VALUES, TABLE_HEADERS } from "@/utility";
 import "./subd-card.scss";
 
 const SubdCard = (props: any) => {
 	const { subd } = props;
 	const [plans, setPlans]: any = useState(subd?.plans || []);
 	const [isHeaderShown, setIsHeaderShown] = useState(false);
+	// const isHeaderShown = useRef(false);
 	const [isEditMode, setIsEditMode] = useState(props.isCreating || false);
 	const [form, setForm] = useState(subd || DEFAULT_VALUES.subdForm);
 	const [planForm, setPlanForm] = useState(DEFAULT_VALUES.planForm);
 	const [generalError, setGeneralError] = useState("");
+	const dateCreated = useRef("");
+	const dateUpdated = useRef("");
 
 	const updateForm = (e: any, plan?: Boolean) => {
 		let { name, value } = e.target;
@@ -184,6 +187,8 @@ const SubdCard = (props: any) => {
 						plans: subd.plans,
 						qr: file,
 					});
+					dateCreated.current = new Date(subd.createdAt).toString();
+					dateUpdated.current = new Date(subd.updatedAt).toString();
 				})
 				.catch((error) => console.error(error));
 		}
@@ -251,7 +256,7 @@ const SubdCard = (props: any) => {
 													maxLength="12"
 													onChange={updateForm}
 													placeholder="___ ___ ____"
-													style={{ fontSize: "16px", color: "#838383", fontWeight: "600" }}
+													style={{ fontSize: "16px", fontWeight: "600" }}
 													mini
 													line
 													required
@@ -262,7 +267,11 @@ const SubdCard = (props: any) => {
 											<FileInput name="qr" value={form.qr} onChange={updateForm} mini />
 										</div>
 									</div>
-									<Table type="plans" className="create" headers={TABLE_HEADERS.plans}>
+									<Table
+										type="plans"
+										className="create"
+										headers={isEditMode ? TABLE_HEADERS.plansCreate : TABLE_HEADERS.plans}
+									>
 										{plans &&
 											plans.map((plan: any, i: any) => {
 												return (
@@ -379,9 +388,32 @@ const SubdCard = (props: any) => {
 								</h1>
 								<span>{subd.gcash.number}</span>
 								<br />
-								<span>Last updated: {new Date(subd.updatedAt).toLocaleDateString()}</span>
-								<br />
-								<span>Created on: {new Date(subd.createdAt).toLocaleDateString()}</span>
+								<div style={{ display: "flex", gap: 20, marginTop: 10 }}>
+									<div>
+										<label
+											htmlFor="created"
+											style={{ fontSize: 8, fontWeight: 800, letterSpacing: 2 }}
+										>
+											CREATED
+										</label>
+										<br />
+										<span id="created" style={{ display: "block", height: 20, fontSize: 13 }}>
+											{DATE_READABLE(dateCreated.current)}
+										</span>
+									</div>
+									<div>
+										<label
+											htmlFor="updated"
+											style={{ fontSize: 8, fontWeight: 800, letterSpacing: 2 }}
+										>
+											UPDATED
+										</label>
+										<br />
+										<span id="updated" style={{ display: "block", height: 20, fontSize: 13 }}>
+											{DATE_READABLE(dateUpdated.current)}
+										</span>
+									</div>
+								</div>
 							</div>
 							<div>
 								<div className="qr-container">

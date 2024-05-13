@@ -37,10 +37,11 @@
 	}
 	&.mini {
 		min-height: 50px;
+		padding: 0;
 		.label {
 			flex-direction: row;
 			img {
-				height: 50px;
+				height: 60px;
 			}
 			p {
 				font-size: 9px;

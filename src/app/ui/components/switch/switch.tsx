@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./switch.scss";
+import ConfirmModal from "../confirm-modal/confirm-modal";
 
 const Switch = (props: any) => {
 	const id = `switch-${props.name}-${props.id}`;
@@ -38,20 +39,31 @@ const Switch = (props: any) => {
 				{props.label}
 			</label>
 			<div className="switch" style={props.style}>
-				<input
-					name={props.name}
-					id={id}
-					type="checkbox"
-					className="switch-input"
-					checked={isChecked}
-					onChange={() => handleOnChange()}
-				/>
-				<label htmlFor={id} className="switch-ui"></label>
-				<label htmlFor={id} className="sr-only"></label>
+				<ConfirmModal template={props.confirmTemplate} continue={handleOnChange}>
+					{(showConfirmModal: any) => {
+						console.log(isChecked);
+						return (
+							<>
+								<input
+									name={props.name}
+									id={id}
+									type="checkbox"
+									className="switch-input"
+									checked={isChecked}
+									onChange={props.confirmTemplate ? showConfirmModal : handleOnChange}
+								/>
+								<label htmlFor={id} className="switch-ui"></label>
+								<label htmlFor={id} className="sr-only"></label>
+							</>
+						);
+					}}
+				</ConfirmModal>
 			</div>
-			<label htmlFor={id} className="switch-label">
-				{isChecked ? props.on || "ON" : props.off || "OFF"}
-			</label>
+			{!props.noLabel && (
+				<label htmlFor={id} className="switch-label">
+					{isChecked ? props.on || "ON" : props.off || "OFF"}
+				</label>
+			)}
 		</div>
 	);
 };

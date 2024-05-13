@@ -9,7 +9,7 @@ const ConfirmModal = (props: any) => {
 	const [modalIsShown, setModalIsShown] = useState(false);
 
 	const showConfirmModal = (e: any) => {
-		e.preventDefault();
+		e && e.preventDefault();
 		setModalIsShown(true);
 	};
 
@@ -23,11 +23,11 @@ const ConfirmModal = (props: any) => {
 
 	return (
 		<>
-			<div className="delete-container">{props.children(showConfirmModal)}</div>
+			<div>{props.children(showConfirmModal)}</div>
 			<DetectOutsideClick action={closeConfirmModal}>
 				<Modal isShown={modalIsShown} close={closeConfirmModal}>
-					<Card>
-						{props.template()}
+					<Card style={{ width: "500px" }}>
+						{props.template && props.template()}
 						<div style={{ width: "100%", position: "relative", display: "flex", gap: 10 }}>
 							<FormGroup style={{ width: "100%" }}>
 								<Button type="button" onClick={closeConfirmModal}>

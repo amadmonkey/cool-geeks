@@ -8,7 +8,7 @@ const Card = (props: any) => {
 			style={props.style}
 			onMouseEnter={props.onMouseEnter}
 			onMouseLeave={props.onMouseLeave}
-			className={`cg-card ${props.type || ""} ${props.mini || ""}`}
+			className={`cg-card ${props.type || ""} ${props.mini ? "mini" : ""}`}
 		>
 			{props.children}
 		</div>

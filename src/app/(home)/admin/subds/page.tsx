@@ -39,10 +39,13 @@ const Subds = () => {
 		}).then((res) => res.json());
 		switch (code) {
 			case 200:
-				const updatedData = list.map((subd: any) => (subd._id === data._id ? data : subd));
-				setList(updatedData);
-				setFilteredList(updatedData);
-				setCreateIsShown(false);
+				if (form._id) {
+					const updatedData = list.map((subd: any) => (subd._id === data._id ? data : subd));
+					setList(updatedData);
+					setFilteredList(updatedData);
+				} else {
+					getSubds();
+				}
 				// show success toast
 				break;
 			case 400:
@@ -54,6 +57,7 @@ const Subds = () => {
 				console.log("subd submit default", data);
 				break;
 		}
+		setCreateIsShown(false);
 	};
 
 	const getSubds = useCallback(() => {

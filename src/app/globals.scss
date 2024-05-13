@@ -157,6 +157,9 @@ ul {
 	color: #e39d69;
 	font-weight: 800;
 	margin-bottom: 20px;
+	> svg {
+		fill: #e39d69;
+	}
 }
 
 .badge {

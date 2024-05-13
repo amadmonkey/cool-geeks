@@ -2,16 +2,19 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 import Link from "next/link";
 
-import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import Table from "@/app/ui/components/table/table";
-
-import { SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
-
-import IconAddUser from "../../../../../public/add-user.svg";
-import IconAccounts from "../../../../../public/users.svg";
+import Switch from "@/app/ui/components/switch/switch";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
+import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+
+import { DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+
+import IconAccounts from "../../../../../public/users.svg";
+import IconAddUser from "../../../../../public/add-user.svg";
+import "./page.scss";
 
 export default function Accounts() {
 	const { push } = useRouter();
@@ -55,6 +58,69 @@ export default function Accounts() {
 			.catch((err) => console.error(err));
 	}, [push]);
 
+	const toggleUserStatus = async (e: any, user: any) => {
+		e && e.preventDefault();
+		try {
+			const { code, data } = await fetch("/api/user", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({ ...user, ...{ active: !user.active } }),
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					console.log(data);
+					toast.success("Account updated successfully.");
+					// {
+					// 	position: "top-right",
+					// 	autoClose: 5000,
+					// 	hideProgressBar: false,
+					// 	closeOnClick: true,
+					// 	pauseOnHover: true,
+					// 	draggable: true,
+					// 	progress: undefined,
+					// 	theme: "light",
+					// 	transition: Bounce,
+					// 	}
+					break;
+				case 400:
+					break;
+				default:
+					break;
+			}
+		} catch (e) {
+			console.error("toggleUserStatus catch", e);
+		}
+	};
+
+	const toggleUserStatusTemplate = (user: any) => {
+		return (
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				{user.active ? (
+					<>
+						<h1 style={{ marginBottom: "10px" }}>Deactivating Account</h1>
+						<p>asdasdasdasd</p>
+					</>
+				) : (
+					<>
+						<h1 style={{ marginBottom: "10px" }}>Activating Account</h1>
+						<p>asdasdasdasd</p>
+					</>
+				)}
+				<p style={{ margin: "20px 0" }}>Continue?</p>
+			</div>
+		);
+	};
+
 	useEffect(() => {
 		mounted.current = true;
 		getAccounts();
@@ -83,7 +149,7 @@ export default function Accounts() {
 				<div>
 					<Link href="/admin/accounts/create" className="has-icon outline">
 						<IconAddUser style={{ height: "25px", width: "auto" }} />
-						<span style={{ fontSize: "16px" }}>ADD USER</span>
+						<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
 					</Link>
 				</div>
 			</div>
@@ -96,8 +162,13 @@ export default function Accounts() {
 					<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
 				) : filteredList.length ? (
 					filteredList?.map((user: any, index: number) => {
+						let isActive = false;
 						return (
-							<tr key={index} className="accounts">
+							<tr
+								key={index}
+								className={`accounts ${!user.status ? "inactive" : ""}`}
+								onMouseEnter={() => (isActive = true)}
+							>
 								<td>
 									<span
 										style={{
@@ -131,7 +202,8 @@ export default function Accounts() {
 								<td>
 									{user.subdRef ? (
 										<>
-											{`${user.subdRef.code} - ${user.subdRef.name}`}
+											<span style={{ color: "red" }}>({user.subdRef.code})</span>&nbsp;
+											{`${user.subdRef.name}`}
 											<br />
 											{user.subdRef.gcash.number}
 										</>
@@ -139,8 +211,19 @@ export default function Accounts() {
 										"N/A"
 									)}
 								</td>
-								<td>{new Date(user.createdAt).toLocaleDateString()}</td>
-								<td>{new Date(user.updatedAt).toLocaleDateString()}</td>
+								<td>{DATE_READABLE(user.createdAt)}</td>
+								<td>{DATE_READABLE(user.updatedAt)}</td>
+								<td className={`account-options ${isActive ? "active" : ""}`}>{isActive}</td>
+								<td>
+									<Switch
+										name="active"
+										id={user._id}
+										checked={user.active}
+										onChange={(e: any) => toggleUserStatus(e, user)}
+										noLabel
+										confirmTemplate={() => toggleUserStatusTemplate(user)}
+									/>
+								</td>
 							</tr>
 						);
 					})

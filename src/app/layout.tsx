@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { ToastContainer, Bounce } from "react-toastify";
 
 import "./globals.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
 	title: "Create Next App",
@@ -14,7 +16,22 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className="antialiased">{children}</body>
+			<body className="antialiased">
+				{children}
+				<ToastContainer
+					position="bottom-center"
+					autoClose={2000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="light"
+					transition={Bounce}
+				/>
+			</body>
 		</html>
 	);
 }

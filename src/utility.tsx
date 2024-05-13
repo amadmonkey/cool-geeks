@@ -199,6 +199,11 @@ const TABLE_HEADERS = {
 	plans: {
 		name: {},
 		price: {},
+		info: {},
+	},
+	plansCreate: {
+		name: {},
+		price: {},
 		description: {},
 	},
 	accounts: {
@@ -270,6 +275,14 @@ const DEFAULT_VALUES = {
 
 const VALID_IMG_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/pdf"];
 
+const DATE_READABLE = (dateString: any) => {
+	if (!dateString) return <div className="skeleton" style={{ height: "100%" }}></div>;
+	const date = new Date(dateString);
+	return `${date.toLocaleString("default", {
+		month: "long",
+	})} ${date.getDate()}, ${date.getFullYear()}`;
+};
+
 export {
 	REQUEST,
 	HEADERS,
@@ -283,4 +296,5 @@ export {
 	IS_NUMERIC_INPUT,
 	VALID_IMG_TYPES,
 	SKELETON_TYPES,
+	DATE_READABLE,
 };
