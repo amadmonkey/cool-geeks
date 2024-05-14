@@ -54,7 +54,9 @@ const NavSidebar = () => {
 					<time>
 						<IconClock />
 						{currentDate ? (
-							`${currentDate.hours}:${currentDate.minutes < 10 ? "0" : ""}${currentDate.minutes}`
+							`${currentDate.hours < 10 ? "0" : ""}${currentDate.hours}:${
+								currentDate.minutes < 10 ? "0" : ""
+							}${currentDate.minutes}`
 						) : (
 							<time className="skeleton" style={{ height: 35 }}>
 								&nbsp;

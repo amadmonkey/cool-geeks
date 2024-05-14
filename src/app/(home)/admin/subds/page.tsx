@@ -154,9 +154,7 @@ const Subds = () => {
 						alignItems: "center",
 					}}
 				>
-					<IconSubd
-						style={{ height: "35px", width: "35px", fill: "#e39d69", marginLeft: "10px" }}
-					/>
+					<IconSubd />
 					Subdivisions
 				</h1>
 				<div>

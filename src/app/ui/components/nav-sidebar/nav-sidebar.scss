@@ -19,7 +19,7 @@ $header-height: 80px;
 		flex-direction: column;
 		svg {
 			height: auto;
-			width: 25px;
+			width: 30px;
 			fill: $primary;
 			stroke: $primary;
 		}
@@ -68,13 +68,14 @@ $header-height: 80px;
 	}
 
 	&__list {
+		gap: 10px;
 		padding: 0;
 		display: flex;
+		margin-top: 20px;
 		position: relative;
 		list-style-type: none;
 		flex-direction: column;
 		height: calc(100% - ($header-height + 30px));
-		gap: 10px;
 		li {
 			gap: 10px;
 			color: $dark;

@@ -84,8 +84,6 @@ export default function AddAccount() {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-
-		console.log(form);
 		try {
 			const res = await fetch("/api/user/create", {
 				method: "POST",
@@ -129,7 +127,7 @@ export default function AddAccount() {
 						alignItems: "center",
 					}}
 				>
-					<IconAddUser style={{ height: "35px", width: "auto" }} />
+					<IconAddUser />
 					Create New Account
 				</h1>
 			</div>

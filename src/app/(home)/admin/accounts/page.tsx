@@ -71,19 +71,7 @@ export default function Accounts() {
 			}).then((res) => res.json());
 			switch (code) {
 				case 200:
-					console.log(data);
 					toast.success("Account updated successfully.");
-					// {
-					// 	position: "top-right",
-					// 	autoClose: 5000,
-					// 	hideProgressBar: false,
-					// 	closeOnClick: true,
-					// 	pauseOnHover: true,
-					// 	draggable: true,
-					// 	progress: undefined,
-					// 	theme: "light",
-					// 	transition: Bounce,
-					// 	}
 					break;
 				case 400:
 					break;
@@ -141,9 +129,7 @@ export default function Accounts() {
 						alignItems: "center",
 					}}
 				>
-					<IconAccounts
-						style={{ height: "35px", width: "35px", fill: "#e39d69", marginLeft: "10px" }}
-					/>
+					<IconAccounts />
 					Accounts
 				</h1>
 				<div>

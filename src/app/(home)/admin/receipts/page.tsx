@@ -111,9 +111,7 @@ export default function Receipts(props: any) {
 						alignItems: "center",
 					}}
 				>
-					<IconReceipt
-						style={{ height: "30px", width: "30px", fill: "#e39d69", marginLeft: "10px" }}
-					/>
+					<IconReceipt />
 					{props.title || "Receipts"}
 				</h1>
 			</div>
