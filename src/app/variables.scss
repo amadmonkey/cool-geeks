@@ -146,3 +146,12 @@ section {
 		transform: rotateZ(0);
 	}
 }
+
+@keyframes skeleton-loading {
+	0% {
+		background-color: hsl(200, 20%, 80%);
+	}
+	100% {
+		background-color: hsl(200, 20%, 90%);
+	}
+}

@@ -41,7 +41,6 @@ const Switch = (props: any) => {
 			<div className="switch" style={props.style}>
 				<ConfirmModal template={props.confirmTemplate} continue={handleOnChange}>
 					{(showConfirmModal: any) => {
-						console.log(isChecked);
 						return (
 							<>
 								<input

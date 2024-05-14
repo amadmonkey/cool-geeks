@@ -39,11 +39,6 @@ const Admin = () => {
 		}).then((res) => res.json());
 	};
 
-	const confirmUpdatePayment = (item: any, accepted: boolean) => {
-		setSelectedPayment({ ...item, ...{ accepted } });
-		setModalIsShown(true);
-	};
-
 	const updatePayment = async () => {
 		const { code, data } = await fetch("/api/receipt", {
 			method: "PUT",
@@ -69,11 +64,10 @@ const Admin = () => {
 			.then((res) => {
 				if (mounted) {
 					const { code, data } = res;
-					const { list, users, plans } = data;
 					switch (code) {
 						case 200:
-							setList(list);
-							setFilteredList(list);
+							setList(data.list);
+							setFilteredList(data.list);
 							break;
 						case 401:
 							push("/login");

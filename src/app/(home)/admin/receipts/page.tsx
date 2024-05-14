@@ -73,11 +73,10 @@ export default function Receipts(props: any) {
 			.then((res) => {
 				if (mounted.current) {
 					const { code, data } = res;
-					const { list } = data;
 					switch (code) {
 						case 200:
-							setList(list);
-							setFilteredList(list);
+							setList(data.list);
+							setFilteredList(data.list);
 							break;
 						case 401:
 							push("/login");

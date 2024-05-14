@@ -46,7 +46,11 @@ const LoginForm = () => {
 				case 400:
 					setError(data.general);
 					break;
+				case 403:
+					setError(data.general);
+					break;
 				default:
+					setError(data.general);
 					break;
 			}
 		} catch (e) {

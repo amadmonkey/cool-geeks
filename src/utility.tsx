@@ -97,11 +97,12 @@ const tokenRefresh = async (token: string | undefined) => {
 	});
 };
 
-const refreshToken = async (req: NextRequest) => {
+const REFRESH_TOKEN = async (req: NextRequest) => {
 	let accessToken: any = req.cookies.get("accessToken")?.value;
 	let refreshResponse: any = null;
 	if (!accessToken) {
 		refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
+		console.log("refreshResponse", refreshResponse);
 		if (refreshResponse.status !== 200) return refreshResponse;
 		accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
 	}
@@ -120,7 +121,14 @@ const newResponse = async (res: any, refreshResponse: any) => {
 const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
 		try {
-			const { accessToken, refreshResponse } = await refreshToken(req);
+			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
+			if (!accessToken) {
+				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
+				newResponse.cookies.delete("user");
+				newResponse.cookies.delete("accessToken");
+				newResponse.cookies.delete("refreshToken");
+				return newResponse;
+			}
 			const apiResponse = await fetch(url, {
 				method: "GET",
 				headers: HEADERS(req, accessToken),
@@ -134,7 +142,7 @@ const REQUEST = {
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
 		try {
-			const { accessToken, refreshResponse } = await refreshToken(req);
+			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 			const apiResponse = await fetch(url, {
 				method: "POST",
 				headers: HEADERS(req, accessToken),
@@ -149,7 +157,7 @@ const REQUEST = {
 	},
 	put: async (url: string, req: NextRequest, body?: any) => {
 		try {
-			const { accessToken, refreshResponse } = await refreshToken(req);
+			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 			const apiResponse = await fetch(url, {
 				method: "PUT",
 				headers: HEADERS(req, accessToken),
@@ -164,7 +172,7 @@ const REQUEST = {
 	},
 	delete: async (url: string, req: NextRequest, body?: any) => {
 		try {
-			const { accessToken, refreshResponse } = await refreshToken(req);
+			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 			const apiResponse = await fetch(url, {
 				method: "DELETE",
 				headers: HEADERS(req, accessToken),
@@ -297,4 +305,5 @@ export {
 	VALID_IMG_TYPES,
 	SKELETON_TYPES,
 	DATE_READABLE,
+	REFRESH_TOKEN,
 };

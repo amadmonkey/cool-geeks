@@ -21,7 +21,6 @@ const SubdCard = (props: any) => {
 	const { subd } = props;
 	const [plans, setPlans]: any = useState(subd?.plans || []);
 	const [isHeaderShown, setIsHeaderShown] = useState(false);
-	// const isHeaderShown = useRef(false);
 	const [isEditMode, setIsEditMode] = useState(props.isCreating || false);
 	const [form, setForm] = useState(subd || DEFAULT_VALUES.subdForm);
 	const [planForm, setPlanForm] = useState(DEFAULT_VALUES.planForm);
@@ -386,7 +385,7 @@ const SubdCard = (props: any) => {
 									{subd.name}
 									<span>({subd.code})</span>
 								</h1>
-								<span>{subd.gcash.number}</span>
+								<span>{`+63 ${subd.gcash.number}`}</span>
 								<br />
 								<div style={{ display: "flex", gap: 20, marginTop: 10 }}>
 									<div>
