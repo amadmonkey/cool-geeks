@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { getCookie, deleteCookie } from "cookies-next";
 import Link from "next/link";
 import Image from "next/image";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -15,14 +16,8 @@ import "./header.scss";
 
 const Header = (props: any) => {
 	const { push } = useRouter();
+	const [user, setUser] = useState(JSON.parse(getCookie("user") || ""));
 	const [userDropdownActive, setUserDropdownActive] = useState(false);
-	let user;
-
-	if (props.user) {
-		user = JSON.parse(props.user);
-	} else {
-		push("/login");
-	}
 
 	const redirect = (e: any) => {
 		e.preventDefault;
@@ -39,15 +34,23 @@ const Header = (props: any) => {
 			})
 				.then((res) => res.json())
 				.then((res) => {
+					// currently deletes all cookies then redirects
+					// to login regardless if success or not
 					const { code } = res;
-					switch (code) {
-						case 200:
-							push("/login");
-							break;
-						default:
-							push("/login");
-							break;
-					}
+					deleteCookie("user");
+					deleteCookie("plan");
+					deleteCookie("subd");
+					deleteCookie("accessToken");
+					deleteCookie("refreshToken");
+					push("/login");
+
+					// switch (code) {
+					// 	case 200:
+					// 		break;
+					// 	default:
+					// 		push("/login");
+					// 		break;
+					// }
 				});
 		} catch (e) {
 			console.log(e);

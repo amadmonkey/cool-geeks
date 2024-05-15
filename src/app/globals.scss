@@ -7,10 +7,51 @@
 html,
 body {
 	height: 100%;
+	background-color: #f4ede3;
+	color: #626262;
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
 }
 
+/*
+    Josh's Custom CSS Reset
+    https://www.joshwcomeau.com/css/custom-css-reset/
+  */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
 * {
+	margin: 0;
 	font-family: "Raleway", sans-serif;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+input,
+textarea,
+select {
+	/* font: inherit; */
+	color: #626262;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+#root,
+#__next {
+	isolation: isolate;
 }
 
 .sr-only {
@@ -288,4 +329,39 @@ ul {
 	align-items: center;
 	margin-bottom: 20px;
 	justify-content: space-between;
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+	border: 1px solid $dark;
+	padding: 20px;
+	border-radius: 15px;
+	background-color: #f1f1f1;
+}
+
+.error-message {
+	color: #e46d6d !important;
+	font-weight: 600;
+	font-size: 12px;
+	padding-top: 4px;
+}
+
+section {
+	display: flex;
+	justify-content: center;
+	@include for-tablet-landscape-up {
+		justify-content: unset;
+	}
+}
+
+.hide {
+	display: none;
+}
+
+.danger {
+	color: $danger;
 }

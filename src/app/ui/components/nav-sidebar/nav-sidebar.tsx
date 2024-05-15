@@ -17,7 +17,6 @@ import "./nav-sidebar.scss";
 const NavSidebar = () => {
 	const [activePage, setActivePage] = useState("dashboard");
 	const pathname = usePathname();
-	const date = moment(new Date()).tz("Asia/Manila");
 	const [currentDate, setCurrentDate]: any = useState(null);
 	const { push } = useRouter();
 
@@ -32,18 +31,18 @@ const NavSidebar = () => {
 	}, [pathname]);
 
 	useEffect(() => {
-		const test = setInterval(() => {
+		const timeInterval = setInterval(() => {
 			const date = moment(new Date()).tz("Asia/Manila");
+			const hours = date.get("hours");
 			setCurrentDate({
-				hours: date.get("hours"),
-				minutes: date.get("minutes"),
-				seconds: date.get("seconds"),
+				hours: `${hours % 12 < 10 ? 0 : ""}${hours % 12}`,
+				minutes: `${date.get("minutes") < 10 ? 0 : ""}${date.get("minutes")}`,
+				seconds: `${date.get("seconds") < 10 ? 0 : ""}${date.get("seconds")}`,
 				dateMonthYear: date.format("MMM Do, YYYY"),
+				timeOfDay: hours >= 12 ? "pm" : "am",
 			});
-		}, 1000);
-		return () => {
-			clearTimeout(test);
-		};
+		}, 200);
+		return () => clearTimeout(timeInterval);
 	}, []);
 
 	return (
@@ -54,9 +53,7 @@ const NavSidebar = () => {
 					<time>
 						<IconClock />
 						{currentDate ? (
-							`${currentDate.hours < 10 ? "0" : ""}${currentDate.hours}:${
-								currentDate.minutes < 10 ? "0" : ""
-							}${currentDate.minutes}`
+							`${currentDate.hours}:${currentDate.minutes}`
 						) : (
 							<time className="skeleton" style={{ height: 35 }}>
 								&nbsp;
@@ -65,11 +62,8 @@ const NavSidebar = () => {
 					</time>
 					{currentDate && (
 						<div>
-							<span>
-								:{currentDate.seconds < 10 ? "0" : ""}
-								{currentDate.seconds}
-							</span>
-							<span>{currentDate.hours >= 12 ? "pm" : "am"}</span>
+							<span>:{currentDate.seconds}</span>
+							<span>{currentDate.timeOfDay}</span>
 						</div>
 					)}
 				</h1>

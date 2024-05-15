@@ -14,13 +14,3 @@
 tr.accounts.inactive {
 	background-color: red;
 }
-
-@keyframes show {
-	0% {
-		display: block;
-		height: 0;
-	}
-	100% {
-		height: 20px;
-	}
-}

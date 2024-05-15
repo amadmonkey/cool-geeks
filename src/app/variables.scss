@@ -1,64 +1,14 @@
+$primary: #eca452;
 $dark: #696969;
 $bg: #f4ede3;
 
 $info: #5576c7;
+$success: #5cbe5c;
 $danger: #e46d6d;
 $danger-dark: #a53131;
 $danger-light: #fae0e0;
 
-$success: #5cbe5c;
-
-$primary: #eca452;
-
-/*
-    Josh's Custom CSS Reset
-    https://www.joshwcomeau.com/css/custom-css-reset/
-  */
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-}
-* {
-	margin: 0;
-}
-body {
-	line-height: 1.5;
-	-webkit-font-smoothing: antialiased;
-}
-img,
-picture,
-video,
-canvas,
-svg {
-	display: block;
-	max-width: 100%;
-}
-input,
-textarea,
-select {
-	/* font: inherit; */
-	color: #626262;
-}
-p,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	overflow-wrap: break-word;
-}
-#root,
-#__next {
-	isolation: isolate;
-}
-
-html,
-body {
-	background-color: #f4ede3;
-	color: #626262;
-}
+$box-shadow: -3px 3px 0 #00000040;
 
 @mixin for-phone-only {
 	@media (max-width: 599px) {
@@ -84,41 +34,6 @@ body {
 	@media (min-width: 1800px) {
 		@content;
 	}
-}
-
-pre {
-	white-space: pre-wrap; /* css-3 */
-	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
-	white-space: -pre-wrap; /* Opera 4-6 */
-	white-space: -o-pre-wrap; /* Opera 7 */
-	word-wrap: break-word; /* Internet Explorer 5.5+ */
-	border: 1px solid $dark;
-	padding: 20px;
-	border-radius: 15px;
-	background-color: #f1f1f1;
-}
-
-.error-message {
-	color: #e46d6d !important;
-	font-weight: 600;
-	font-size: 12px;
-	padding-top: 4px;
-}
-
-section {
-	display: flex;
-	justify-content: center;
-	@include for-tablet-landscape-up {
-		justify-content: unset;
-	}
-}
-
-.hide {
-	display: none;
-}
-
-.danger {
-	color: $danger;
 }
 
 @keyframes wiggle {
@@ -153,5 +68,36 @@ section {
 	}
 	100% {
 		background-color: hsl(200, 20%, 90%);
+	}
+}
+
+@keyframes show {
+	0% {
+		display: block;
+		height: 0;
+	}
+	100% {
+		height: 20px;
+	}
+}
+
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+		stroke-dashoffset: 66;
+	}
+	50% {
+		transform: rotate(540deg);
+		stroke-dashoffset: 314;
+	}
+	100% {
+		transform: rotate(1080deg);
+		stroke-dashoffset: 66;
+	}
+}
+
+@keyframes draw {
+	to {
+		stroke-dashoffset: 0;
 	}
 }
