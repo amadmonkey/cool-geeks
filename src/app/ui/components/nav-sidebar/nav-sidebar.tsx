@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
+import { deleteCookie } from "cookies-next";
 import Link from "next/link";
 // import moment from "moment";
 import moment from "moment-timezone";
@@ -34,8 +35,9 @@ const NavSidebar = () => {
 		const timeInterval = setInterval(() => {
 			const date = moment(new Date()).tz("Asia/Manila");
 			const hours = date.get("hours");
+			const r = hours % 12;
 			setCurrentDate({
-				hours: `${hours % 12 < 10 ? 0 : ""}${hours % 12}`,
+				hours: `${r === 0 ? "" : r < 10 ? 0 : ""}${r === 0 ? 12 : r}`,
 				minutes: `${date.get("minutes") < 10 ? 0 : ""}${date.get("minutes")}`,
 				seconds: `${date.get("seconds") < 10 ? 0 : ""}${date.get("seconds")}`,
 				dateMonthYear: date.format("MMM Do, YYYY"),
@@ -44,6 +46,29 @@ const NavSidebar = () => {
 		}, 200);
 		return () => clearTimeout(timeInterval);
 	}, []);
+
+	const logout = async () => {
+		try {
+			await fetch("/api/user", {
+				method: "DELETE",
+				headers: {},
+				credentials: "include",
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					// currently deletes all cookies then redirects
+					// to login regardless if success or not
+					deleteCookie("user");
+					deleteCookie("plan");
+					deleteCookie("subd");
+					deleteCookie("accessToken");
+					deleteCookie("refreshToken");
+					push("/login");
+				});
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	return (
 		<div className="nav-sidebar">
@@ -103,12 +128,18 @@ const NavSidebar = () => {
 				<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
 					<Link href="/admin/settings" className="strip" onClick={(e) => redirect(e)}>
 						<IconSettings />
-						Alert Settings
+						App Settings
 					</Link>
 				</li>
 				<li>
-					<IconSignOut />
-					Logout
+					<button
+						style={{ display: "flex", color: "#fff", gap: 5, alignItems: "center", fontSize: 14 }}
+						className="invisible"
+						onClick={logout}
+					>
+						<IconSignOut />
+						Logout
+					</button>
 				</li>
 			</ul>
 		</div>

@@ -2,22 +2,28 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GET_STATUS_BADGE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+import { GET_STATUS, GET_STATUS_BADGE, SKELETON_TYPES, TABLE_HEADERS, VIEW_MODES } from "@/utility";
 
 import Image from "next/image";
+import Card from "@/app/ui/components/card/card";
+import Modal from "@/app/ui/components/modal/modal";
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
-import Loading from "@/app/ui/components/table/loading/loading";
+import Button from "@/app/ui/components/button/button";
+import FormGroup from "@/app/ui/components/form-group/form-group";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import RadioGroup from "@/app/ui/components/radio-group/radio-group";
+import Skeleton from "@/app/ui/components/skeleton/skeleton-table/skeleton-table";
 
+import IconGrid from "../../../../../public/grid.svg";
+import IconNext from "../../../../../public/next.svg";
+import IconList from "../../../../../public/list.svg";
 import IconDeny from "../../../../../public/denied.svg";
 import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
-import Modal from "@/app/ui/components/modal/modal";
-import Card from "@/app/ui/components/card/card";
-import FormGroup from "@/app/ui/components/form-group/form-group";
-import Button from "@/app/ui/components/button/button";
-import Skeleton from "@/app/ui/components/skeleton/skeleton-table/skeleton-table";
+import IconCarousel from "../../../../../public/carousel.svg";
+import IconPrevious from "../../../../../public/previous.svg";
+import "./page.scss";
 
 export default function Receipts(props: any) {
 	const { push } = useRouter();
@@ -26,6 +32,7 @@ export default function Receipts(props: any) {
 	const [selectedPayment, setSelectedPayment] = useState<any>(null);
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
+	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
 	const confirmUpdatePayment = (item: any, accepted: boolean) => {
 		setSelectedPayment({ ...item, ...{ accepted } });
@@ -44,9 +51,20 @@ export default function Receipts(props: any) {
 			}),
 			credentials: "include",
 		}).then((res) => res.json());
-		const updatedList = list.map((item: any) => (item._id === selectedPayment._id ? data : item));
-		setList(updatedList);
-		setFilteredList(updatedList);
+		switch (code) {
+			case 200:
+				const updatedList = list.map((item: any) =>
+					item._id === selectedPayment._id ? data : item
+				);
+				setList(updatedList);
+				setFilteredList(updatedList);
+				break;
+			case 400:
+				// parse errors
+				break;
+			default:
+				break;
+		}
 		setModalIsShown(false);
 	};
 
@@ -91,6 +109,247 @@ export default function Receipts(props: any) {
 			.catch((err) => console.error(err));
 	}, [props.searchOptions, push]);
 
+	const getView = () => {
+		switch (viewMode) {
+			case VIEW_MODES.GRID:
+			case VIEW_MODES.CAROUSEL:
+				return (
+					<div className={`receipt-cards-container ${viewMode.toLowerCase()}`}>
+						{viewMode === VIEW_MODES.CAROUSEL && (
+							<button
+								id="carousel-previous"
+								name="carousel-previous"
+								className="invisible nav nav__previous"
+							>
+								<IconPrevious />
+								<label htmlFor="carousel-previous" className="sr-only">
+									Previous
+								</label>
+							</button>
+						)}
+						{filteredList === null
+							? "skeleton"
+							: filteredList
+									.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
+									.map((item: any, i: number) => {
+										const paymentDate = new Date(item.paymentDate);
+										return (
+											<div key={i} className="receipt-card">
+												<div className="image-container">
+													<Image
+														alt="qr"
+														height={0}
+														width={0}
+														src={`${process.env.NEXT_PUBLIC_API}/receipts/${item.receiptName}`}
+														unoptimized
+													/>
+												</div>
+												<Card>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">USER</label>
+														<span>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
+													</div>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">SUBD</label>
+														<span>{`${item.planRef.subdRef.name}`}</span>
+													</div>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">CUTOFF</label>
+														<span>{`${item.cutoff}`}</span>
+													</div>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">PAYMENT DATE</label>
+														<span>{`${paymentDate.toLocaleDateString("default", {
+															month: "long",
+														})} ${paymentDate.getFullYear()}`}</span>
+													</div>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">PLAN</label>
+														<span>
+															{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
+														</span>
+													</div>
+													<div className="receipt-card__form-group">
+														<label htmlFor="">REF NUMBER</label>
+														<span>{`${item.referenceNumber}`}</span>
+													</div>
+													<footer className={item.status.toLowerCase()}>
+														{item.status === GET_STATUS.PENDING ? (
+															<>
+																<button
+																	className="button-test danger invisible"
+																	onClick={() => confirmUpdatePayment(item, false)}
+																>
+																	<IconDeny />
+																	<label>REJECT</label>
+																</button>
+																<button
+																	className="button-test success invisible"
+																	onClick={() => confirmUpdatePayment(item, true)}
+																>
+																	<IconAccept />
+																	<label>ACCEPT</label>
+																</button>
+															</>
+														) : item.status === GET_STATUS.ACCEPTED ? (
+															<IconAccept />
+														) : (
+															<IconDeny />
+														)}
+													</footer>
+												</Card>
+											</div>
+										);
+									})}
+						{viewMode === VIEW_MODES.CAROUSEL && (
+							<button
+								id="carousel-previous"
+								name="carousel-previous"
+								className="invisible nav nav__next"
+							>
+								<IconNext />
+								<label htmlFor="carousel-previous" className="sr-only">
+									Next
+								</label>
+							</button>
+						)}
+					</div>
+				);
+			case VIEW_MODES.LIST:
+				return (
+					<Table
+						type="receipts"
+						headers={TABLE_HEADERS.receipts}
+						className={filteredList === null ? "loading" : ""}
+					>
+						{filteredList === null ? (
+							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
+						) : filteredList.length ? (
+							filteredList?.map((item: any, index: number) => {
+								const paymentDate = new Date(item.paymentDate);
+								return (
+									<tr key={index} className={`${item.status === "FAILED" ? "row-failed" : ""}`}>
+										<td>
+											<span
+												style={{
+													color: item.status === "FAILED" ? "#e46d6d" : "#5576c7",
+													fontSize: "15px",
+													fontWeight: "800",
+												}}
+											>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
+											<br />
+											<span style={{ fontSize: "13px" }}>{item.planRef.subdRef.name}</span>
+											<br />
+											{item.userRef.accountNumber}
+										</td>
+										<td>
+											<span>{item.planRef.name}</span>
+											<br />
+											<span style={{ fontSize: "20px", fontWeight: "bold" }}>
+												₱{item.planRef.price}
+											</span>
+										</td>
+										<td>
+											{item.cutoff === "MID" ? "Midmonth" : "End of Month"}
+											<br />
+											{`${paymentDate.toLocaleDateString("default", {
+												month: "long",
+											})} ${paymentDate.getFullYear()}`}
+										</td>
+										{item.status !== "FAILED" ? (
+											<>
+												<td>{new Date(item.createdAt).toDateString()}</td>
+												<td>{item.referenceNumber}</td>
+												<td>
+													<button className="invisible">
+														<Image
+															src={`/image.svg`}
+															height={0}
+															width={0}
+															style={{ height: "20px", width: "auto" }}
+															sizes="100vw"
+															alt="Picture of the author"
+														/>
+													</button>
+												</td>
+												<td
+													style={{
+														display: "flex",
+														justifyContent: "center",
+														alignContent: "center",
+													}}
+												>
+													{GET_STATUS_BADGE(item.status)}
+												</td>
+												{item.status === "PENDING" ? (
+													<td>
+														<label htmlFor="deny" className="sr-only">
+															Deny
+														</label>
+														<button
+															name="deny"
+															className="invisible button__action"
+															onClick={() => confirmUpdatePayment(item, false)}
+														>
+															<IconDeny />
+														</button>
+														<label htmlFor="deny" className="sr-only">
+															Deny
+														</label>
+														<button
+															name="accept"
+															className="invisible button__action"
+															onClick={() => confirmUpdatePayment(item, true)}
+														>
+															<span className="sr-only">Accept</span>
+															<IconAccept />
+														</button>
+													</td>
+												) : (
+													<td>&nbsp;</td>
+												)}
+											</>
+										) : (
+											<>
+												<td
+													style={{
+														fontSize: "20px",
+														fontWeight: "800",
+														letterSpacing: "10px",
+													}}
+												>
+													NO RECEIPT SUBMITTED
+												</td>
+												<td>
+													<Switch
+														name="edit"
+														id={item._id}
+														label={
+															<div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+																User Status
+															</div>
+														}
+														onChange={() => console.log("change user status")}
+														mini
+													/>
+												</td>
+											</>
+										)}
+									</tr>
+								);
+							})
+						) : (
+							<ListEmpty></ListEmpty>
+						)}
+					</Table>
+				);
+		}
+	};
+
+	// const handleViewModeChange = (newViewMode:any) => {
+	// 	setViewMode(newViewMode);
+	// }
+
 	useEffect(() => {
 		mounted.current = true;
 		getHistoryList();
@@ -100,8 +359,10 @@ export default function Receipts(props: any) {
 	}, []);
 
 	return (
-		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<div className="page-header">
+		<section
+			style={{ ...props.style, ...{ display: "flex", flexDirection: "column", width: "100%" } }}
+		>
+			<header className="page-header">
 				<h1
 					className="section-title"
 					style={{
@@ -114,133 +375,31 @@ export default function Receipts(props: any) {
 					<IconReceipt />
 					{props.title || "Receipts"}
 				</h1>
-			</div>
-			<Table
-				type="receipts"
-				headers={TABLE_HEADERS.receipts}
-				className={filteredList === null ? "loading" : ""}
-			>
-				{/* {true ? ( */}
-				{filteredList === null ? (
-					<Skeleton type={SKELETON_TYPES.RECEIPTS} />
-				) : filteredList.length ? (
-					filteredList?.map((item: any, index: number) => {
-						const paymentDate = new Date(item.paymentDate);
-						return (
-							<tr key={index} className={`${item.status === "FAILED" ? "row-failed" : ""}`}>
-								<td>
-									<span
-										style={{
-											color: item.status === "FAILED" ? "#e46d6d" : "#5576c7",
-											fontSize: "15px",
-											fontWeight: "800",
-										}}
-									>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
-									<br />
-									<span style={{ fontSize: "13px" }}>{item.planRef.subdRef.name}</span>
-									<br />
-									{item.userRef.accountNumber}
-								</td>
-								<td>
-									<span>{item.planRef.name}</span>
-									<br />
-									<span style={{ fontSize: "20px", fontWeight: "bold" }}>
-										₱{item.planRef.price}
-									</span>
-								</td>
-								<td>
-									{item.cutoff === "MID" ? "Midmonth" : "End of Month"}
-									<br />
-									{`${paymentDate.toLocaleDateString("default", {
-										month: "long",
-									})} ${paymentDate.getFullYear()}`}
-								</td>
-								{item.status !== "FAILED" ? (
-									<>
-										<td>{new Date(item.createdAt).toDateString()}</td>
-										<td>{item.referenceNumber}</td>
-										<td>
-											<button className="invisible">
-												<Image
-													src={`/image.svg`}
-													height={0}
-													width={0}
-													style={{ height: "20px", width: "auto" }}
-													sizes="100vw"
-													alt="Picture of the author"
-												/>
-											</button>
-										</td>
-										<td
-											style={{
-												display: "flex",
-												justifyContent: "center",
-												alignContent: "center",
-											}}
-										>
-											{GET_STATUS_BADGE(item.status)}
-										</td>
-										{item.status === "PENDING" ? (
-											<td>
-												<label htmlFor="deny" className="sr-only">
-													Deny
-												</label>
-												<button
-													name="deny"
-													className="invisible button__action"
-													onClick={() => confirmUpdatePayment(item, false)}
-												>
-													<IconDeny />
-												</button>
-												<label htmlFor="deny" className="sr-only">
-													Deny
-												</label>
-												<button
-													name="accept"
-													className="invisible button__action"
-													onClick={() => confirmUpdatePayment(item, true)}
-												>
-													<span className="sr-only">Accept</span>
-													<IconAccept />
-												</button>
-											</td>
-										) : (
-											<td>&nbsp;</td>
-										)}
-									</>
-								) : (
-									<>
-										<td
-											style={{
-												fontSize: "20px",
-												fontWeight: "800",
-												letterSpacing: "10px",
-											}}
-										>
-											NO RECEIPT SUBMITTED
-										</td>
-										<td>
-											<Switch
-												name="edit"
-												id={item._id}
-												label={
-													<div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-														User Status
-													</div>
-												}
-												onChange={() => console.log("change user status")}
-												mini
-											/>
-										</td>
-									</>
-								)}
-							</tr>
-						);
-					})
-				) : (
-					<ListEmpty></ListEmpty>
-				)}
-			</Table>
+				<RadioGroup
+					list={Object.keys(VIEW_MODES).map((mode) => {
+						switch (mode) {
+							case VIEW_MODES.GRID:
+								return {
+									name: VIEW_MODES.GRID,
+									label: <IconGrid style={{ height: 30, width: "auto" }} />,
+								};
+							case VIEW_MODES.LIST:
+								return {
+									name: VIEW_MODES.LIST,
+									label: <IconList style={{ height: 30, width: "auto" }} />,
+								};
+							case VIEW_MODES.CAROUSEL:
+								return {
+									name: VIEW_MODES.CAROUSEL,
+									label: <IconCarousel style={{ height: 30, width: "auto" }} />,
+								};
+						}
+					})}
+					selected={viewMode}
+					onChange={(newValue: any) => setViewMode(newValue)}
+				/>
+			</header>
+			{getView()}
 			<Modal isShown={modalIsShown} close={() => setModalIsShown(false)}>
 				<Card
 					style={{

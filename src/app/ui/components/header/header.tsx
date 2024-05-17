@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie, deleteCookie } from "cookies-next";
 import Link from "next/link";
@@ -14,9 +14,9 @@ import IconSettings from "../../../../../public/settings.svg";
 
 import "./header.scss";
 
-const Header = (props: any) => {
+const Header = () => {
 	const { push } = useRouter();
-	const [user, setUser] = useState(JSON.parse(getCookie("user") || ""));
+	const user = useRef(JSON.parse(getCookie("user") || ""));
 	const [userDropdownActive, setUserDropdownActive] = useState(false);
 
 	const redirect = (e: any) => {
@@ -83,8 +83,8 @@ const Header = (props: any) => {
 						className="user-button"
 						onClick={() => setUserDropdownActive(!userDropdownActive)}
 					>
-						<h1>{`${user.firstName} ${user.lastName}`}</h1>
-						<span>{user.subdRef && user.subdRef.name}</span>
+						<h1>{`${user.current.firstName} ${user.current.lastName}`}</h1>
+						<span>{user.current.subdRef && user.current.subdRef.name}</span>
 						<Image
 							className="caret"
 							src={`/caret.svg`}

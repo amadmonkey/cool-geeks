@@ -13,6 +13,7 @@ import IconTrash from "../../../../../public/trash.svg";
 import IconAdd from "../../../../../public/add.svg";
 import IconRemove from "../../../../../public/denied.svg";
 import IconEdit from "../../../../../public/edit.svg";
+import IconHelp from "../../../../../public/help.svg";
 
 import { DATE_READABLE, DEFAULT_VALUES, TABLE_HEADERS } from "@/utility";
 import "./subd-card.scss";
@@ -434,8 +435,12 @@ const SubdCard = (props: any) => {
 										<tr key={plan._id + i} className="plans border">
 											<td title={plan.name}>{plan.name}</td>
 											<td title={plan.price}>{plan.price}</td>
-											<td className="ellipsis" title={plan.description}>
+											<td
+												title={plan.description}
+												style={{ display: "flex", justifyContent: "center" }}
+											>
 												{plan.description}
+												<IconHelp style={{ height: 15, width: "auto" }} />
 											</td>
 										</tr>
 									);

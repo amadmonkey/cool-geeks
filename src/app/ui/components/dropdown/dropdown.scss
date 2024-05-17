@@ -4,7 +4,7 @@
 	position: relative;
 	padding: 0;
 	margin: 0;
-	height: 50px;
+	height: 40px;
 	border: 2px solid $dark;
 	border-radius: 5px;
 	box-shadow: -3px 3px 0 #00000030;
@@ -48,8 +48,8 @@
 		}
 	}
 	&__search {
-		height: 47px;
-		padding: 16px;
+		height: 40px;
+		padding: 10px;
 		font-weight: 800;
 		font-size: 14px;
 		color: $dark;
@@ -150,7 +150,7 @@
 		height: 0;
 		width: 0;
 		right: 15px;
-		top: 22px;
+		top: 17px;
 		border: 5px solid transparent;
 		border-top-color: $dark;
 	}

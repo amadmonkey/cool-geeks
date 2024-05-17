@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Modal from "@/app/ui/components/modal/modal";
 import Card from "@/app/ui/components/card/card";
-import IconHelp from "../../../../../public/help.svg";
 
 import "./form-group.scss";
 import Button from "../button/button";

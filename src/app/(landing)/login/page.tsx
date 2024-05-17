@@ -73,7 +73,7 @@ const LoginForm = () => {
 				height={0}
 				width={0}
 				sizes="100vw"
-				style={{ height: "150px", width: "auto", marginBottom: "10px", zIndex: 0 }}
+				style={{ height: "100px", width: "auto", marginBottom: "10px", zIndex: 0 }}
 				alt="Picture of the author"
 			/>
 			<Image
@@ -81,16 +81,16 @@ const LoginForm = () => {
 				height={0}
 				width={0}
 				sizes="100vw"
-				style={{ height: "50px", width: "auto", zIndex: 0 }}
+				style={{ height: "40px", width: "auto", zIndex: 0 }}
 				alt="Picture of the author"
 			/>
 			<h1
 				style={{
 					marginBottom: "50px",
-					fontSize: "15px",
+					fontSize: "12px",
 					fontWeight: "800",
-					letterSpacing: "17px",
-					right: "-8px",
+					letterSpacing: "13px",
+					right: "-5px",
 					position: "relative",
 					color: "black",
 				}}
@@ -99,7 +99,7 @@ const LoginForm = () => {
 			</h1>
 			<form
 				onSubmit={login}
-				style={{ display: "flex", flexDirection: "column", gap: 20, width: "400px" }}
+				style={{ display: "flex", flexDirection: "column", gap: 20, width: "300px" }}
 			>
 				<FormGroup label="Email or Account Number">
 					<TextInput
@@ -124,7 +124,7 @@ const LoginForm = () => {
 					{error}
 				</p>
 				<FormGroup>
-					<Button type="submit" className="info lg">
+					<Button type="submit" className="info">
 						LOGIN
 					</Button>
 				</FormGroup>

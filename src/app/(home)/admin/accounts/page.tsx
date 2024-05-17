@@ -16,7 +16,7 @@ import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
 import "./page.scss";
 
-export default function Accounts() {
+export default function Accounts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [list, setList] = useState<any>({});
@@ -119,7 +119,7 @@ export default function Accounts() {
 
 	return (
 		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<div className="page-header">
+			<header className="page-header">
 				<h1
 					className="section-title"
 					style={{
@@ -130,7 +130,7 @@ export default function Accounts() {
 					}}
 				>
 					<IconAccounts />
-					Accounts
+					{props.title || "Accounts"}
 				</h1>
 				<div>
 					<Link href="/admin/accounts/create" className="has-icon outline">
@@ -138,7 +138,7 @@ export default function Accounts() {
 						<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
 					</Link>
 				</div>
-			</div>
+			</header>
 			<Table
 				type="accounts"
 				headers={TABLE_HEADERS.accounts}

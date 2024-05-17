@@ -1,0 +1,53 @@
+@import "../../../variables.scss";
+
+$border-radius: 7px;
+
+.radio-toggle {
+	display: flex;
+	position: relative;
+	overflow: hidden;
+	&:after {
+		content: "";
+		position: absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		border: 2px solid $primary;
+		border-radius: $border-radius;
+		pointer-events: none;
+	}
+}
+
+.radio-toggle__input {
+	display: none;
+
+	&:checked + .radio-toggle__label {
+		background-color: $primary;
+		color: #fff;
+		fill: #fff;
+	}
+}
+
+.radio-toggle__label {
+	display: flex;
+	padding: 5px 10px;
+	color: $primary;
+	fill: $primary;
+	cursor: pointer;
+	position: relative;
+	align-items: center;
+	justify-content: space-around;
+	transition: all 0.2s ease-out;
+	&:not(:last-child) {
+		border-right: 2px solid $primary;
+	}
+	&:first-of-type {
+		border-top-left-radius: $border-radius;
+		border-bottom-left-radius: $border-radius;
+	}
+	&:last-of-type {
+		border-top-right-radius: $border-radius;
+		border-bottom-right-radius: $border-radius;
+	}
+}

@@ -54,13 +54,20 @@ const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	}
 };
 
+const GET_STATUS = {
+	FAILED: "FAILED",
+	DENIED: "DENIED",
+	PENDING: "PENDING",
+	ACCEPTED: "ACCEPTED",
+};
+
 const GET_STATUS_BADGE = (status: any) => {
 	switch (status) {
-		case "ACCEPTED":
+		case GET_STATUS.ACCEPTED:
 			return <div className="badge badge__accepted">ACCEPTED</div>;
-		case "PENDING":
+		case GET_STATUS.PENDING:
 			return <div className="badge">PENDING</div>;
-		case "FAILED":
+		case GET_STATUS.FAILED:
 			return <div className="badge badge__denied">FAILED</div>;
 		default:
 			return <div className="badge badge__denied">DENIED</div>;
@@ -75,11 +82,11 @@ const GET_STATUS_ICON = (status: any, styles: any) => {
 	};
 	if (styles) test = { ...test, ...styles };
 	switch (status.toUpperCase()) {
-		case "PENDING":
+		case GET_STATUS.PENDING:
 			return <IconPending style={{ ...test, ...{ fill: "#b6b6b6" } }} height="20" />;
-		case "ACCEPTED":
+		case GET_STATUS.ACCEPTED:
 			return <IconAccepted style={{ ...test }} />;
-		case "DENIED":
+		case GET_STATUS.DENIED:
 			return <IconDenied style={test} />;
 	}
 };
@@ -188,10 +195,16 @@ const REQUEST = {
 };
 
 const SKELETON_TYPES = {
-	RECEIPTS: "receipts",
-	ACCOUNTS: "accounts",
 	SUBD: "subd",
 	PLAN: "plan",
+	RECEIPTS: "receipts",
+	ACCOUNTS: "accounts",
+};
+
+const VIEW_MODES = {
+	GRID: "GRID",
+	LIST: "LIST",
+	CAROUSEL: "CAROUSEL",
 };
 
 const TABLE_HEADERS = {
@@ -298,6 +311,7 @@ export {
 	ENHANCE_FORMAT,
 	TABLE_HEADERS,
 	DEFAULT_VALUES,
+	GET_STATUS,
 	GET_STATUS_BADGE,
 	GET_STATUS_ICON,
 	IS_MODIFIER_KEY,
@@ -306,4 +320,5 @@ export {
 	SKELETON_TYPES,
 	DATE_READABLE,
 	REFRESH_TOKEN,
+	VIEW_MODES,
 };

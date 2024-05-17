@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 import Card from "@/app/ui/components/card/card";
-import Button from "@/app/ui/components/button/button";
 
 import IconReceipt from "../../../../public/receipt.svg";
 import IconOverdue from "../../../../public/overdue.svg";
@@ -15,6 +13,8 @@ import IconAddUser from "../../../../public/add-user.svg";
 
 import "./page.scss";
 import Receipts from "./receipts/page";
+import Accounts from "./accounts/page";
+import { VIEW_MODES } from "@/utility";
 
 const Admin = () => {
 	const { push } = useRouter();
@@ -129,12 +129,37 @@ const Admin = () => {
 				searchOptions={
 					new URLSearchParams({
 						page: "1",
-						limit: "5",
+						limit: "1",
+						sortBy: "createdAt",
+						sortOrder: "DESC",
+					})
+				}
+				viewMode={VIEW_MODES.CAROUSEL}
+				style={{ marginTop: 20 }}
+			/>
+			<Link
+				href="/admin/receipts"
+				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
+			>
+				VIEW MORE
+			</Link>
+			<Accounts
+				title={"Recently Updated Accounts"}
+				searchOptions={
+					new URLSearchParams({
+						page: "1",
+						limit: "2",
 						sortBy: "createdAt",
 						sortOrder: "DESC",
 					})
 				}
 			/>
+			<Link
+				href="/admin/accounts"
+				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
+			>
+				VIEW MORE
+			</Link>
 		</div>
 	);
 };

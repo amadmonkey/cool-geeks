@@ -15,7 +15,6 @@ $header-height: 80px;
 	&__header {
 		margin: 10px;
 		display: flex;
-		// height: $header-height;
 		flex-direction: column;
 		svg {
 			height: auto;
@@ -86,7 +85,7 @@ $header-height: 80px;
 			position: relative;
 			border-radius: 10px;
 			align-items: center;
-			transition: 0.1s ease;
+			transition: 0.2s ease-in-out;
 			border: 2px solid transparent;
 			a {
 				padding: 10px 20px;
@@ -147,7 +146,6 @@ $header-height: 80px;
 				transform-origin: center;
 				color: darken($bg, 40%);
 				border: 2px solid $primary;
-				background-color: lighten($primary, 32%);
 				svg {
 					fill: darken($bg, 40%);
 					stroke: darken($bg, 40%);

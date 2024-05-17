@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { REFRESH_TOKEN } from "./utility";
 
 const outRoutes = ["/login", "/register"];
 
@@ -13,7 +12,7 @@ export function middleware(req: NextRequest) {
 	console.log("MIDDLEWARE: accessToken", accessToken);
 
 	// if not logged in should not be able to enter protected routes
-	if (accessToken) {
+	if (userToken) {
 		// if logged in
 		const { admin } = JSON.parse(userToken!.value);
 		if (!admin && pathname.includes("admin"))

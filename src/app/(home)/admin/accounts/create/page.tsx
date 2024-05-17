@@ -117,7 +117,7 @@ export default function AddAccount() {
 		<section
 			style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
 		>
-			<div className="page-header">
+			<header className="page-header">
 				<h1
 					className="section-title"
 					style={{
@@ -130,7 +130,7 @@ export default function AddAccount() {
 					<IconAddUser />
 					Create New Account
 				</h1>
-			</div>
+			</header>
 			<div style={{ display: "flex", gap: 50 }}>
 				<form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 50 }}>
 					<div style={{ display: "flex", flexDirection: "row", gap: 50 }}>

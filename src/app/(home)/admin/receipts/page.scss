@@ -1,0 +1,185 @@
+@import "../../../variables.scss";
+
+.receipt-cards-container {
+	position: relative;
+	gap: 50px;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+	.receipt-card {
+		display: flex;
+		flex-direction: row;
+		&__form-group {
+			display: flex;
+			align-items: center;
+			margin-bottom: 10px;
+			flex-direction: column;
+			label {
+				font-size: 11px;
+				font-weight: 800;
+				line-height: 11px;
+			}
+			span {
+				font-size: 14px;
+				line-height: 14px;
+			}
+		}
+		.cg-card {
+			top: 50%;
+			height: 80%;
+			transform: translateY(-50%);
+			border-top-left-radius: 0;
+			border-bottom-left-radius: 0;
+		}
+		.image-container {
+			width: 800px;
+			height: auto;
+			display: flex;
+			overflow: hidden;
+			border-radius: 10px;
+			box-shadow: -5px 5px 0 #00000020;
+			img {
+				width: 100%;
+				height: auto;
+			}
+		}
+		footer {
+			gap: 10px;
+			display: flex;
+			bottom: -20px;
+			&.pending {
+				bottom: -30px;
+			}
+			width: 85%;
+			position: absolute;
+			justify-content: center;
+			.button-test {
+				cursor: pointer;
+				&:hover {
+					transform-origin: center;
+					animation: wiggle 1s ease-in;
+				}
+				&.danger {
+					label {
+						color: $danger-dark;
+						border-color: $danger-dark;
+					}
+				}
+				&.success {
+					label {
+						color: $success-dark;
+						border-color: $success-dark;
+					}
+				}
+				svg {
+					left: 50%;
+					width: 50px;
+					position: relative;
+					text-align: center;
+					transform: translateX(-50%);
+				}
+				label {
+					z-index: 2;
+					bottom: 5px;
+					padding: 0 5px;
+					cursor: pointer;
+					border-width: 5px;
+					position: relative;
+					border-radius: 20px;
+					font-weight: bolder;
+					border-style: solid;
+					background-color: #fff;
+				}
+			}
+		}
+		.cg-card {
+			display: flex;
+			align-items: center;
+			flex-direction: column;
+			justify-content: center;
+			// transition: 0.2s ease-in-out;
+			.receipt-card {
+				&__form-group {
+					label {
+						// transition: 0.2s ease-in-out;
+					}
+					> span {
+						// transition: 0.2s ease-in-out;
+					}
+				}
+			}
+			footer {
+				svg {
+					height: 40px;
+				}
+			}
+			&.ACCEPTED {
+				background-color: $success-dark;
+				.receipt-card {
+					&__form-group {
+						label {
+							color: darken($success, 30%);
+						}
+						> span {
+							color: #fff;
+						}
+					}
+				}
+			}
+			&.DENIED {
+				background-color: $danger-dark;
+				.receipt-card {
+					&__form-group {
+						label {
+							color: darken($danger, 30%);
+						}
+						> span {
+							color: #fff;
+						}
+					}
+				}
+			}
+		}
+	}
+	&.carousel {
+		gap: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		.receipt-card {
+			max-width: 800px;
+			width: 80%;
+			align-items: center;
+			.cg-card {
+				gap: 10px;
+				top: unset;
+				transform: unset;
+				padding: 50px 0;
+			}
+			.image-container {
+				width: auto;
+			}
+			&__form-group {
+				gap: 2px;
+				label {
+					font-size: 0.6em;
+				}
+				span {
+					font-size: 0.8em;
+				}
+			}
+		}
+	}
+	button.nav {
+		position: relative;
+		height: 50px;
+		border: 2px solid $primary;
+		border-radius: 10px;
+		padding: 3px;
+		top: 50%;
+		svg {
+			width: 40px;
+			height: auto;
+			fill: $primary;
+		}
+	}
+}
