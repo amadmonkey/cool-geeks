@@ -95,12 +95,13 @@ button {
 		}
 	}
 	&.outline {
-		border: 2px solid $dark;
+		border: 2px solid lighten($dark, 10%);
 		border-radius: 10px;
-		color: $dark;
+		color: lighten($dark, 10%);
 		font-size: 10px;
 		transition: 0.2s ease-in-out;
 		svg {
+			fill: lighten($dark, 10%);
 			transition: 0.2s ease-in-out;
 		}
 		&:hover {
@@ -128,8 +129,6 @@ a:not(.strip) {
 }
 
 ::-webkit-scrollbar-track {
-	// -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-	// border-radius: 10px;
 	background-color: $bg;
 }
 
@@ -158,6 +157,9 @@ ul {
 }
 
 .summary {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	li {
 		list-style-type: none;
 	}
@@ -327,7 +329,7 @@ ul {
 	width: 100%;
 	display: flex;
 	align-items: center;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	justify-content: space-between;
 }
 
@@ -364,4 +366,23 @@ section {
 
 .danger {
 	color: $danger;
+}
+
+.skeleton {
+	animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.loading {
+	position: relative;
+	&::after {
+		content: "";
+		left: -10px;
+		width: 110%;
+		height: 50%;
+		bottom: -10px;
+		position: absolute;
+		background-color: black;
+		background: rgb(2, 0, 36);
+		background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
+	}
 }

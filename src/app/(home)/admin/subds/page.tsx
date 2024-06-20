@@ -15,7 +15,7 @@ import "./page.scss";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import { SKELETON_TYPES } from "@/utility";
 
-const Subds = () => {
+const Subds = (props: any) => {
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [list, setList] = useState<any>(null);
@@ -63,14 +63,16 @@ const Subds = () => {
 	const getSubds = useCallback(() => {
 		setList(null);
 		setFilteredList(null);
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "5",
-			sort: JSON.stringify({
-				name: "asc",
-				code: "asc",
-			}),
-		});
+		const searchOptions =
+			props.searchOptions ||
+			new URLSearchParams({
+				page: "1",
+				limit: "5",
+				sort: JSON.stringify({
+					name: "asc",
+					code: "asc",
+				}),
+			});
 		fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
@@ -155,7 +157,7 @@ const Subds = () => {
 					}}
 				>
 					<IconSubd />
-					Subdivisions
+					{props.title || "Subdivisions"}
 				</h1>
 				<div>
 					<button type="button" className="has-icon outline" onClick={() => setCreateIsShown(true)}>
@@ -165,7 +167,6 @@ const Subds = () => {
 				</div>
 			</header>
 			<div className={`content content__subds ${filteredList === null ? "loading" : ""}`}>
-				{/* {filteredList === null ? ( */}
 				{filteredList === null ? (
 					<Skeleton type={SKELETON_TYPES.SUBD} />
 				) : filteredList.length ? (
@@ -180,14 +181,16 @@ const Subds = () => {
 								/>
 							);
 						})}
-						<button
-							className="add-subdivision invisible"
-							onClick={() => setCreateIsShown(true)}
-							style={{ height: 500 }}
-						>
-							<IconSubdAdd style={{ height: "100px", width: "auto" }} />
-							<span style={{ fontWeight: 800, fontSize: 30 }}>ADD SUBDIVISION</span>
-						</button>
+						{!props.title && (
+							<button
+								className="add-subdivision invisible"
+								onClick={() => setCreateIsShown(true)}
+								style={{ height: 500 }}
+							>
+								<IconSubdAdd style={{ height: "100px", width: "auto" }} />
+								<span style={{ fontWeight: 800, fontSize: 30 }}>ADD SUBDIVISION</span>
+							</button>
+						)}
 					</>
 				) : (
 					<ListEmpty />

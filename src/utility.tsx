@@ -198,6 +198,7 @@ const SKELETON_TYPES = {
 	SUBD: "subd",
 	PLAN: "plan",
 	RECEIPTS: "receipts",
+	RECEIPT_CARD: "receipt-card",
 	ACCOUNTS: "accounts",
 };
 

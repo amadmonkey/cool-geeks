@@ -81,21 +81,21 @@ const LoginForm = () => {
 				height={0}
 				width={0}
 				sizes="100vw"
-				style={{ height: "40px", width: "auto", zIndex: 0 }}
+				style={{ height: "37px", width: "auto", zIndex: 0 }}
 				alt="Picture of the author"
 			/>
 			<h1
 				style={{
-					marginBottom: "50px",
+					marginBottom: "30px",
 					fontSize: "12px",
 					fontWeight: "800",
-					letterSpacing: "13px",
+					letterSpacing: "12px",
 					right: "-5px",
 					position: "relative",
 					color: "black",
 				}}
 			>
-				PAYMENT&nbsp;&nbsp;TRACKER
+				RECEIPT&nbsp;&nbsp;TRACKER
 			</h1>
 			<form
 				onSubmit={login}

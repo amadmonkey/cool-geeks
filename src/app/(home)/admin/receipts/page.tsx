@@ -10,10 +10,10 @@ import Modal from "@/app/ui/components/modal/modal";
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
 import Button from "@/app/ui/components/button/button";
+import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
-import Skeleton from "@/app/ui/components/skeleton/skeleton-table/skeleton-table";
 
 import IconGrid from "../../../../../public/grid.svg";
 import IconNext from "../../../../../public/next.svg";
@@ -29,32 +29,32 @@ export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [modalIsShown, setModalIsShown] = useState(false);
-	const [selectedPayment, setSelectedPayment] = useState<any>(null);
+	const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
-	const confirmUpdatePayment = (item: any, accepted: boolean) => {
-		setSelectedPayment({ ...item, ...{ accepted } });
+	const confirmUpdateReceipt = (item: any, accepted: boolean) => {
+		setSelectedReceipt({ ...item, ...{ accepted } });
 		setModalIsShown(true);
 	};
 
-	const updatePayment = async () => {
+	const updateReceipt = async () => {
 		const { code, data } = await fetch("/api/receipt", {
 			method: "PUT",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				toUpdate: selectedPayment._id,
-				newStatus: selectedPayment.accepted ? "ACCEPTED" : "DENIED",
+				toUpdate: selectedReceipt._id,
+				newStatus: selectedReceipt.accepted ? "ACCEPTED" : "DENIED",
 			}),
 			credentials: "include",
 		}).then((res) => res.json());
 		switch (code) {
 			case 200:
 				const updatedList = list.map((item: any) =>
-					item._id === selectedPayment._id ? data : item
+					item._id === selectedReceipt._id ? data : item
 				);
 				setList(updatedList);
 				setFilteredList(updatedList);
@@ -114,7 +114,11 @@ export default function Receipts(props: any) {
 			case VIEW_MODES.GRID:
 			case VIEW_MODES.CAROUSEL:
 				return (
-					<div className={`receipt-cards-container ${viewMode.toLowerCase()}`}>
+					<div
+						className={`receipt-cards-container ${viewMode.toLowerCase()} ${
+							filteredList === null ? "loading" : ""
+						}`}
+					>
 						{viewMode === VIEW_MODES.CAROUSEL && (
 							<button
 								id="carousel-previous"
@@ -127,80 +131,90 @@ export default function Receipts(props: any) {
 								</label>
 							</button>
 						)}
-						{filteredList === null
-							? "skeleton"
-							: filteredList
-									.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
-									.map((item: any, i: number) => {
-										const paymentDate = new Date(item.paymentDate);
-										return (
-											<div key={i} className="receipt-card">
-												<div className="image-container">
-													<Image
-														alt="qr"
-														height={0}
-														width={0}
-														src={`${process.env.NEXT_PUBLIC_API}/receipts/${item.receiptName}`}
-														unoptimized
-													/>
-												</div>
-												<Card>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">USER</label>
-														<span>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
-													</div>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">SUBD</label>
-														<span>{`${item.planRef.subdRef.name}`}</span>
-													</div>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">CUTOFF</label>
-														<span>{`${item.cutoff}`}</span>
-													</div>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">PAYMENT DATE</label>
-														<span>{`${paymentDate.toLocaleDateString("default", {
-															month: "long",
-														})} ${paymentDate.getFullYear()}`}</span>
-													</div>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">PLAN</label>
-														<span>
-															{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
-														</span>
-													</div>
-													<div className="receipt-card__form-group">
-														<label htmlFor="">REF NUMBER</label>
-														<span>{`${item.referenceNumber}`}</span>
-													</div>
-													<footer className={item.status.toLowerCase()}>
-														{item.status === GET_STATUS.PENDING ? (
-															<>
-																<button
-																	className="button-test danger invisible"
-																	onClick={() => confirmUpdatePayment(item, false)}
-																>
-																	<IconDeny />
-																	<label>REJECT</label>
-																</button>
-																<button
-																	className="button-test success invisible"
-																	onClick={() => confirmUpdatePayment(item, true)}
-																>
-																	<IconAccept />
-																	<label>ACCEPT</label>
-																</button>
-															</>
-														) : item.status === GET_STATUS.ACCEPTED ? (
-															<IconAccept />
-														) : (
-															<IconDeny />
-														)}
-													</footer>
-												</Card>
+						{/* {true ? ( */}
+						{filteredList === null ? (
+							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+						) : (
+							filteredList
+								.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
+								.map((item: any, i: number) => {
+									const receiptDate = new Date(item.receiptDate);
+									return (
+										<div key={i} className="receipt-card">
+											<div className="image-container">
+												<Image
+													alt="qr"
+													height={0}
+													width={0}
+													src={`${process.env.NEXT_PUBLIC_API}/receipts/${item.receiptName}`}
+													unoptimized
+												/>
 											</div>
-										);
-									})}
+											<Card>
+												<div className="receipt-card__form-group">
+													<label htmlFor="">USER</label>
+													<span>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
+												</div>
+												{/* <div className="receipt-card__form-group">
+													<label htmlFor="">SUBD</label>
+													<span>{`${item.planRef.subdRef.name}`}</span>
+												</div> */}
+												<div className="receipt-card__form-group">
+													<label htmlFor="">CUTOFF</label>
+													<span>{`${item.cutoff}`}</span>
+												</div>
+												{/* <div className="receipt-card__form-group">
+													<label htmlFor="">RECEIPT DATE</label>
+													<span>{`${receiptDate.toLocaleDateString("default", {
+														month: "long",
+													})} ${receiptDate.getFullYear()}`}</span>
+												</div> */}
+												<div className="receipt-card__form-group">
+													<label htmlFor="">PLAN</label>
+													<span>
+														{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
+													</span>
+												</div>
+												<div className="receipt-card__form-group">
+													<label htmlFor="">REF NUMBER</label>
+													<span>{`${item.referenceNumber}`}</span>
+												</div>
+												<footer
+													className={item.status.toLowerCase()}
+													style={
+														item.status !== GET_STATUS.PENDING ? { transform: "rotate(-5deg)" } : {}
+													}
+												>
+													{item.status === GET_STATUS.PENDING ? (
+														<>
+															<button
+																className="button-test danger invisible"
+																onClick={() => confirmUpdateReceipt(item, false)}
+															>
+																<IconDeny />
+																<label>REJECT</label>
+															</button>
+															<button
+																className="button-test success invisible"
+																onClick={() => confirmUpdateReceipt(item, true)}
+															>
+																<IconAccept />
+																<label>ACCEPT</label>
+															</button>
+														</>
+													) : item.status === GET_STATUS.ACCEPTED ? (
+														// <IconAccept />
+														<div className="status status__accepted">ACCEPTED</div>
+													) : (
+														// <IconDeny />
+														<div className="status status__rejected">REJECTED</div>
+													)}
+												</footer>
+											</Card>
+										</div>
+									);
+								})
+						)}
 						{viewMode === VIEW_MODES.CAROUSEL && (
 							<button
 								id="carousel-previous"
@@ -226,7 +240,7 @@ export default function Receipts(props: any) {
 							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
 						) : filteredList.length ? (
 							filteredList?.map((item: any, index: number) => {
-								const paymentDate = new Date(item.paymentDate);
+								const receiptDate = new Date(item.receiptDate);
 								return (
 									<tr key={index} className={`${item.status === "FAILED" ? "row-failed" : ""}`}>
 										<td>
@@ -252,9 +266,9 @@ export default function Receipts(props: any) {
 										<td>
 											{item.cutoff === "MID" ? "Midmonth" : "End of Month"}
 											<br />
-											{`${paymentDate.toLocaleDateString("default", {
+											{`${receiptDate.toLocaleDateString("default", {
 												month: "long",
-											})} ${paymentDate.getFullYear()}`}
+											})} ${receiptDate.getFullYear()}`}
 										</td>
 										{item.status !== "FAILED" ? (
 											<>
@@ -289,7 +303,7 @@ export default function Receipts(props: any) {
 														<button
 															name="deny"
 															className="invisible button__action"
-															onClick={() => confirmUpdatePayment(item, false)}
+															onClick={() => confirmUpdateReceipt(item, false)}
 														>
 															<IconDeny />
 														</button>
@@ -299,7 +313,7 @@ export default function Receipts(props: any) {
 														<button
 															name="accept"
 															className="invisible button__action"
-															onClick={() => confirmUpdatePayment(item, true)}
+															onClick={() => confirmUpdateReceipt(item, true)}
 														>
 															<span className="sr-only">Accept</span>
 															<IconAccept />
@@ -409,10 +423,10 @@ export default function Receipts(props: any) {
 						alignItems: "center",
 					}}
 				>
-					{selectedPayment && (
+					{selectedReceipt && (
 						<>
 							<h1 style={{ fontSize: "25px", marginBottom: "30px" }}>
-								{selectedPayment.accepted ? "Accept" : "Deny"} this payment?
+								{selectedReceipt.accepted ? "Accept" : "Deny"} this receipt?
 							</h1>
 							{/* <div>
 								<Switch
@@ -435,7 +449,7 @@ export default function Receipts(props: any) {
 									</Button>
 								</FormGroup>
 								<FormGroup style={{ width: "100%" }}>
-									<Button type="button" className="info" onClick={updatePayment}>
+									<Button type="button" className="info" onClick={updateReceipt}>
 										Confirm
 									</Button>
 								</FormGroup>

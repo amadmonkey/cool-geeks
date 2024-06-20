@@ -1,5 +1,5 @@
 $primary: #eca452;
-$dark: #3d3d3d;
+$dark: #555555;
 $bg: #f4ede3;
 
 $info: #5576c7;
@@ -10,6 +10,8 @@ $danger-dark: #f44336;
 $danger-light: #fae0e0;
 
 $box-shadow: -3px 3px 0 #00000040;
+
+// $box-shadow: -5px 5px 0 rgba(0, 0, 0, 0.062745098);
 
 @mixin for-phone-only {
 	@media (max-width: 599px) {

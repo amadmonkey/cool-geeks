@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./dropdown.scss";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -11,7 +11,6 @@ const Dropdown = (props: any) => {
 	const UP = "ArrowUp";
 
 	const [value, setValue] = useState("");
-	const [selectedItem, setSelectedItem] = useState(null);
 	const [nameFocused, setNameFocused] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [filteredList, setFilteredList] = useState(props.list);
@@ -38,7 +37,6 @@ const Dropdown = (props: any) => {
 		setActiveIndex(-1);
 		setNameFocused(false);
 		setValue(listItem.name);
-		setSelectedItem(listItem);
 		props.onChange && props.onChange(listItem);
 		setFilteredList(props.list);
 		validate(listItem.name);
@@ -84,7 +82,6 @@ const Dropdown = (props: any) => {
 	useEffect(() => {
 		setFilteredList(props.list);
 		setValue("");
-		setSelectedItem(null);
 	}, [props.list]);
 
 	return (

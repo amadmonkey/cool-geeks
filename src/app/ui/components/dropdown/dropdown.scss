@@ -48,7 +48,7 @@
 		}
 	}
 	&__search {
-		height: 40px;
+		height: 37px;
 		padding: 10px;
 		font-weight: 800;
 		font-size: 14px;
@@ -64,6 +64,7 @@
 		position: relative;
 		overflow: hidden;
 		height: 0;
+		display: block;
 		max-height: 200px;
 		width: calc(100% + 4px);
 		top: -6px;
@@ -75,7 +76,8 @@
 		border: 2px solid $dark;
 		border-radius: 5px;
 		background-color: #f4ede3;
-		transition: height 0.1s ease-in-out, padding-top 0.1s ease-in-out;
+		animation: listHide 0.2s ease-in;
+		// transition: height 0.1s ease-in-out, padding-top 0.1s ease-in-out;
 		li {
 			display: flex;
 			height: 50px;
@@ -100,12 +102,13 @@
 			}
 		}
 		&.active {
-			height: 100% !important;
-			border-color: $dark;
-			padding-top: 10px;
-			z-index: 2;
-			box-shadow: -3px 3px 0 #00000020;
-			overflow-y: auto;
+			animation: listShow 0.2s ease-in forwards;
+			// height: 100% !important;
+			// border-color: $dark;
+			// padding-top: 10px;
+			// z-index: 2;
+			// box-shadow: -3px 3px 0 #00000020;
+			// overflow-y: auto;
 		}
 	}
 	.list-container {
@@ -170,5 +173,31 @@
 	&.inline {
 		position: absolute;
 		top: 0;
+	}
+}
+
+@keyframes listShow {
+	0% {
+		display: none;
+		height: 0;
+		z-index: 2;
+	}
+	100% {
+		display: block;
+		height: 100%;
+		z-index: 2;
+	}
+}
+
+@keyframes listHide {
+	0% {
+		display: block;
+		height: 100%;
+		z-index: 2;
+	}
+	100% {
+		display: none;
+		height: 0;
+		z-index: 0;
 	}
 }

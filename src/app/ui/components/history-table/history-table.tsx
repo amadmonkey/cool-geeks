@@ -32,8 +32,8 @@ const HistoryTable = (props: any) => {
 							<tr key={index}>
 								<td>
 									<span className="date">
-										{new Date(item.paymentDate).toLocaleString("default", { month: "long" })}&nbsp;
-										{new Date(item.paymentDate).toLocaleString("default", { year: "numeric" })}
+										{new Date(item.receiptDate).toLocaleString("default", { month: "long" })}&nbsp;
+										{new Date(item.receiptDate).toLocaleString("default", { year: "numeric" })}
 									</span>
 								</td>
 								<td>

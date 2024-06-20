@@ -80,7 +80,7 @@ export default function Home() {
 				break;
 			case 400:
 				// handle errors
-				console.log("payment submit 400 handle errors", data);
+				console.log("receipt submit 400 handle errors", data);
 				break;
 			default:
 				push("/login");
@@ -140,8 +140,8 @@ export default function Home() {
 					switch (code) {
 						case 200:
 							setHistoryList(data.list);
-							setCurrentReceipt(data.currentPayment);
-							setFormShown(data.currentPayment ? false : true);
+							setCurrentReceipt(data.currentReceipt);
+							setFormShown(data.currentReceipt ? false : true);
 							break;
 						case 401:
 							push("/login");
@@ -168,13 +168,13 @@ export default function Home() {
 						flexBasis: "40%",
 					}}
 				>
-					<h1 className="section-title">Submit Payment Receipt</h1>
+					<h1 className="section-title">Submit Receipt</h1>
 					{formShown === null ? (
 						<div className="empty-container">
 							<IconLoading />
 						</div>
 					) : !formShown ? (
-						<Card className="payment-status-container">
+						<Card className="receipt-status-container">
 							{GET_STATUS_ICON(currentReceipt?.status, {
 								height: "100px",
 								marginBottom: "20px",
@@ -182,7 +182,7 @@ export default function Home() {
 							{currentReceipt!.status === "ACCEPTED" ? (
 								<Fragment>
 									<h1>Receipt accepted</h1>
-									<p>You&apos;re good! Next payment range will be on [date here] to [date here]</p>
+									<p>You&apos;re good! Next receipt range will be on [date here] to [date here]</p>
 								</Fragment>
 							) : (
 								<Fragment>
@@ -219,12 +219,12 @@ export default function Home() {
 					) : (
 						<form onSubmit={handleSubmit} style={{ gap: "30px" }} encType="multipart/form">
 							<FormGroup
-								label="Payment Receipt/Screenshot"
+								label="Receipt Receipt/Screenshot"
 								help={{ icon: <IconQR />, body: helpTemplate() }}
 							>
 								<FileInput name="receipt" value={form.receipt} onChange={updateForm} />
 							</FormGroup>
-							<FormGroup label="Payment Transaction/Reference Number" required>
+							<FormGroup label="Receipt Transaction/Reference Number" required>
 								<TextInput
 									type="mini-dropdown"
 									name="referenceNumber"
@@ -248,7 +248,7 @@ export default function Home() {
 									required
 								/>
 								<p className="input-info">
-									Select the correct payment method and enter the reference number during payment
+									Select the correct payment method you used and enter the reference number
 								</p>
 							</FormGroup>
 							<div className="summary">

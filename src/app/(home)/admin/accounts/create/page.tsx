@@ -244,14 +244,14 @@ export default function AddAccount() {
 										<span
 											style={{
 												textAlign: "right",
-												width: "100%",
-												fontSize: "12px",
+												width: "50%",
+												fontSize: "11px",
 												letterSpacing: "8px",
 											}}
 										>
 											RATE
 										</span>
-										<p style={{ width: "100%", fontWeight: "800", fontSize: "20px" }}>
+										<p style={{ width: "100%", fontWeight: "800", fontSize: "16px" }}>
 											₱{form.plan.price}
 										</p>
 									</div>
@@ -266,21 +266,21 @@ export default function AddAccount() {
 										<span
 											style={{
 												textAlign: "right",
-												width: "100%",
-												fontSize: "12px",
+												width: "50%",
+												fontSize: "11px",
 												letterSpacing: "8px",
 											}}
 										>
 											ACCOUNT NUMBER
 										</span>
-										<p style={{ width: "100%", fontWeight: "800", fontSize: "20px" }}>
+										<p style={{ width: "100%", fontWeight: "800", fontSize: "16px" }}>
 											{`${form.subd.code}-${new Date().getFullYear()}-${Date.now()}`}
 										</p>
 									</div>
 								</div>
 							)}
 							<FormGroup label="Preferred Cutoff">
-								<div className="payment-date-container">
+								<div className="receipt-date-container">
 									<label className={form.cutoff === "MID" ? "active" : ""} tabIndex={0}>
 										<Image
 											src={`/midmonth.svg`}
@@ -290,7 +290,7 @@ export default function AddAccount() {
 											alt="Picture of the author"
 										/>
 										<input type="radio" name="cutoff" value="MID" onChange={updateForm} />
-										MIDMONTH
+										<span>MIDMONTH</span>
 									</label>
 									<label className={form.cutoff === "END" ? "active" : ""} tabIndex={0}>
 										<Image
@@ -301,7 +301,7 @@ export default function AddAccount() {
 											alt="Picture of the author"
 										/>
 										<input type="radio" name="cutoff" value="END" onChange={updateForm} />
-										END OF MONTH
+										<span>END OF MONTH</span>
 									</label>
 								</div>
 								<p className="input-info">

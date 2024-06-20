@@ -129,11 +129,11 @@ const SubdCard = (props: any) => {
 	};
 
 	const getImage = async () => {
-		// const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
-		// 	type: "qr",
-		// 	filename: props.subd.gcash.qr.filename,
-		// })}`;
-		const url = `http://localhost:4000/qr/${props.subd.gcash.qr.filename}`;
+		const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
+			type: "qr",
+			filename: props.subd.gcash.qr.filename,
+		})}`;
+		// const url = `http://localhost:4000/qr/${props.subd.gcash.qr.filename}`;
 		return await fetch(url, {
 			method: "GET",
 		});
@@ -439,7 +439,7 @@ const SubdCard = (props: any) => {
 												title={plan.description}
 												style={{ display: "flex", justifyContent: "center" }}
 											>
-												{plan.description}
+												{/* {plan.description} */}
 												<IconHelp style={{ height: 15, width: "auto" }} />
 											</td>
 										</tr>

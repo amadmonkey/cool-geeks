@@ -288,3 +288,65 @@
 // 		</Card>
 // 	);
 // };
+
+// const getHistoryList = async () => {
+// 	const searchOptions = new URLSearchParams({
+// 		page: "1",
+// 		limit: "5",
+// 		sortBy: "createdAt",
+// 		sortOrder: "DESC",
+// 	});
+// 	return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/receipt?${searchOptions}`, {
+// 		method: "GET",
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 		credentials: "include",
+// 	}).then((res) => res.json());
+// };
+
+// const updatePayment = async () => {
+// 	const { code, data } = await fetch("/api/receipt", {
+// 		method: "PUT",
+// 		headers: {
+// 			"Content-Type": "application/json",
+// 		},
+// 		body: JSON.stringify({
+// 			id: selectedPayment._id,
+// 			newStatus: selectedPayment.accepted ? "ACCEPTED" : "DENIED",
+// 		}),
+// 		credentials: "include",
+// 	}).then((res) => res.json());
+
+// 	const updatedList = list.map((item: any) => (item._id === selectedPayment._id ? data : item));
+// 	setList(updatedList);
+// 	// setFilteredList(updatedList);
+// 	// setModalIsShown(false);
+// };
+
+// useEffect(() => {
+// 	let mounted = true;
+// 	getHistoryList()
+// 		.then((res) => {
+// 			if (mounted) {
+// 				const { code, data } = res;
+// 				switch (code) {
+// 					case 200:
+// 						// setList(data.list);
+// 						// setFilteredList(data.list);
+// 						break;
+// 					case 401:
+// 						push("/login");
+// 						break;
+// 					default:
+// 						console.log("getHistoryList default", data);
+// 						push("/login");
+// 						break;
+// 				}
+// 			}
+// 		})
+// 		.catch((err) => console.log("getHistoryList catch", err));
+// 	return () => {
+// 		mounted = false;
+// 	};
+// }, [push]);

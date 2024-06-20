@@ -1,90 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-
 import Card from "@/app/ui/components/card/card";
+import { VIEW_MODES } from "@/utility";
 
 import IconReceipt from "../../../../public/receipt.svg";
 import IconOverdue from "../../../../public/overdue.svg";
 import IconPending from "../../../../public/pending.svg";
 import IconAddUser from "../../../../public/add-user.svg";
 
-import "./page.scss";
 import Receipts from "./receipts/page";
 import Accounts from "./accounts/page";
-import { VIEW_MODES } from "@/utility";
+import Subds from "./subds/page";
+
+import "./page.scss";
 
 const Admin = () => {
-	const { push } = useRouter();
-	const [modalIsShown, setModalIsShown] = useState(false);
-	const [selectedPayment, setSelectedPayment] = useState<any>(null);
-	const [list, setList] = useState<any>({});
-	const [filteredList, setFilteredList] = useState<any>(null);
-
-	const getHistoryList = async () => {
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "5",
-			sortBy: "createdAt",
-			sortOrder: "DESC",
-		});
-		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/receipt?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		}).then((res) => res.json());
-	};
-
-	const updatePayment = async () => {
-		const { code, data } = await fetch("/api/receipt", {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				id: selectedPayment._id,
-				newStatus: selectedPayment.accepted ? "ACCEPTED" : "DENIED",
-			}),
-			credentials: "include",
-		}).then((res) => res.json());
-
-		const updatedList = list.map((item: any) => (item._id === selectedPayment._id ? data : item));
-		setList(updatedList);
-		setFilteredList(updatedList);
-		setModalIsShown(false);
-	};
-
-	useEffect(() => {
-		let mounted = true;
-		getHistoryList()
-			.then((res) => {
-				if (mounted) {
-					const { code, data } = res;
-					switch (code) {
-						case 200:
-							setList(data.list);
-							setFilteredList(data.list);
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							console.log("getHistoryList default", data);
-							push("/login");
-							break;
-					}
-				}
-			})
-			.catch((err) => console.log("getHistoryList catch", err));
-		return () => {
-			mounted = false;
-		};
-	}, [push]);
-
 	return (
 		<div className="content content__admin" style={{ flexDirection: "column" }}>
 			<section>
@@ -129,12 +60,12 @@ const Admin = () => {
 				searchOptions={
 					new URLSearchParams({
 						page: "1",
-						limit: "1",
+						limit: "2",
 						sortBy: "createdAt",
 						sortOrder: "DESC",
 					})
 				}
-				viewMode={VIEW_MODES.CAROUSEL}
+				viewMode={VIEW_MODES.GRID}
 				style={{ marginTop: 20 }}
 			/>
 			<Link
@@ -148,7 +79,7 @@ const Admin = () => {
 				searchOptions={
 					new URLSearchParams({
 						page: "1",
-						limit: "2",
+						limit: "5",
 						sortBy: "createdAt",
 						sortOrder: "DESC",
 					})
@@ -156,6 +87,25 @@ const Admin = () => {
 			/>
 			<Link
 				href="/admin/accounts"
+				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
+			>
+				VIEW MORE
+			</Link>
+			<Subds
+				title={"Recently Updated Subdivisions"}
+				searchOptions={
+					new URLSearchParams({
+						page: "1",
+						limit: "3",
+						sort: JSON.stringify({
+							name: "asc",
+							code: "asc",
+						}),
+					})
+				}
+			/>
+			<Link
+				href="/admin/subds"
 				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
 			>
 				VIEW MORE
