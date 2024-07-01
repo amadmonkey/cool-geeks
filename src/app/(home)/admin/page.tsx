@@ -60,7 +60,7 @@ const Admin = () => {
 				searchOptions={
 					new URLSearchParams({
 						page: "1",
-						limit: "2",
+						limit: "3",
 						sortBy: "createdAt",
 						sortOrder: "DESC",
 					})
@@ -96,7 +96,7 @@ const Admin = () => {
 				searchOptions={
 					new URLSearchParams({
 						page: "1",
-						limit: "3",
+						limit: "2",
 						sort: JSON.stringify({
 							name: "asc",
 							code: "asc",

@@ -76,7 +76,7 @@ const Magnifier = (props: any) => {
 				return { x: x, y: y };
 			};
 		}
-	}, [img, hasImage]);
+	}, [img, hasImage, props.imageRef, props.disabled]);
 
 	return (
 		<div className="magnifier-container">

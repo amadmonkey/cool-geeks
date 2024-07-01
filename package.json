@@ -21,7 +21,8 @@
     "react-hook-form": "^7.51.0",
     "react-toastify": "^10.0.5",
     "sass": "^1.71.1",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "tesseract.js": "^5.1.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^8.1.0",

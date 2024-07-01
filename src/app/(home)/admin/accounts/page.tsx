@@ -15,20 +15,17 @@ import { DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
 import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
 import "./page.scss";
+import { Filter } from "@/app/ui/classes/filter";
 
 export default function Accounts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
+	const filter = new Filter();
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 
 	const getAccounts = useCallback(() => {
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "10",
-			sortBy: "createdAt",
-			sortOrder: "DESC",
-		});
+		const searchOptions = new URLSearchParams(filter.values);
 		return fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {

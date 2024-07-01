@@ -165,7 +165,13 @@ const TextInput = (props: any) => {
 		>
 			{props.type === "mini-dropdown" && (
 				<div className={`mini-dropdown ${refNoActive ? "active" : ""}`}>
-					<button className="cg-button" type="button" onClick={toggleMiniDropdown} tabIndex={0}>
+					<button
+						className="cg-button"
+						type="button"
+						onClick={toggleMiniDropdown}
+						tabIndex={0}
+						disabled={props.disabled}
+					>
 						<Image
 							src={`/${miniDropdownVal.name}.png`}
 							height={0}
@@ -211,6 +217,7 @@ const TextInput = (props: any) => {
 				onKeyUp={delayValidate}
 				onChange={props.onChange}
 				required={props.required}
+				disabled={props.disabled}
 			/>
 			{errors.length > 0 && <p className="error-message">{errors[0]}</p>}
 		</div>

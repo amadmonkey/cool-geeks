@@ -21,10 +21,10 @@ const NavSidebar = () => {
 	const [currentDate, setCurrentDate]: any = useState(null);
 	const { push } = useRouter();
 
-	const redirect = (e: any) => {
-		e.preventDefault;
+	const navigate = (e: any, redirect: boolean) => {
+		e.preventDefault();
 		setActivePage(e.target.pathname);
-		push(e.target.href);
+		redirect && push(e.target.href);
 	};
 
 	useEffect(() => {
@@ -102,34 +102,63 @@ const NavSidebar = () => {
 			</header>
 			<ul className="nav-sidebar__list">
 				<li className={`${activePage === "/admin" ? "active" : ""}`}>
-					<Link href="/admin" className="strip" onClick={redirect}>
+					<Link href="/admin" className="strip" onClick={(e: any) => navigate(e, true)}>
 						<IconDashboard />
 						Dashboard
 					</Link>
 				</li>
 				<li className={`${activePage.includes("/admin/receipts") ? "active" : ""}`}>
-					<Link href="/admin/receipts" className="strip" onClick={redirect}>
+					<Link href="/admin/receipts" className="strip" onClick={(e: any) => navigate(e, true)}>
 						<IconReceipt />
 						Receipts
 					</Link>
 				</li>
 				<li className={`${activePage.includes("/admin/accounts") ? "active" : ""}`}>
-					<Link href="/admin/accounts" className="strip" onClick={redirect}>
+					<Link href="/admin/accounts" className="strip" onClick={(e: any) => navigate(e, false)}>
 						<IconAccounts />
 						Accounts
 					</Link>
+					<ul className="__pages __pages__accounts">
+						<li className={`${window.location.pathname === "/admin/accounts" ? "active" : ""}`}>
+							<Link href="/admin/accounts">List</Link>
+						</li>
+						<li
+							className={`${window.location.pathname === "/admin/accounts/create" ? "active" : ""}`}
+						>
+							<Link href="/admin/accounts/create">New Account</Link>
+						</li>
+					</ul>
 				</li>
 				<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
-					<Link href="/admin/subds" className="strip" onClick={redirect}>
+					<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, true)}>
 						<IconSubd />
 						Subdivisions
 					</Link>
+					{/* <ul className="__pages __pages__accounts">
+						<li className={`${window.location.pathname === "/admin/subds" ? "active" : ""}`}>
+							<Link href="/admin/subds">List</Link>
+						</li>
+						<li className={`${window.location.pathname === "/admin/subds/create" ? "active" : ""}`}>
+							<Link href="/admin/subds/create">New Subd</Link>
+						</li>
+					</ul> */}
 				</li>
 				<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
-					<Link href="/admin/settings" className="strip" onClick={(e) => redirect(e)}>
+					<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>
 						<IconSettings />
-						App Settings
+						Settings
 					</Link>
+					<ul className="__pages __pages__settings">
+						<li>
+							<Link href="/admin/settings">Account Settings</Link>
+						</li>
+						<li>
+							<Link href="/admin/settings">App Settings</Link>
+						</li>
+						<li>
+							<Link href="/admin/settings">Notification Settings</Link>
+						</li>
+					</ul>
 				</li>
 				<li>
 					<button

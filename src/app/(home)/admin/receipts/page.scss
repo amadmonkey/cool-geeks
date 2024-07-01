@@ -1,164 +1,158 @@
 @import "../../../variables.scss";
 
+$receipt-height: 500px;
+
 .receipt-cards-container {
-	gap: 50px;
+	gap: 0 30px;
 	display: grid;
 	position: relative;
-	grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	.receipt-card {
+		position: relative;
 		display: flex;
-		flex-direction: row;
-		justify-content: center;
+		flex-direction: column;
+		align-items: center;
 		&__form-group {
 			display: flex;
-			text-align: center;
-			align-items: center;
-			margin-bottom: 10px;
+			text-align: end;
 			flex-direction: column;
 			label {
 				font-size: 11px;
 				font-weight: 800;
 				line-height: 11px;
+				color: lighten($dark, 30%);
 			}
 			span {
-				font-size: 15px;
-				line-height: 15px;
+				font-size: 14px;
+				line-height: 14px;
 			}
 		}
-		.cg-card {
-			top: 50%;
-			width: 250px;
-			height: 300px;
-			transform: translateY(-50%);
-			border-top-left-radius: 0;
-			border-bottom-left-radius: 0;
-		}
 		.image-container {
-			width: 25em;
 			height: auto;
+			width: 100%;
 			display: flex;
 			overflow: hidden;
 			border-radius: 10px;
 			box-shadow: -5px 5px 0 #00000020;
 			img {
 				width: 100%;
-				height: auto;
+				object-fit: cover;
+				height: $receipt-height;
 			}
 		}
-		footer {
-			gap: 10px;
-			width: 85%;
+
+		.receipt-details {
+			width: 90%;
+			z-index: 1;
+			bottom: 80px;
+			height: 150px;
 			display: flex;
-			bottom: -20px;
-			position: absolute;
-			justify-content: center;
-			&.pending {
-				bottom: -30px;
-			}
-			.button-test {
-				cursor: pointer;
-				&:hover {
-					transform-origin: center;
-					// animation: wiggle 1s ease-in;
-					transition: 0.05s ease-in-out;
-					transform: scale(110%);
-				}
-				&.danger {
-					label {
-						color: $danger-dark;
-						border-color: $danger-dark;
-					}
-				}
-				&.success {
-					label {
-						color: $success-dark;
-						border-color: $success-dark;
-					}
-				}
-				svg {
-					left: 50%;
-					width: 50px;
-					position: relative;
-					text-align: center;
-					transform: translateX(-50%);
-				}
-				label {
-					z-index: 2;
-					bottom: 5px;
-					padding: 0 7px;
-					cursor: pointer;
-					font-size: 11px;
-					border-width: 5px;
-					position: relative;
-					border-radius: 20px;
-					font-weight: bolder;
-					border-style: solid;
-					background-color: #fff;
-					box-shadow: -3px 3px 0px lighten($dark, 40%);
-				}
-			}
-			.status {
-				padding: 0 5px;
-				font-weight: 800;
-				border-width: 3px;
-				border-style: solid;
-				border-radius: 10px;
-				&__accepted {
-					color: $success-dark;
-					border-color: $success-dark;
-					background-color: lighten($success-dark, 50%);
-				}
-				&__rejected {
-					color: $danger-dark;
-					border-color: $danger-dark;
-					background-color: lighten($danger-dark, 40%);
-				}
-			}
-		}
-		.cg-card {
-			display: flex;
+			position: relative;
 			align-items: center;
 			flex-direction: column;
 			justify-content: center;
-			// transition: 0.2s ease-in-out;
-			.receipt-card {
-				&__form-group {
-					label {
-						// transition: 0.2s ease-in-out;
-					}
-					> span {
-						// transition: 0.2s ease-in-out;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+			> .header {
+				top: -20px;
+				width: 90%;
+				display: flex;
+				box-sizing: unset;
+				position: absolute;
+				align-items: center;
+				justify-content: space-between;
+				> span,
+				button {
+					color: $info;
+					font-weight: 800;
+					padding: 5px 10px;
+					border-radius: 10px;
+					background-color: #fff;
+					box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+					font-size: 15px;
+					display: flex;
+					gap: 5px;
+					align-items: center;
+					img {
+						height: 15px;
+						width: auto;
 					}
 				}
+				.cutoff-icon {
+					border-radius: 50%;
+					box-sizing: content-box;
+				}
 			}
-			footer {
+			&.accepted {
+				background: linear-gradient(0deg, lighten($success, 20%) 0%, lighten($success, 40%) 50%);
+				.header {
+					> * {
+						background-color: lighten($success, 35%);
+					}
+				}
+				.status {
+					background-color: transparent;
+				}
+			}
+			&.denied {
+				background: linear-gradient(0deg, lighten($danger, 20%) 0%, lighten($danger, 30%) 30%);
+				.header {
+					> * {
+						background-color: lighten($danger, 25%);
+					}
+				}
+				.status {
+					background-color: transparent;
+				}
+			}
+		}
+
+		footer {
+			gap: 10px;
+			width: 70%;
+			top: calc($receipt-height + 70px);
+			display: flex;
+			position: absolute;
+			justify-content: center;
+			button {
+				gap: 5px;
+				width: 50%;
+				height: 30px;
+				display: flex;
+				position: relative;
+				align-items: center;
+				justify-content: center;
+				transition: 0.05s ease-in-out;
+				border-bottom-left-radius: 10px;
+				border-bottom-right-radius: 10px;
+				box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+				label {
+					pointer-events: none;
+				}
 				svg {
-					height: 40px;
+					height: 10px;
 				}
-			}
-			&.ACCEPTED {
-				background-color: $success-dark;
-				.receipt-card {
-					&__form-group {
-						label {
-							color: darken($success, 30%);
-						}
-						> span {
-							color: #fff;
-						}
+				&.danger {
+					color: #fff;
+					background-color: $danger;
+					svg {
+						fill: darken($danger, 5%);
 					}
 				}
-			}
-			&.DENIED {
-				background-color: $danger-dark;
-				.receipt-card {
-					&__form-group {
-						label {
-							color: darken($danger, 30%);
-						}
-						> span {
-							color: #fff;
-						}
+				&.success {
+					color: $success;
+					background-color: #fff;
+					svg {
+						fill: $success;
+					}
+				}
+				&:hover {
+					height: 35px;
+					&.danger {
+						background-color: darken($danger, 5%);
+					}
+					&.success {
+						color: #fff;
+						background-color: lighten($success, 5%);
 					}
 				}
 			}
@@ -170,13 +164,12 @@
 		align-items: center;
 		justify-content: center;
 		.receipt-card {
-			max-width: 800px;
-			width: 80%;
+			width: 50%;
+			max-width: 500px;
 			align-items: center;
 			.cg-card {
 				gap: 10px;
 				top: unset;
-				transform: unset;
 				padding: 50px 0;
 			}
 			&__form-group {
@@ -191,12 +184,13 @@
 		}
 	}
 	button.nav {
-		position: relative;
-		height: 50px;
-		border: 2px solid $primary;
-		border-radius: 10px;
-		padding: 3px;
 		top: 50%;
+		height: 50px;
+		padding: 10px;
+		box-sizing: unset;
+		position: relative;
+		border-radius: 10px;
+		border: 2px solid $primary;
 		svg {
 			width: 40px;
 			height: auto;

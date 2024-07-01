@@ -1,5 +1,6 @@
 $primary: #eca452;
 $dark: #555555;
+$dark-light: lighten($dark, 20%);
 $bg: #f4ede3;
 
 $info: #5576c7;
@@ -11,7 +12,8 @@ $danger-light: #fae0e0;
 
 $box-shadow: -3px 3px 0 #00000040;
 
-// $box-shadow: -5px 5px 0 rgba(0, 0, 0, 0.062745098);
+$box-shadow_solid: -5px 5px 0 rgba(0, 0, 0, 0.062745098);
+$box-shadow_fade: 0 0 20 rgba(0, 0, 0, 0.06);
 
 @mixin for-phone-only {
 	@media (max-width: 599px) {

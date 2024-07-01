@@ -2,7 +2,7 @@ import React from "react";
 import Card from "../../card/card";
 
 const SkeletonReceiptCard = () => {
-	return Array.from(Array(4).keys()).map((_: any, i: number) => {
+	return Array.from(Array(3).keys()).map((_: any, i: number) => {
 		return (
 			<div key={i} className="receipt-card">
 				<div className="image-container skeleton" style={{ backgroundColor: "#fff", height: 400 }}>

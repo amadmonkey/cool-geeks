@@ -12,8 +12,8 @@ export function middleware(req: NextRequest) {
 	console.log("MIDDLEWARE: accessToken", accessToken);
 
 	// if not logged in should not be able to enter protected routes
+
 	if (user) {
-		// TODO: delete cookie if no accesstoken
 		// if logged in
 		const { admin } = JSON.parse(user!.value);
 		if (!admin && pathname.includes("admin"))

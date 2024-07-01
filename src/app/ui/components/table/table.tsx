@@ -1,6 +1,7 @@
 import React from "react";
 
 import "./table.scss";
+import Pagination from "../pagination/pagination";
 
 const Table = ({ children, headers, className, type }: any) => {
 	return (
@@ -16,6 +17,7 @@ const Table = ({ children, headers, className, type }: any) => {
 				</thead>
 				<tbody>{children}</tbody>
 			</table>
+			{/* <Pagination /> */}
 		</div>
 	);
 };

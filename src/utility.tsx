@@ -4,6 +4,11 @@ import IconAccepted from "../public/done.svg";
 import IconDenied from "../public/denied.svg";
 import IconPending from "../public/pending.svg";
 
+const CUTOFF_TYPE = {
+	MID: "MID",
+	END: "END",
+};
+
 const IS_NUMERIC_INPUT = (event: any): Boolean => {
 	return event.key >= 0 && event.key <= 9;
 };
@@ -54,40 +59,40 @@ const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	}
 };
 
-const GET_STATUS = {
+const RECEIPT_STATUS = {
 	FAILED: "FAILED",
 	DENIED: "DENIED",
 	PENDING: "PENDING",
 	ACCEPTED: "ACCEPTED",
 };
 
-const GET_STATUS_BADGE = (status: any) => {
+const RECEIPT_STATUS_BADGE = (status: any) => {
 	switch (status) {
-		case GET_STATUS.ACCEPTED:
+		case RECEIPT_STATUS.ACCEPTED:
 			return <div className="badge badge__accepted">ACCEPTED</div>;
-		case GET_STATUS.PENDING:
+		case RECEIPT_STATUS.PENDING:
 			return <div className="badge">PENDING</div>;
-		case GET_STATUS.FAILED:
+		case RECEIPT_STATUS.FAILED:
 			return <div className="badge badge__denied">FAILED</div>;
 		default:
 			return <div className="badge badge__denied">DENIED</div>;
 	}
 };
 
-const GET_STATUS_ICON = (status: any, styles: any) => {
+const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 	let test = {
 		height: "20px",
 		width: "auto",
 		marginRight: "10px",
 	};
 	if (styles) test = { ...test, ...styles };
-	switch (status.toUpperCase()) {
-		case GET_STATUS.PENDING:
+	switch (status?.toUpperCase()) {
+		case RECEIPT_STATUS.PENDING:
 			return <IconPending style={{ ...test, ...{ fill: "#b6b6b6" } }} height="20" />;
-		case GET_STATUS.ACCEPTED:
-			return <IconAccepted style={{ ...test }} />;
-		case GET_STATUS.DENIED:
-			return <IconDenied style={test} />;
+		case RECEIPT_STATUS.ACCEPTED:
+			return <IconAccepted style={{ ...test }} className="success" />;
+		case RECEIPT_STATUS.DENIED:
+			return <IconDenied style={test} className="danger" />;
 	}
 };
 
@@ -198,14 +203,35 @@ const SKELETON_TYPES = {
 	SUBD: "subd",
 	PLAN: "plan",
 	RECEIPTS: "receipts",
-	RECEIPT_CARD: "receipt-card",
 	ACCOUNTS: "accounts",
+	RECEIPT_FORM: "receipt-form",
+	RECEIPT_CARD: "receipt-card",
+	HISTORY_TABLE: "history-table",
 };
 
 const VIEW_MODES = {
 	GRID: "GRID",
 	LIST: "LIST",
 	CAROUSEL: "CAROUSEL",
+};
+
+const MONTH_NAMES = [
+	"January",
+	"February",
+	"March",
+	"April",
+	"May",
+	"June",
+	"July",
+	"August",
+	"September",
+	"October",
+	"November",
+	"December",
+];
+
+const getMonthName = (date: Date) => {
+	return MONTH_NAMES[date.getMonth() + 1];
 };
 
 const TABLE_HEADERS = {
@@ -312,9 +338,9 @@ export {
 	ENHANCE_FORMAT,
 	TABLE_HEADERS,
 	DEFAULT_VALUES,
-	GET_STATUS,
-	GET_STATUS_BADGE,
-	GET_STATUS_ICON,
+	RECEIPT_STATUS,
+	RECEIPT_STATUS_BADGE,
+	RECEIPT_STATUS_ICON,
 	IS_MODIFIER_KEY,
 	IS_NUMERIC_INPUT,
 	VALID_IMG_TYPES,
@@ -322,4 +348,7 @@ export {
 	DATE_READABLE,
 	REFRESH_TOKEN,
 	VIEW_MODES,
+	CUTOFF_TYPE,
+	MONTH_NAMES,
+	getMonthName,
 };

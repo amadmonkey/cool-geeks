@@ -11,7 +11,8 @@ const FileInput = (props: any) => {
 	const [file, setFile] = useState<File | null>(null);
 	const defaultSrc = "/file-upload.svg";
 
-	const handleFileChange = (file: File) => {
+	const handleFileChange = async (file: File) => {
+		await removeFile();
 		if (VALID_IMG_TYPES.includes(file.type)) {
 			imageRef.current!.src = URL.createObjectURL(file);
 			setFile(file);
@@ -25,8 +26,8 @@ const FileInput = (props: any) => {
 		}
 	};
 
-	const removeFile = (e: any) => {
-		e.stopPropagation();
+	const removeFile = async (e?: any) => {
+		e && e.stopPropagation();
 		imageRef.current!.src = defaultSrc;
 		setFile(null);
 		inputRef.current!.value = "";
@@ -51,6 +52,7 @@ const FileInput = (props: any) => {
 				type="file"
 				accept=".png,.jpg,.jpeg,.pdf"
 				onChange={(e: any) => handleFileChange(e.currentTarget.files[0])}
+				disabled={props.disabled}
 			/>
 			<div className="label" style={{ gap: "5px" }}>
 				<Magnifier imageRef={imageRef} disabled={props.mini ? true : false}>

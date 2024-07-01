@@ -1,4 +1,5 @@
 @import "../../../variables.scss";
+
 .history-table {
 	width: 100%;
 	height: 600px;
@@ -12,6 +13,28 @@
 			align-items: center;
 			justify-content: center;
 			grid-template-columns: 35% 10% 35% 10% 10%;
+			&.failed {
+				grid-template-columns: 35% 10% 55%;
+				td:first-child {
+					span {
+						background-color: lighten($danger, 20%);
+					}
+					&::after {
+						background-color: $danger;
+					}
+				}
+				td:last-child {
+					height: 100%;
+					border-radius: 5px;
+					box-shadow: -3px 3px 0 #00000030;
+					background-color: lighten($danger, 20%);
+					span {
+						color: $danger;
+						font-size: 13px;
+						font-weight: 800;
+					}
+				}
+			}
 			td {
 				display: flex;
 				text-align: center;

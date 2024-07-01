@@ -129,10 +129,11 @@ const SubdCard = (props: any) => {
 	};
 
 	const getImage = async () => {
-		const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
-			type: "qr",
-			filename: props.subd.gcash.qr.filename,
-		})}`;
+		const url = `${process.env.NEXT_PUBLIC_API}/qr/${props.subd.gcash.qr.filename}`;
+		// const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
+		// 	type: "qr",
+		// 	filename: props.subd.gcash.qr.filename,
+		// })}`;
 		// const url = `http://localhost:4000/qr/${props.subd.gcash.qr.filename}`;
 		return await fetch(url, {
 			method: "GET",
@@ -178,7 +179,7 @@ const SubdCard = (props: any) => {
 			getImage()
 				.then((res) => res.blob())
 				.then((blob) => {
-					const file = new File([blob], qr.filename, { type: blob.type });
+					const file = new File([blob], qr.filename, { type: qr.contentType });
 					setForm({
 						_id: subd._id,
 						name: subd.name,
@@ -264,7 +265,9 @@ const SubdCard = (props: any) => {
 											</FormGroup>
 										</div>
 										<div style={{ display: "flex", gap: 10, width: "50%" }}>
-											<FileInput name="qr" value={form.qr} onChange={updateForm} mini />
+											{form.qr && (
+												<FileInput name="qr" value={form.qr} onChange={updateForm} mini />
+											)}
 										</div>
 									</div>
 									<Table
@@ -450,6 +453,7 @@ const SubdCard = (props: any) => {
 					</Card>
 				)
 			)}
+			{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 		</>
 	);
 };

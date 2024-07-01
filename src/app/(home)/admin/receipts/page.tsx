@@ -2,7 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { GET_STATUS, GET_STATUS_BADGE, SKELETON_TYPES, TABLE_HEADERS, VIEW_MODES } from "@/utility";
+import {
+	CUTOFF_TYPE,
+	MONTH_NAMES,
+	RECEIPT_STATUS,
+	RECEIPT_STATUS_BADGE,
+	SKELETON_TYPES,
+	TABLE_HEADERS,
+	VIEW_MODES,
+} from "@/utility";
 
 import Image from "next/image";
 import Card from "@/app/ui/components/card/card";
@@ -138,7 +146,23 @@ export default function Receipts(props: any) {
 							filteredList
 								.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
 								.map((item: any, i: number) => {
+									const currentDate = new Date();
 									const receiptDate = new Date(item.receiptDate);
+
+									const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+									const utc1 = Date.UTC(
+										currentDate.getFullYear(),
+										currentDate.getMonth(),
+										currentDate.getDate()
+									);
+									const utc2 = Date.UTC(
+										receiptDate.getFullYear(),
+										receiptDate.getMonth(),
+										receiptDate.getDate()
+									);
+
+									const days = Math.floor((utc2 - utc1) / _MS_PER_DAY);
+
 									return (
 										<div key={i} className="receipt-card">
 											<div className="image-container">
@@ -150,67 +174,78 @@ export default function Receipts(props: any) {
 													unoptimized
 												/>
 											</div>
-											<Card>
-												<div className="receipt-card__form-group">
-													<label htmlFor="">USER</label>
-													<span>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
-												</div>
-												{/* <div className="receipt-card__form-group">
-													<label htmlFor="">SUBD</label>
-													<span>{`${item.planRef.subdRef.name}`}</span>
-												</div> */}
-												<div className="receipt-card__form-group">
-													<label htmlFor="">CUTOFF</label>
-													<span>{`${item.cutoff}`}</span>
-												</div>
-												{/* <div className="receipt-card__form-group">
-													<label htmlFor="">RECEIPT DATE</label>
-													<span>{`${receiptDate.toLocaleDateString("default", {
-														month: "long",
-													})} ${receiptDate.getFullYear()}`}</span>
-												</div> */}
-												<div className="receipt-card__form-group">
-													<label htmlFor="">PLAN</label>
+											<Card className={`receipt-details ${item.status?.toLowerCase() || ""}`}>
+												<div className="header">
 													<span>
-														{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
+														{`${item.userRef.firstName} ${item.userRef.lastName}`}
+														{item.cutoff === CUTOFF_TYPE.MID ? (
+															<Image
+																src={`/midmonth.svg`}
+																height={0}
+																width={0}
+																sizes="100vw"
+																alt="MIDMONTH ICON"
+															/>
+														) : (
+															<Image
+																src={`/end-of-month.svg`}
+																height={0}
+																width={0}
+																sizes="100vw"
+																alt="END OF MONTH ICON"
+															/>
+														)}
 													</span>
+													<button className="invisible">...</button>
 												</div>
-												<div className="receipt-card__form-group">
-													<label htmlFor="">REF NUMBER</label>
-													<span>{`${item.referenceNumber}`}</span>
+												<div style={{ display: "flex", gap: 20 }}>
+													<div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+														<div className="receipt-card__form-group">
+															<label htmlFor="">PLAN</label>
+															<span>
+																{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
+															</span>
+														</div>
+														<div className="receipt-card__form-group">
+															<label htmlFor="">REF NUMBER</label>
+															<span>{`${item.referenceNumber}`}</span>
+														</div>
+														<div className="receipt-card__form-group">
+															<label htmlFor="">DUE FOR</label>
+															{/* <span>{MONTH_NAMES[receiptDate.getMonth()]}</span> */}
+															<span>{receiptDate.toDateString()}</span>
+														</div>
+													</div>
+													<div
+														className="receipt-card__form-group"
+														style={{ alignItems: "center", gap: 0, justifyContent: "center" }}
+													>
+														<label htmlFor="">DUE IN</label>
+														<span style={{ fontSize: 50, lineHeight: "50px" }}>
+															{Math.abs(days)}
+														</span>
+														<span>{`days${days < 0 ? " ago" : ""}`}</span>
+													</div>
 												</div>
-												<footer
-													className={item.status.toLowerCase()}
-													style={
-														item.status !== GET_STATUS.PENDING ? { transform: "rotate(-5deg)" } : {}
-													}
-												>
-													{item.status === GET_STATUS.PENDING ? (
-														<>
-															<button
-																className="button-test danger invisible"
-																onClick={() => confirmUpdateReceipt(item, false)}
-															>
-																<IconDeny />
-																<label>REJECT</label>
-															</button>
-															<button
-																className="button-test success invisible"
-																onClick={() => confirmUpdateReceipt(item, true)}
-															>
-																<IconAccept />
-																<label>ACCEPT</label>
-															</button>
-														</>
-													) : item.status === GET_STATUS.ACCEPTED ? (
-														// <IconAccept />
-														<div className="status status__accepted">ACCEPTED</div>
-													) : (
-														// <IconDeny />
-														<div className="status status__rejected">REJECTED</div>
-													)}
-												</footer>
 											</Card>
+											{item.status === RECEIPT_STATUS.PENDING && (
+												<footer>
+													<button
+														className="danger invisible"
+														onClick={() => confirmUpdateReceipt(item, false)}
+													>
+														<IconDeny />
+														<label>REJECT</label>
+													</button>
+													<button
+														className="success invisible"
+														onClick={() => confirmUpdateReceipt(item, true)}
+													>
+														<IconAccept />
+														<label>ACCEPT</label>
+													</button>
+												</footer>
+											)}
 										</div>
 									);
 								})
@@ -282,7 +317,7 @@ export default function Receipts(props: any) {
 															width={0}
 															style={{ height: "20px", width: "auto" }}
 															sizes="100vw"
-															alt="Picture of the author"
+															alt="Image icon button"
 														/>
 													</button>
 												</td>
@@ -293,9 +328,9 @@ export default function Receipts(props: any) {
 														alignContent: "center",
 													}}
 												>
-													{GET_STATUS_BADGE(item.status)}
+													{RECEIPT_STATUS_BADGE(item.status)}
 												</td>
-												{item.status === "PENDING" ? (
+												{item.status === RECEIPT_STATUS.PENDING ? (
 													<td>
 														<label htmlFor="deny" className="sr-only">
 															Deny
@@ -425,15 +460,55 @@ export default function Receipts(props: any) {
 				>
 					{selectedReceipt && (
 						<>
-							<h1 style={{ fontSize: "25px", marginBottom: "30px" }}>
+							{selectedReceipt.accepted ? (
+								<>
+									<h1
+										style={{
+											fontSize: "15px",
+											marginBottom: "30px",
+											fontWeight: 800,
+											letterSpacing: "5px",
+										}}
+									>
+										ACCEPTING RECEIPT
+									</h1>
+									<p style={{ textAlign: "center" }}>
+										Are you sure you want to accept this receipt from{" "}
+										<span style={{ fontWeight: 800 }}>
+											{`${selectedReceipt.userRef.firstName} ${selectedReceipt.userRef.lastName}`}
+										</span>
+										?
+									</p>
+								</>
+							) : (
+								<>
+									<h1
+										style={{
+											fontSize: "15px",
+											marginBottom: "30px",
+											fontWeight: 800,
+											letterSpacing: "5px",
+										}}
+									>
+										REJECT RECEIPT
+									</h1>
+									<label
+										htmlFor="reject-reason"
+										style={{ fontWeight: 800, fontSize: "13px", alignSelf: "start" }}
+									>
+										Enter reason for rejection (Optional)
+									</label>
+									<textarea
+										name="reject-reason"
+										id="reject-reason"
+										rows={5}
+										style={{ resize: "none", padding: "5px 10px" }}
+									></textarea>
+								</>
+							)}
+							{/* <h1 style={{ fontSize: "25px", marginBottom: "30px" }}>
 								{selectedReceipt.accepted ? "Accept" : "Deny"} this receipt?
-							</h1>
-							{/* <div>
-								<Switch
-									style={{ transform: "scale(0.6)" }}
-									label="Don't ask me again until next session"
-								/>
-							</div> */}
+							</h1> */}
 							<div
 								style={{
 									display: "flex",
@@ -456,6 +531,7 @@ export default function Receipts(props: any) {
 							</div>
 						</>
 					)}
+					{/* <pre>{JSON.stringify(selectedReceipt, undefined, 2)}</pre> */}
 				</Card>
 			</Modal>
 		</section>

@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
+import { createWorker } from "tesseract.js";
 import Link from "next/link";
 import Image from "next/image";
 import HistoryTable from "@/app/ui/components/history-table/history-table";
@@ -16,8 +17,15 @@ import IconQR from "../../../public/qr.svg";
 import IconLoading from "../../../public/loading.svg";
 import IconDownload from "../../../public/download.svg";
 
+import { CUTOFF_TYPE, RECEIPT_STATUS, RECEIPT_STATUS_ICON, getMonthName } from "@/utility";
+
 import "./page.scss";
-import { GET_STATUS_ICON } from "@/utility";
+
+const worker = createWorker("eng", 1, {
+	logger: (m: any) => {
+		console.log(m);
+	},
+});
 
 const defaultForm = {
 	receipt: "",
@@ -38,19 +46,56 @@ type Receipt = {
 	referenceNumber: string;
 	receiptName: string;
 	status: string;
+	receiptDate: any;
 	createdAt: string;
 	updatedAt: string;
 };
 
 export default function Home() {
 	const { push } = useRouter();
+	const [inputInfo, setInputInfo] = useState(
+		"Select the correct payment method you used and enter the reference number"
+	);
+	const [inputDisabled, setInputDisabled] = useState(false);
 	const [form, setForm] = useState(defaultForm);
 	const [historyList, setHistoryList] = useState<any>(null);
 	const [formShown, setFormShown] = useState<Boolean | null>(null);
 	const [currentReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
 
+	const recognize = async (file: any) => {
+		// add loading
+		setInputDisabled(true);
+		const ret = await (await worker).recognize(file);
+		console.log("OCR TEXT", ret.data.text);
+
+		let hasReferenceNumber = false;
+		await Promise.all(
+			ret.data.text.split("\n").map(async (item) => {
+				if (item.includes("Ref No.")) {
+					updateForm({
+						target: {
+							name: "referenceNumber",
+							value: item.split(" ").slice(2, 5).join(" "),
+						},
+					});
+					hasReferenceNumber = true;
+				}
+			})
+		);
+
+		setInputInfo(
+			hasReferenceNumber
+				? "Reference number found! Please check if we got it right and update if we did not."
+				: "We have not found anything that resembles a reference number in the uploaded image. Please check if you uploaded the correct image. If you think you did, please disregard this message."
+		);
+
+		setInputDisabled(false);
+	};
+
 	const updateForm = (e: any) => {
+		e.target.type === "file" && e.target.value && recognize(e.target.value);
+
 		const { name, value } = e.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
@@ -131,6 +176,22 @@ export default function Home() {
 		}).then((res) => res.json());
 	};
 
+	const getNextMonth = () => {
+		const date = new Date(currentReceipt?.receiptDate);
+		return `${getMonthName(date)} ${date.getFullYear()}`;
+	};
+
+	const getDaysLeft = () => {
+		const currentDate = new Date();
+		const receiptDate = new Date(currentReceipt?.receiptDate);
+
+		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
+		const utc1 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
+		const utc2 = Date.UTC(receiptDate.getFullYear(), receiptDate.getMonth(), receiptDate.getDate());
+
+		return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	};
+
 	useEffect(() => {
 		let mounted = true;
 		getHistoryList()
@@ -141,7 +202,11 @@ export default function Home() {
 						case 200:
 							setHistoryList(data.list);
 							setCurrentReceipt(data.currentReceipt);
-							setFormShown(data.currentReceipt ? false : true);
+							setFormShown(
+								data.currentReceipt && data.currentReceipt.status !== RECEIPT_STATUS.FAILED
+									? false
+									: true
+							);
 							break;
 						case 401:
 							push("/login");
@@ -175,7 +240,7 @@ export default function Home() {
 						</div>
 					) : !formShown ? (
 						<Card className="receipt-status-container">
-							{GET_STATUS_ICON(currentReceipt?.status, {
+							{RECEIPT_STATUS_ICON(currentReceipt?.status, {
 								height: "100px",
 								marginBottom: "20px",
 							})}
@@ -195,6 +260,13 @@ export default function Home() {
 									<span>DATE SUBMITTED</span>
 									<p>
 										{currentReceipt && new Date(currentReceipt.createdAt.toString()).toDateString()}
+									</p>
+								</li>
+								<li className="summary__item">
+									<span>FOR</span>
+									<p>
+										{currentReceipt &&
+											new Date(currentReceipt.receiptDate.toString()).toDateString()}
 									</p>
 								</li>
 								<li className="summary__item">
@@ -222,7 +294,12 @@ export default function Home() {
 								label="Receipt Receipt/Screenshot"
 								help={{ icon: <IconQR />, body: helpTemplate() }}
 							>
-								<FileInput name="receipt" value={form.receipt} onChange={updateForm} />
+								<FileInput
+									name="receipt"
+									value={form.receipt}
+									onChange={updateForm}
+									disabled={inputDisabled}
+								/>
 							</FormGroup>
 							<FormGroup label="Receipt Transaction/Reference Number" required>
 								<TextInput
@@ -245,34 +322,34 @@ export default function Home() {
 											icon: "", // blob
 										},
 									]}
+									disabled={inputDisabled}
 									required
 								/>
-								<p className="input-info">
-									Select the correct payment method you used and enter the reference number
-								</p>
+								<p className="input-info">{inputInfo}</p>
 							</FormGroup>
-							<div className="summary">
-								<div
-									style={{
-										display: "flex",
-										justifyContent: "center",
-										alignItems: "center",
-										gap: "20px",
-									}}
-								>
-									<span
-										style={{
-											textAlign: "right",
-											width: "100%",
-											fontSize: "14px",
-											letterSpacing: "8px",
-										}}
-									>
-										RATE
-									</span>
-									<p style={{ width: "100%", fontWeight: "800", fontSize: "30px" }}>₱1000</p>
-								</div>
-							</div>
+
+							<ul className="summary">
+								<li className="summary__item">
+									<span>PLAN</span>
+									<p>{user.planRef.name}</p>
+								</li>
+								<li className="summary__item">
+									<span>RATE</span>
+									<p>₱{user.planRef.price}</p>
+								</li>
+								<li className="summary__item">
+									<span>CUTOFF</span>
+									<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
+								</li>
+								<li className="summary__item">
+									<span>RECEIPT FOR</span>
+									<p>{getNextMonth()}</p>
+								</li>
+								<li className="summary__item">
+									<span>DUE IN</span>
+									<p>{getDaysLeft()} days</p>
+								</li>
+							</ul>
 							<FormGroup>
 								<Button type="submit" className="info">
 									SEND RECEIPT
@@ -280,7 +357,7 @@ export default function Home() {
 							</FormGroup>
 						</form>
 					)}
-					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
+					{/* <pre>{JSON.stringify(currentReceipt, undefined, 2)}</pre> */}
 				</section>
 				<section
 					style={{

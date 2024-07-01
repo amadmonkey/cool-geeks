@@ -43,6 +43,10 @@
 		border-radius: 5px;
 		background-color: transparent;
 		box-shadow: -3px 3px 0 #00000030;
+		&:disabled {
+			background-color: lighten($dark, 50%);
+			border-color: lighten($dark, 40%);
+		}
 	}
 	.error {
 		border-color: $danger;
@@ -60,24 +64,28 @@
 			}
 		}
 		button {
+			top: 0;
+			z-index: 2;
 			width: 50px;
 			height: 40px;
-			background-color: transparent;
-			z-index: 2;
 			border: none;
 			box-shadow: none;
-			top: 0;
+			background-color: transparent;
+			&:disabled {
+				filter: grayscale(100%);
+				pointer-events: none;
+			}
 			img: {
 				height: 25px;
 			}
 			.down {
-				display: inline-block;
-				position: relative;
 				width: 0;
 				top: 5px;
 				height: 0;
 				z-index: 2;
 				right: -10px;
+				position: relative;
+				display: inline-block;
 				border: 5px solid transparent;
 				border-top-color: $dark;
 			}
@@ -111,20 +119,6 @@
 				&:hover,
 				&:focus {
 					background-color: #e4e4e4;
-				}
-				&:not(:last-child) {
-					// &::after {
-					// 	left: 50%;
-					// 	width: 80%;
-					// 	height: 3px;
-					// 	content: "";
-					// 	bottom: -2px;
-					// 	display: flex;
-					// 	position: absolute;
-					// 	border-radius: 3px;
-					// 	transform: translateX(-50%);
-					// 	background-color: #e4e4e4;
-					// }
 				}
 			}
 			img {

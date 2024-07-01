@@ -287,7 +287,7 @@ export default function AddAccount() {
 											height={0}
 											width={0}
 											sizes="100vw"
-											alt="Picture of the author"
+											alt="Midmonth icon"
 										/>
 										<input type="radio" name="cutoff" value="MID" onChange={updateForm} />
 										<span>MIDMONTH</span>
@@ -298,7 +298,7 @@ export default function AddAccount() {
 											height={0}
 											width={0}
 											sizes="100vw"
-											alt="Picture of the author"
+											alt="End of month icon"
 										/>
 										<input type="radio" name="cutoff" value="END" onChange={updateForm} />
 										<span>END OF MONTH</span>

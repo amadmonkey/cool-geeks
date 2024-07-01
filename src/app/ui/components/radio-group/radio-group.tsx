@@ -8,21 +8,20 @@ const RadioGroup = (props: any) => {
 			{props.list &&
 				props.list.map((item: any, i: number) => {
 					return (
-						<>
+						<div className="radio-toggle__item" key={`${item.name}-${i}`}>
 							<input
-								key={`${item.name}-${i}`}
 								type="radio"
-								className="radio-toggle__input"
+								className="radio-toggle__item__input"
 								name={`item-${item.name}-${i}`}
 								id={`item-${item.name}-${i}`}
 								checked={props.selected === item.name}
 								value={item.name}
 								onChange={() => props.onChange(item.name)}
 							/>
-							<label htmlFor={`item-${item.name}-${i}`} className="radio-toggle__label">
+							<label htmlFor={`item-${item.name}-${i}`} className="radio-toggle__item__label">
 								{item.label}
 							</label>
-						</>
+						</div>
 					);
 				})}
 		</div>

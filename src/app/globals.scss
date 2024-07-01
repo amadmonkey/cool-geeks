@@ -7,7 +7,7 @@
 html,
 body {
 	height: 100%;
-	background-color: #f4ede3;
+	background-color: $bg;
 	color: #626262;
 	line-height: 1.5;
 	-webkit-font-smoothing: antialiased;
@@ -39,6 +39,10 @@ textarea,
 select {
 	/* font: inherit; */
 	color: #626262;
+	// &:focus {
+	// 	outline: none;
+	// 	border-color: $info;
+	// }
 }
 p,
 h1,
@@ -79,6 +83,12 @@ input::-webkit-inner-spin-button {
 
 input[type="number"] {
 	-moz-appearance: textfield; /* Firefox */
+}
+
+textarea {
+	width: 100%;
+	border: 2px solid $dark;
+	border-radius: 5px;
 }
 
 a,
@@ -159,24 +169,24 @@ ul {
 .summary {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 5px;
 	li {
 		list-style-type: none;
 	}
 	&__item {
-		gap: 20px;
+		gap: 10px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		> span {
 			width: 300px;
-			font-size: 11px;
+			font-size: 10px;
 			text-align: right;
 			letter-spacing: 3px;
 		}
 		> p {
 			width: 100%;
-			font-size: 20px;
+			font-size: 15px;
 			font-weight: 800;
 		}
 	}
@@ -385,4 +395,12 @@ section {
 		background: rgb(2, 0, 36);
 		background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
 	}
+}
+
+.success {
+	fill: $success;
+}
+
+.danger {
+	fill: $danger;
 }

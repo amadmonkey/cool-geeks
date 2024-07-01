@@ -55,6 +55,7 @@ const LoginForm = () => {
 			}
 		} catch (e) {
 			console.log("login catch", e);
+			setError("Server error. Please try again later or contact [number here].");
 		}
 	};
 
@@ -74,7 +75,7 @@ const LoginForm = () => {
 				width={0}
 				sizes="100vw"
 				style={{ height: "100px", width: "auto", marginBottom: "10px", zIndex: 0 }}
-				alt="Picture of the author"
+				alt="Logo head"
 			/>
 			<Image
 				src={`/geek-text.png`}
@@ -82,7 +83,7 @@ const LoginForm = () => {
 				width={0}
 				sizes="100vw"
 				style={{ height: "37px", width: "auto", zIndex: 0 }}
-				alt="Picture of the author"
+				alt="Logo text"
 			/>
 			<h1
 				style={{

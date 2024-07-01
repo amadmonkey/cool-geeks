@@ -4,7 +4,7 @@
 	&__subds {
 		grid-gap: 30px 20px !important;
 		display: grid !important;
-		grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 		.add-subdivision {
 			// height: 500px;
 			color: $dark;

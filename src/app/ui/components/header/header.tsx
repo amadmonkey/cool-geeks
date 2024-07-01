@@ -66,7 +66,7 @@ const Header = () => {
 					width={0}
 					sizes="100vw"
 					style={{ height: "30px", width: "auto" }}
-					alt="Picture of the author"
+					alt="Logo head"
 				/>
 				<Image
 					src={`/geek-text.png`}
@@ -74,7 +74,7 @@ const Header = () => {
 					width={0}
 					sizes="100vw"
 					style={{ height: "20px", width: "auto" }}
-					alt="Picture of the author"
+					alt="Logo text"
 				/>
 			</Link>
 			<DetectOutsideClick action={() => setUserDropdownActive(false)} style={{ display: "flex" }}>
@@ -91,7 +91,7 @@ const Header = () => {
 							height={0}
 							width={0}
 							sizes="100vw"
-							alt="Picture of the author"
+							alt="Dropdown Caret icon"
 						/>
 					</button>
 					<div className="user-option-list">
