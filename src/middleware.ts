@@ -6,10 +6,10 @@ const outRoutes = ["/login", "/register"];
 export function middleware(req: NextRequest) {
 	const { origin, pathname } = req.nextUrl;
 	const user = req.cookies.get("user");
-	const accessToken = req.cookies.get("accessToken");
+	// const accessToken = req.cookies.get("accessToken");
 
-	console.log("MIDDLEWARE: userToken", user);
-	console.log("MIDDLEWARE: accessToken", accessToken);
+	// console.log("MIDDLEWARE: accessToken", accessToken);
+	// console.log("MIDDLEWARE: refreshToken", req.cookies.get("refreshToken"));
 
 	// if not logged in should not be able to enter protected routes
 

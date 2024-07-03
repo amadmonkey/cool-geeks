@@ -16,6 +16,7 @@ import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
 import "./page.scss";
 import { Filter } from "@/app/ui/classes/filter";
+import Section from "@/app/ui/components/section/section";
 
 export default function Accounts(props: any) {
 	const { push } = useRouter();
@@ -115,27 +116,7 @@ export default function Accounts(props: any) {
 	}, []);
 
 	return (
-		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<header className="page-header">
-				<h1
-					className="section-title"
-					style={{
-						display: "flex",
-						marginBottom: "unset",
-						gap: "5px",
-						alignItems: "center",
-					}}
-				>
-					<IconAccounts />
-					{props.title || "Accounts"}
-				</h1>
-				<div>
-					<Link href="/admin/accounts/create" className="has-icon outline">
-						<IconAddUser style={{ height: "25px", width: "auto" }} />
-						<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
-					</Link>
-				</div>
-			</header>
+		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
 			<Table
 				type="accounts"
 				headers={TABLE_HEADERS.accounts}
@@ -214,6 +195,40 @@ export default function Accounts(props: any) {
 					<ListEmpty></ListEmpty>
 				)}
 			</Table>
-		</section>
+		</Section>
+		// <section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+		// 	<header className="page-header">
+		// 		<h1
+		// 			className="section-title"
+		// 			style={{
+		// 				display: "flex",
+		// 				marginBottom: "unset",
+		// 				gap: "5px",
+		// 				alignItems: "center",
+		// 			}}
+		// 		></h1>
+		// 		<div>
+		// 			<Link href="/admin/accounts/create" className="has-icon outline">
+		// 				<IconAddUser style={{ height: "25px", width: "auto" }} />
+		// 				<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
+		// 			</Link>
+		// 		</div>
+		// 	</header>
+		// </section>
 	);
 }
+
+const sectionTitle = (title: string) => (
+	<>
+		<IconAccounts />
+		{title || "Accounts"}
+	</>
+);
+const sectionOthers = () => (
+	<div>
+		<Link href="/admin/accounts/create" className="has-icon outline">
+			<IconAddUser style={{ height: "25px", width: "auto" }} />
+			<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
+		</Link>
+	</div>
+);

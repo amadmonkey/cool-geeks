@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import Button from "@/app/ui/components/button/button";
+import Section from "@/app/ui/components/section/section";
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
 
 import IconAddUser from "../../../../../../public/add-user.svg";
-
 import "./page.scss";
 
 export default function AddAccount() {
@@ -114,24 +114,8 @@ export default function AddAccount() {
 	};
 
 	return (
-		<section
-			style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
-		>
-			<header className="page-header">
-				<h1
-					className="section-title"
-					style={{
-						display: "flex",
-						marginBottom: "unset",
-						gap: "5px",
-						alignItems: "center",
-					}}
-				>
-					<IconAddUser />
-					Create New Account
-				</h1>
-			</header>
-			<div style={{ display: "flex", gap: 50 }}>
+		<Section title={sectionTitle}>
+			<div style={{ display: "flex", justifyContent: "center", gap: 50 }}>
 				<form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 50 }}>
 					<div style={{ display: "flex", flexDirection: "row", gap: 50 }}>
 						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -321,15 +305,28 @@ export default function AddAccount() {
 					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 				</form>
 			</div>
-			{/* <Modal>
-				<Card style={{ width: "400px" }}>
-					<span>ACCOUNT NUMBER</span>
-					<h1>123456789</h1>
-					<Link href="/register" className="cg-button" style={{ marginTop: "20px" }}>
-						<span>CONTINUE</span>
-					</Link>
-				</Card>
-			</Modal> */}
-		</section>
+		</Section>
+		// <section
+		// 	style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
+		// >
+		// 	<header className="page-header">
+		// 		<h1
+		// 			className="section-title"
+		// 			style={{
+		// 				display: "flex",
+		// 				marginBottom: "unset",
+		// 				gap: "5px",
+		// 				alignItems: "center",
+		// 			}}
+		// 		></h1>
+		// 	</header>
+		// </section>
 	);
 }
+
+const sectionTitle = (
+	<>
+		<IconAddUser />
+		Create New Account
+	</>
+);

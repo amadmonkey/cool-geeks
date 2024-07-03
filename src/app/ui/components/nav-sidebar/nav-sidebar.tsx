@@ -20,6 +20,7 @@ const NavSidebar = () => {
 	const pathname = usePathname();
 	const [currentDate, setCurrentDate]: any = useState(null);
 	const { push } = useRouter();
+	const [windowPathname, setWindowPathname] = useState(window.location.pathname);
 
 	const navigate = (e: any, redirect: boolean) => {
 		e.preventDefault();
@@ -70,6 +71,8 @@ const NavSidebar = () => {
 		}
 	};
 
+	useEffect(() => {}, []);
+
 	return (
 		<div className="nav-sidebar">
 			<header className="nav-sidebar__header">
@@ -119,12 +122,10 @@ const NavSidebar = () => {
 						Accounts
 					</Link>
 					<ul className="__pages __pages__accounts">
-						<li className={`${window.location.pathname === "/admin/accounts" ? "active" : ""}`}>
+						<li className={`${windowPathname === "/admin/accounts" ? "active" : ""}`}>
 							<Link href="/admin/accounts">List</Link>
 						</li>
-						<li
-							className={`${window.location.pathname === "/admin/accounts/create" ? "active" : ""}`}
-						>
+						<li className={`${windowPathname === "/admin/accounts/create" ? "active" : ""}`}>
 							<Link href="/admin/accounts/create">New Account</Link>
 						</li>
 					</ul>
@@ -135,10 +136,10 @@ const NavSidebar = () => {
 						Subdivisions
 					</Link>
 					{/* <ul className="__pages __pages__accounts">
-						<li className={`${window.location.pathname === "/admin/subds" ? "active" : ""}`}>
+						<li className={`${windowPathname === "/admin/subds" ? "active" : ""}`}>
 							<Link href="/admin/subds">List</Link>
 						</li>
-						<li className={`${window.location.pathname === "/admin/subds/create" ? "active" : ""}`}>
+						<li className={`${windowPathname === "/admin/subds/create" ? "active" : ""}`}>
 							<Link href="/admin/subds/create">New Subd</Link>
 						</li>
 					</ul> */}

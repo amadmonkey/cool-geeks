@@ -2,18 +2,17 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { SKELETON_TYPES } from "@/utility";
 
 import Modal from "@/app/ui/components/modal/modal";
 import SubdCard from "@/app/ui/components/subd-card/subd-card";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import Section from "@/app/ui/components/section/section";
+import Skeleton from "@/app/ui/components/skeleton/skeleton";
 
 import IconSubd from "../../../../../public/subd.svg";
-import IconLoading from "../../../../../public/loading.svg";
 import IconSubdAdd from "../../../../../public/subd-add.svg";
-
 import "./page.scss";
-import Skeleton from "@/app/ui/components/skeleton/skeleton";
-import { SKELETON_TYPES } from "@/utility";
 
 const Subds = (props: any) => {
 	const { push } = useRouter();
@@ -145,27 +144,7 @@ const Subds = (props: any) => {
 	}, []);
 
 	return (
-		<section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-			<header className="page-header">
-				<h1
-					className="section-title"
-					style={{
-						gap: "5px",
-						display: "flex",
-						marginBottom: "unset",
-						alignItems: "center",
-					}}
-				>
-					<IconSubd />
-					{props.title || "Subdivisions"}
-				</h1>
-				<div>
-					<button type="button" className="has-icon outline" onClick={() => setCreateIsShown(true)}>
-						<IconSubdAdd style={{ height: "25px", width: "auto" }} />
-						<span style={{ fontSize: "16px" }}>ADD SUBDIVISION</span>
-					</button>
-				</div>
-			</header>
+		<Section title={sectionTitle(props.title)} others={sectionExtras()}>
 			<div className={`content content__subds ${filteredList === null ? "loading" : ""}`}>
 				{filteredList === null ? (
 					<Skeleton type={SKELETON_TYPES.SUBD} />
@@ -203,8 +182,24 @@ const Subds = (props: any) => {
 					handleSubmit={handleSubmit}
 				/>
 			</Modal>
-		</section>
+		</Section>
 	);
 };
+
+const sectionTitle = (title: string) => (
+	<>
+		<IconSubd />
+		{title || "Subdivisions"}
+	</>
+);
+
+const sectionExtras = () => (
+	<div>
+		<button type="button" className="has-icon outline">
+			<IconSubdAdd style={{ height: "25px", width: "auto" }} />
+			<span style={{ fontSize: "16px" }}>ADD SUBDIVISION</span>
+		</button>
+	</div>
+);
 
 export default Subds;

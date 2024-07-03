@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
 	CUTOFF_TYPE,
-	MONTH_NAMES,
 	RECEIPT_STATUS,
 	RECEIPT_STATUS_BADGE,
 	SKELETON_TYPES,
@@ -22,6 +21,7 @@ import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
+import Section from "@/app/ui/components/section/section";
 
 import IconGrid from "../../../../../public/grid.svg";
 import IconNext from "../../../../../public/next.svg";
@@ -139,7 +139,6 @@ export default function Receipts(props: any) {
 								</label>
 							</button>
 						)}
-						{/* {true ? ( */}
 						{filteredList === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 						) : (
@@ -340,7 +339,7 @@ export default function Receipts(props: any) {
 															className="invisible button__action"
 															onClick={() => confirmUpdateReceipt(item, false)}
 														>
-															<IconDeny />
+															<IconDeny className="danger" />
 														</button>
 														<label htmlFor="deny" className="sr-only">
 															Deny
@@ -351,7 +350,7 @@ export default function Receipts(props: any) {
 															onClick={() => confirmUpdateReceipt(item, true)}
 														>
 															<span className="sr-only">Accept</span>
-															<IconAccept />
+															<IconAccept className="success" />
 														</button>
 													</td>
 												) : (
@@ -395,10 +394,6 @@ export default function Receipts(props: any) {
 		}
 	};
 
-	// const handleViewModeChange = (newViewMode:any) => {
-	// 	setViewMode(newViewMode);
-	// }
-
 	useEffect(() => {
 		mounted.current = true;
 		getHistoryList();
@@ -408,46 +403,7 @@ export default function Receipts(props: any) {
 	}, []);
 
 	return (
-		<section
-			style={{ ...props.style, ...{ display: "flex", flexDirection: "column", width: "100%" } }}
-		>
-			<header className="page-header">
-				<h1
-					className="section-title"
-					style={{
-						gap: "5px",
-						display: "flex",
-						marginBottom: "unset",
-						alignItems: "center",
-					}}
-				>
-					<IconReceipt />
-					{props.title || "Receipts"}
-				</h1>
-				<RadioGroup
-					list={Object.keys(VIEW_MODES).map((mode) => {
-						switch (mode) {
-							case VIEW_MODES.GRID:
-								return {
-									name: VIEW_MODES.GRID,
-									label: <IconGrid style={{ height: 30, width: "auto" }} />,
-								};
-							case VIEW_MODES.LIST:
-								return {
-									name: VIEW_MODES.LIST,
-									label: <IconList style={{ height: 30, width: "auto" }} />,
-								};
-							case VIEW_MODES.CAROUSEL:
-								return {
-									name: VIEW_MODES.CAROUSEL,
-									label: <IconCarousel style={{ height: 30, width: "auto" }} />,
-								};
-						}
-					})}
-					selected={viewMode}
-					onChange={(newValue: any) => setViewMode(newValue)}
-				/>
-			</header>
+		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
 			{getView()}
 			<Modal isShown={modalIsShown} close={() => setModalIsShown(false)}>
 				<Card
@@ -534,6 +490,39 @@ export default function Receipts(props: any) {
 					{/* <pre>{JSON.stringify(selectedReceipt, undefined, 2)}</pre> */}
 				</Card>
 			</Modal>
-		</section>
+		</Section>
 	);
 }
+
+const sectionTitle = (title: string) => (
+	<>
+		<IconReceipt />
+		{title || "Receipts"}
+	</>
+);
+
+const sectionOthers = (viewMode: any, setViewMode: any) => (
+	<RadioGroup
+		list={Object.keys(VIEW_MODES).map((mode) => {
+			switch (mode) {
+				case VIEW_MODES.GRID:
+					return {
+						name: VIEW_MODES.GRID,
+						label: <IconGrid style={{ height: 30, width: "auto" }} />,
+					};
+				case VIEW_MODES.LIST:
+					return {
+						name: VIEW_MODES.LIST,
+						label: <IconList style={{ height: 30, width: "auto" }} />,
+					};
+				case VIEW_MODES.CAROUSEL:
+					return {
+						name: VIEW_MODES.CAROUSEL,
+						label: <IconCarousel style={{ height: 30, width: "auto" }} />,
+					};
+			}
+		})}
+		selected={viewMode}
+		onChange={(newValue: any) => setViewMode(newValue)}
+	/>
+);

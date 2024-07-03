@@ -96,7 +96,7 @@ const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 	}
 };
 
-const GET_TOKEN = (cookie: string) => cookie.split(";")[0].split("=")[1];
+const PARSE_TOKEN = (cookie: string) => cookie.split(";")[0].split("=")[1];
 
 const tokenRefresh = async (token: string | undefined) => {
 	return await fetch(`${process.env.NEXT_PUBLIC_API}/token/refresh`, {
@@ -114,9 +114,9 @@ const REFRESH_TOKEN = async (req: NextRequest) => {
 	let refreshResponse: any = null;
 	if (!accessToken) {
 		refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-		console.log("refreshResponse", refreshResponse);
-		if (refreshResponse.status !== 200) return refreshResponse;
-		accessToken = GET_TOKEN(refreshResponse.headers.getSetCookie()[0]);
+		// console.log("=========", refreshResponse);
+		if (refreshResponse.status !== 200) return { refreshResponse: refreshResponse };
+		accessToken = PARSE_TOKEN(refreshResponse.headers.getSetCookie()[0]);
 	}
 	return {
 		accessToken,
@@ -134,8 +134,11 @@ const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
+			console.log("accessToken", accessToken);
+			console.log("refreshResponse", refreshResponse);
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
+				console.log("newResponse");
 				newResponse.cookies.delete("user");
 				newResponse.cookies.delete("accessToken");
 				newResponse.cookies.delete("refreshToken");
