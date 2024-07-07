@@ -184,7 +184,6 @@ export default function Accounts(props: any) {
 										id={user._id}
 										checked={user.active}
 										onChange={(e: any) => toggleUserStatus(e, user)}
-										noLabel
 										confirmTemplate={() => toggleUserStatusTemplate(user)}
 									/>
 								</td>
@@ -192,7 +191,7 @@ export default function Accounts(props: any) {
 						);
 					})
 				) : (
-					<ListEmpty></ListEmpty>
+					<ListEmpty label="No entries found" />
 				)}
 			</Table>
 		</Section>

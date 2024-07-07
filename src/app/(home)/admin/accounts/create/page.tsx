@@ -23,18 +23,19 @@ export default function AddAccount() {
 		contactNo: "",
 		email: "",
 		cutoff: "",
-		subd: { price: "", code: "" },
+		subd: { _id: "", price: "", code: "" },
 		plan: { price: "" },
 	});
 
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
 
-	const onSelect = (selectId: any, newVal: any) => {
+	const onSelect = async (selectId: any, newVal: any) => {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
 		if (selectId === "subd") {
+			// if subd changed refresh plans
 			newFormObj = { ...newFormObj, ...{ plan: { price: "" } } };
-			setPlanList(newVal.plans);
+			await getPlans(newFormObj.subd._id);
 		}
 		setForm(newFormObj);
 	};
@@ -46,8 +47,9 @@ export default function AddAccount() {
 
 	const getSubds = async () => {
 		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "5",
+			filter: JSON.stringify({
+				active: true,
+			}),
 			sort: JSON.stringify({
 				name: "asc",
 				code: "asc",
@@ -60,6 +62,43 @@ export default function AddAccount() {
 			},
 			credentials: "include",
 		}).then((res) => res.json());
+	};
+
+	const getPlans = async (id: string) => {
+		const searchOptions = new URLSearchParams({
+			filter: JSON.stringify({
+				subdRef: id,
+				active: true,
+			}),
+			sort: JSON.stringify({
+				name: "asc",
+				code: "asc",
+			}),
+		});
+		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/plan?${searchOptions}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		})
+			.then((res) => res.json())
+			.then(async (res) => {
+				const { code, data } = res;
+				switch (code) {
+					case 200:
+						setPlanList(data);
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						console.log("get subds default", data);
+						push("/login");
+						break;
+				}
+			})
+			.catch((err) => console.log("getPlans catch", err));
 	};
 
 	useEffect(() => {
@@ -302,7 +341,7 @@ export default function AddAccount() {
 							ADD CLIENT
 						</Button>
 					</FormGroup>
-					{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
+					{/* <pre>{JSON.stringify(planList, undefined, 2)}</pre> */}
 				</form>
 			</div>
 		</Section>

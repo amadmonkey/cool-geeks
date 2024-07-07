@@ -25,7 +25,7 @@ const Switch = (props: any) => {
 				height: "30px",
 			}}
 		>
-			<label
+			{/* <label
 				htmlFor={id}
 				className="switch-label"
 				style={{
@@ -37,7 +37,7 @@ const Switch = (props: any) => {
 				}}
 			>
 				{props.label}
-			</label>
+			</label> */}
 			<div className="switch" style={props.style}>
 				<ConfirmModal template={props.confirmTemplate} continue={handleOnChange}>
 					{(showConfirmModal: any) => {
@@ -58,9 +58,9 @@ const Switch = (props: any) => {
 					}}
 				</ConfirmModal>
 			</div>
-			{!props.noLabel && (
+			{props.label && (
 				<label htmlFor={id} className="switch-label">
-					{isChecked ? props.on || "ON" : props.off || "OFF"}
+					{props.label}
 				</label>
 			)}
 		</div>

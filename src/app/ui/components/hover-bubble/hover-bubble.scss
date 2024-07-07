@@ -1,0 +1,89 @@
+@import "../../../variables.scss";
+
+.hover-bubble {
+	position: relative;
+	cursor: pointer;
+	.bubble {
+		// display: none;
+		pointer-events: none;
+		z-index: 99;
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		background-color: #fff;
+		padding: 10px 15px;
+		box-shadow: $box-shadow_fade;
+		border-radius: 5px;
+		margin-top: 20px;
+		max-width: 200px;
+		width: max-content;
+		box-sizing: content-box;
+		transform-origin: center center;
+		opacity: 0;
+		transition: opacity 0.1s ease-in-out;
+		&::before {
+			content: "";
+			position: absolute;
+			height: 0;
+			width: 0;
+			border: 10px solid transparent;
+			border-bottom-color: #fff;
+			left: 50%;
+			transform: translateX(-50%);
+			top: -18px;
+		}
+	}
+	&.info {
+		.bubble {
+			color: #fff;
+			background-color: $info;
+			&::before {
+				border-bottom-color: $info;
+			}
+		}
+	}
+	&.success {
+		.bubble {
+			color: #fff;
+			background-color: $success;
+			&::before {
+				border-bottom-color: $success;
+			}
+		}
+	}
+	&.danger {
+		.bubble {
+			color: #fff;
+			background-color: $danger;
+			&::before {
+				border-bottom-color: $danger;
+			}
+		}
+	}
+	&:hover {
+		.bubble {
+			opacity: 1;
+			// display: block;
+			// animation: gelatine 0.5s;
+		}
+	}
+}
+
+.gelatine {
+	animation: gelatine 0.5s infinite;
+}
+@keyframes gelatine {
+	from,
+	to {
+		transform: translateX(-50%) scale(1, 1);
+	}
+	25% {
+		transform: translateX(-50%) scale(0.98, 1.02);
+	}
+	50% {
+		transform: translateX(-50%) scale(1.02, 0.98);
+	}
+	75% {
+		transform: translateX(-50%) scale(0.98, 1.02);
+	}
+}

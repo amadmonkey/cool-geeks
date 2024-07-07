@@ -12,8 +12,8 @@ $danger-light: #fae0e0;
 
 $box-shadow: -3px 3px 0 #00000040;
 
-$box-shadow_solid: -5px 5px 0 rgba(0, 0, 0, 0.062745098);
-$box-shadow_fade: 0 0 20 rgba(0, 0, 0, 0.06);
+$box-shadow_solid: -3px 3px 0 rgba(0, 0, 0, 0.06);
+$box-shadow_fade: 0 3px 3px rgba(0, 0, 0, 0.1);
 
 @mixin for-phone-only {
 	@media (max-width: 599px) {

@@ -36,7 +36,7 @@ const ConfirmModal = (props: any) => {
 							</FormGroup>
 							<FormGroup style={{ width: "100%" }}>
 								<Button type="button" className="info" onClick={confirm}>
-									SUBMIT
+									CONTINUE
 								</Button>
 							</FormGroup>
 						</div>

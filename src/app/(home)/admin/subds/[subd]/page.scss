@@ -1,0 +1,254 @@
+@import "../../../../variables.scss";
+
+// $grid-template-columns: minmax(auto, 40%) minmax(auto, 15%) minmax(auto, 30%) minmax(auto, 15%);
+$grid-template-columns: 35% 15% 30% 15%;
+
+.content {
+	&__subd {
+		display: inline-grid;
+		grid-template-columns: 2fr 1fr;
+		gap: 20px;
+		width: 100%;
+		.subd-container {
+			header {
+				> h1 {
+					font-weight: 800;
+				}
+				> p {
+					font-weight: 800;
+					font-size: 14px;
+				}
+				.dates {
+					display: flex;
+					gap: 30px;
+					margin-top: 10px;
+					> * {
+						display: flex;
+						flex-direction: column;
+						color: lighten($dark, 30%);
+						label {
+							font-size: 10px;
+							font-weight: 800;
+							letter-spacing: 2px;
+						}
+						span {
+							font-size: 15px;
+							font-weight: 800;
+						}
+					}
+				}
+			}
+			.plans-container {
+				margin-top: 20px;
+				width: 100%;
+				header {
+					display: flex;
+					justify-content: space-between;
+				}
+				.plan-table {
+					gap: 10px;
+					width: 100%;
+					display: flex;
+					margin-top: 10px;
+					flex-direction: column;
+					tr {
+						display: grid;
+					}
+					thead {
+						font-size: 11px;
+						color: lighten($dark, 30%);
+						> tr {
+							grid-template-columns: $grid-template-columns;
+							padding: 5px 10px;
+						}
+						svg {
+							height: 15px;
+							width: auto;
+							stroke-width: 2px;
+							fill: lighten($dark, 30%);
+						}
+						th:last-child {
+							display: flex;
+							justify-self: center;
+						}
+					}
+					> tbody {
+						flex-direction: column;
+						tr {
+							position: relative;
+						}
+						> tr:first-child {
+							z-index: 1;
+							padding: 10px;
+							cursor: pointer;
+							font-weight: 800;
+							border-radius: 5px;
+							background-color: #fff;
+							box-shadow: $box-shadow_fade;
+							grid-template-columns: $grid-template-columns;
+							td {
+								font-size: 15px;
+								color: $dark;
+								text-align: center;
+								display: flex;
+								align-items: center;
+								justify-content: center;
+								gap: 5px;
+								svg {
+									height: 15px;
+									width: auto;
+								}
+								&.success {
+									color: $success;
+								}
+								&.danger {
+									color: $danger;
+								}
+							}
+							&:hover {
+								background-color: lighten($dark, 60%);
+								// td {
+								// 	color: darken($info, 20%);
+								// }
+							}
+						}
+						> tr:last-child {
+							top: -1px;
+							td {
+								display: flex;
+								flex-direction: column;
+								align-items: center;
+								.plan-content {
+									height: 0;
+									width: 97%;
+									display: grid;
+									grid-template-columns: 1fr 2fr;
+									grid-template-rows: auto;
+									grid-template-areas:
+										"notes users"
+										"switch switch";
+									overflow: auto;
+									padding: 0 20px;
+									background-color: #fff;
+									box-shadow: $box-shadow_fade;
+									transition: 0.05s ease-in-out;
+									justify-content: space-between;
+									border-bottom-left-radius: 5px;
+									border-bottom-right-radius: 5px;
+									&__description {
+										grid-area: notes;
+										label {
+											font-size: 12px;
+											text-align: left;
+											font-weight: 800;
+										}
+									}
+									&__users {
+										grid-area: users;
+										> table {
+											width: 100%;
+											text-align: center;
+											tr {
+												display: grid;
+												grid-template-columns: 60% 40%;
+											}
+											tbody {
+												td {
+													font-size: 14px;
+													line-height: 20px;
+												}
+											}
+										}
+									}
+									&__switch {
+										margin-top: 20px;
+										grid-area: switch;
+									}
+								}
+								.see-more {
+									width: 100px;
+									border: none;
+									color: #fff;
+									background-color: $info;
+									box-shadow: $box-shadow_fade;
+									border-bottom-left-radius: 10px;
+									border-bottom-right-radius: 10px;
+									text-align: center;
+									display: flex;
+									justify-content: center;
+									align-items: center;
+									transition: 0.05s ease-in-out;
+									height: 10px;
+									overflow: hidden;
+									svg {
+										height: 20px;
+										width: auto;
+										fill: #fff;
+									}
+								}
+							}
+						}
+						&.selected {
+							tr td .plan-content {
+								height: 300px;
+								padding: 10px 20px;
+							}
+						}
+						&:hover {
+							tr:last-child {
+								td {
+									.see-more {
+										height: 15px;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		.qr-container {
+			display: flex;
+			position: relative;
+			align-items: center;
+			flex-direction: column;
+			img {
+				width: 100%;
+				height: auto;
+				cursor: pointer;
+				border-radius: 5px;
+				box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+			}
+			input {
+				top: 0;
+				left: 0;
+				visibility: hidden;
+				position: absolute;
+				pointer-events: none;
+			}
+			> button {
+				display: flex;
+				border: none;
+				padding: 10px;
+				box-sizing: content-box;
+				background-color: $primary;
+				box-shadow: $box-shadow_fade;
+				border-bottom-left-radius: 5px;
+				border-bottom-right-radius: 5px;
+				gap: 10px;
+				color: #fff;
+				svg {
+					fill: #fff;
+					width: 15px;
+					height: 15px;
+					transition: 0.05s ease-in-out;
+				}
+				&:hover {
+					svg {
+						height: 15px;
+					}
+				}
+			}
+		}
+	}
+}

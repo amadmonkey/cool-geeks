@@ -1,7 +1,5 @@
 @import "../../../variables.scss";
 
-$receipt-height: 500px;
-
 .receipt-cards-container {
 	gap: 0 30px;
 	display: grid;
@@ -37,7 +35,7 @@ $receipt-height: 500px;
 			img {
 				width: 100%;
 				object-fit: cover;
-				height: $receipt-height;
+				height: auto;
 			}
 		}
 
@@ -109,10 +107,13 @@ $receipt-height: 500px;
 		footer {
 			gap: 10px;
 			width: 70%;
-			top: calc($receipt-height + 70px);
 			display: flex;
 			position: absolute;
 			justify-content: center;
+			bottom: 50px;
+			&:has(> button:hover) {
+				bottom: 45px;
+			}
 			button {
 				gap: 5px;
 				width: 50%;
@@ -146,7 +147,6 @@ $receipt-height: 500px;
 					}
 				}
 				&:hover {
-					height: 35px;
 					&.danger {
 						background-color: darken($danger, 5%);
 					}

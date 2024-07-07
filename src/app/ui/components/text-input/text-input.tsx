@@ -86,6 +86,8 @@ const TextInput = (props: any) => {
 	}, [miniDropdownVal.name, props.minLength, props.maxLength, props.type]);
 
 	const delayValidate = (e: any) => {
+		// console.log(props.noValidate);
+		if (props.noValidate) return;
 		if (e.key === "Enter") {
 			validate(e, null);
 		} else if (e.key === "Tab") {

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 
-const ListEmpty = () => {
+const ListEmpty = (props: any) => {
 	return (
 		<div className="empty-container">
 			<Image
@@ -12,7 +12,7 @@ const ListEmpty = () => {
 				sizes="100vw"
 				alt="Picture of the author"
 			/>
-			<h1>NO ENTRIES</h1>
+			<h1>{props.label || ""}</h1>
 		</div>
 	);
 };

@@ -1,41 +1,87 @@
 import React from "react";
-import Card from "../../card/card";
-import Table from "../../table/table";
-import { SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+import { SKELETON_TYPES, TABLE_HEADERS, UI_TYPE } from "@/utility";
 import Skeleton from "../skeleton";
+import HoverBubble from "../../hover-bubble/hover-bubble";
+import IconHelp from "../../../../../../public/help.svg";
+
+import "./skeleton-subd.scss";
 
 const SkeletonSubd = (props: any) => {
-	return Array.from(Array(4).keys()).map((_: any, i: number) => {
-		return (
-			<Card key={i} type="subd">
-				<div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-					<div style={{ width: "100%" }}>
-						<h1 className="skeleton" style={{ height: 30, marginBottom: 6 }}>
-							&nbsp;
-							<span>&nbsp;</span>
-						</h1>
-						<span className="skeleton" style={{ height: 19, marginBottom: 3 }}>
-							&nbsp;
-						</span>
-						<span className="skeleton" style={{ height: 19, marginBottom: 3 }}>
-							&nbsp;
-						</span>
-						<span className="skeleton" style={{ height: 19, marginBottom: 3 }}>
-							&nbsp;
-						</span>
-					</div>
-					<div className="skeleton" style={{ height: 100, width: 200 }}>
-						<div className="qr-container">
-							<span style={{ width: "auto", borderRadius: 10 }}></span>
+	return (
+		<div className="content content__subd loading">
+			<div className="subd-container">
+				<header>
+					<h1 className="skeleton"></h1>
+					<p className="skeleton"></p>
+					<div className="dates">
+						<div>
+							<label htmlFor="date-created">CREATED</label>
+							<span id="date-created" className="skeleton"></span>
+						</div>
+						<div>
+							<label htmlFor="date-created">UPDATED</label>
+							<span id="date-created" className="skeleton"></span>
 						</div>
 					</div>
+				</header>
+				<div className="plans-container">
+					<header>
+						<h1>PLANS</h1>
+					</header>
+					<table className="plan-table">
+						<thead>
+							<tr>
+								<th>NAME</th>
+								<th>RATE</th>
+								<th>UPDATED</th>
+								<th>
+									<HoverBubble
+										style={{ display: "flex", gap: "3px" }}
+										message="Plan status states whether the plan will be selectable during account creation."
+										type={UI_TYPE.info}
+									>
+										<IconHelp />
+										STATUS
+									</HoverBubble>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<Skeleton type={SKELETON_TYPES.PLAN} />
+						</tbody>
+						<tbody>
+							<Skeleton type={SKELETON_TYPES.PLAN} />
+						</tbody>
+						<tbody>
+							<Skeleton type={SKELETON_TYPES.PLAN} />
+						</tbody>
+						<tbody>
+							<Skeleton type={SKELETON_TYPES.PLAN} />
+						</tbody>
+						<tbody>
+							<Skeleton type={SKELETON_TYPES.PLAN} />
+						</tbody>
+					</table>
 				</div>
-				<Table type="plans" headers={TABLE_HEADERS.plans}>
-					<Skeleton type={SKELETON_TYPES.PLAN} />
-				</Table>
-			</Card>
-		);
-	});
+				{/* <pre>{JSON.stringify(plans, undefined, 2)}</pre> */}
+			</div>
+			<div
+				className="qr-container skeleton"
+				style={{ height: "500px", width: "100%", maxWidth: "unset", borderRadius: "10px" }}
+			>
+				{/* <div style={{ height: "500px", width: "100%" }} className="skeleton"></div> */}
+				{/* <Image
+						alt="qr"
+						ref={imageRef}
+						height={0}
+						width={0}
+						unoptimized
+						src={`${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`}
+						onClick={() => inputRef.current!.click()}
+					/> */}
+			</div>
+		</div>
+	);
 };
 
 export default SkeletonSubd;

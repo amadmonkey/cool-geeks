@@ -31,7 +31,8 @@
 			width: auto;
 			height: 100px;
 			&.has-image {
-				height: 250px;
+				// height: 250px;
+				height: auto;
 			}
 		}
 	}
@@ -47,6 +48,9 @@
 				font-size: 9px;
 			}
 		}
+	}
+	&.danger {
+		border-color: $danger;
 	}
 	&.active,
 	&:hover,

@@ -91,25 +91,6 @@ const Admin = () => {
 			>
 				VIEW MORE
 			</Link>
-			<Subds
-				title={"Recently Updated Subdivisions"}
-				searchOptions={
-					new URLSearchParams({
-						page: "1",
-						limit: "2",
-						sort: JSON.stringify({
-							name: "asc",
-							code: "asc",
-						}),
-					})
-				}
-			/>
-			<Link
-				href="/admin/subds"
-				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
-			>
-				VIEW MORE
-			</Link>
 		</div>
 	);
 };

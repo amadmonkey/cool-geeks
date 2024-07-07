@@ -5,4 +5,9 @@
 			animation: wiggle 1s ease-in infinite;
 		}
 	}
+	&.danger {
+		background-color: $danger;
+		border: none;
+		color: #fff;
+	}
 }

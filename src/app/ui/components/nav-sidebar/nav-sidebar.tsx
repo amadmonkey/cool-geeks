@@ -16,11 +16,10 @@ import IconDashboard from "../../../../../public/dashboard.svg";
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {
-	const [activePage, setActivePage] = useState("dashboard");
-	const pathname = usePathname();
-	const [currentDate, setCurrentDate]: any = useState(null);
 	const { push } = useRouter();
-	const [windowPathname, setWindowPathname] = useState(window.location.pathname);
+	const pathname = usePathname();
+	const [activePage, setActivePage] = useState("dashboard");
+	const [currentDate, setCurrentDate]: any = useState(null);
 
 	const navigate = (e: any, redirect: boolean) => {
 		e.preventDefault();
@@ -122,10 +121,10 @@ const NavSidebar = () => {
 						Accounts
 					</Link>
 					<ul className="__pages __pages__accounts">
-						<li className={`${windowPathname === "/admin/accounts" ? "active" : ""}`}>
+						<li className={`${pathname === "/admin/accounts" ? "active" : ""}`}>
 							<Link href="/admin/accounts">List</Link>
 						</li>
-						<li className={`${windowPathname === "/admin/accounts/create" ? "active" : ""}`}>
+						<li className={`${pathname === "/admin/accounts/create" ? "active" : ""}`}>
 							<Link href="/admin/accounts/create">New Account</Link>
 						</li>
 					</ul>

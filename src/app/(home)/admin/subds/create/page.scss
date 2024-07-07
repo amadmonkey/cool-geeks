@@ -1,0 +1,70 @@
+@import "../../../../variables.scss";
+@import "../[subd]/page.scss";
+
+.content.content__subd.content__subd__create {
+	width: 100%;
+	min-height: 500px;
+	.input-container {
+		font-size: 19px;
+		input {
+			padding-left: 0;
+			background-color: transparent;
+			font-weight: 800;
+			height: 30px;
+			max-width: 400px;
+		}
+		&:nth-of-type(2) {
+			&::before {
+				left: 0;
+				top: 5px;
+			}
+			input[name="number"] {
+				padding-left: 40px;
+				font-size: 14px;
+				font-weight: 800;
+			}
+		}
+	}
+	input[name="name"],
+	input[name="code"] {
+		font-size: 19px;
+	}
+	.qr-container {
+		img {
+			box-shadow: none;
+		}
+	}
+	.plan-table {
+		thead {
+			tr {
+				gap: 10px;
+			}
+		}
+		tbody {
+			> tr:first-child {
+				gap: 10px;
+				td {
+					justify-content: start;
+				}
+				&:hover {
+					background-color: #fff !important;
+				}
+				input {
+					font-size: 15px;
+					text-align: center;
+				}
+			}
+		}
+	}
+}
+
+.subd-form {
+	.general-error {
+		font-weight: 800;
+		font-size: 14px;
+		margin-top: 20px;
+		color: red;
+		display: block;
+		text-align: center;
+	}
+}

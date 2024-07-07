@@ -276,7 +276,10 @@ export default function Receipts(props: any) {
 							filteredList?.map((item: any, index: number) => {
 								const receiptDate = new Date(item.receiptDate);
 								return (
-									<tr key={index} className={`${item.status === "FAILED" ? "row-failed" : ""}`}>
+									<tr
+										key={index}
+										className={`receipts ${item.status === "FAILED" ? "row-failed" : ""}`}
+									>
 										<td>
 											<span
 												style={{
@@ -387,7 +390,7 @@ export default function Receipts(props: any) {
 								);
 							})
 						) : (
-							<ListEmpty></ListEmpty>
+							<ListEmpty label="No entries found" />
 						)}
 					</Table>
 				);

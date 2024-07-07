@@ -9,6 +9,12 @@ const CUTOFF_TYPE = {
 	END: "END",
 };
 
+const UI_TYPE = {
+	info: "info",
+	danger: "danger",
+	success: "success",
+};
+
 const IS_NUMERIC_INPUT = (event: any): Boolean => {
 	return event.key >= 0 && event.key <= 9;
 };
@@ -237,6 +243,11 @@ const getMonthName = (date: Date) => {
 	return MONTH_NAMES[date.getMonth() + 1];
 };
 
+const STRING_UTILS = {
+	SPACE_TO_DASH: (name: string) => name.split(" ").join("-"),
+	DASH_TO_SPACE: (name: string) => name.split("-").join(" "),
+};
+
 const TABLE_HEADERS = {
 	receipts: {
 		user: {},
@@ -337,21 +348,23 @@ const DATE_READABLE = (dateString: any) => {
 export {
 	REQUEST,
 	HEADERS,
-	REMOVE_SPACES,
-	ENHANCE_FORMAT,
-	TABLE_HEADERS,
-	DEFAULT_VALUES,
-	RECEIPT_STATUS,
-	RECEIPT_STATUS_BADGE,
-	RECEIPT_STATUS_ICON,
-	IS_MODIFIER_KEY,
-	IS_NUMERIC_INPUT,
-	VALID_IMG_TYPES,
-	SKELETON_TYPES,
-	DATE_READABLE,
-	REFRESH_TOKEN,
+	UI_TYPE,
 	VIEW_MODES,
 	CUTOFF_TYPE,
 	MONTH_NAMES,
 	getMonthName,
+	STRING_UTILS,
+	TABLE_HEADERS,
+	REMOVE_SPACES,
+	DATE_READABLE,
+	REFRESH_TOKEN,
+	ENHANCE_FORMAT,
+	DEFAULT_VALUES,
+	RECEIPT_STATUS,
+	SKELETON_TYPES,
+	IS_MODIFIER_KEY,
+	VALID_IMG_TYPES,
+	IS_NUMERIC_INPUT,
+	RECEIPT_STATUS_ICON,
+	RECEIPT_STATUS_BADGE,
 };

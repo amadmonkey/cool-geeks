@@ -3,8 +3,8 @@
 .cg-card {
 	width: 100%;
 	background-color: #fff;
-	border-radius: 10px;
-	box-shadow: -5px 5px 0 #00000010;
+	border-radius: 5px;
+	box-shadow: $box-shadow_fade;
 	border-collapse: collapse;
 	padding: 30px 25px;
 	&.mini {

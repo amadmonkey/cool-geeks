@@ -41,7 +41,7 @@ const FileInput = (props: any) => {
 
 	return (
 		<div
-			className={`file-upload ${props.mini ? "mini" : ""}`}
+			className={`file-upload ${props.mini ? "mini" : ""} ${props.danger ? "danger" : ""}`}
 			role="button"
 			tabIndex={0}
 			onClick={() => inputRef.current!.click()}

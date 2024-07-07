@@ -121,9 +121,11 @@ const LoginForm = () => {
 						required
 					/>
 				</FormGroup>
-				<p className="error-message" style={{ textAlign: "center" }}>
-					{error}
-				</p>
+				{error && (
+					<p className="error-message" style={{ textAlign: "center" }}>
+						{error}
+					</p>
+				)}
 				<FormGroup>
 					<Button type="submit" className="info">
 						LOGIN
