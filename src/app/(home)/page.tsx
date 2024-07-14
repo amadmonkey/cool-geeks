@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { createWorker } from "tesseract.js";
+import { DateTime } from "luxon";
 import Link from "next/link";
 import Image from "next/image";
 import HistoryTable from "@/app/ui/components/history-table/history-table";
@@ -16,8 +17,7 @@ import Card from "@/app/ui/components/card/card";
 import IconQR from "../../../public/qr.svg";
 import IconLoading from "../../../public/loading.svg";
 import IconDownload from "../../../public/download.svg";
-
-import { CUTOFF_TYPE, RECEIPT_STATUS, RECEIPT_STATUS_ICON, getMonthName } from "@/utility";
+import { CUTOFF_TYPE, RECEIPT_STATUS, RECEIPT_STATUS_ICON, getDaysLeft } from "@/utility";
 
 import "./page.scss";
 
@@ -60,7 +60,8 @@ export default function Home() {
 	const [form, setForm] = useState(defaultForm);
 	const [historyList, setHistoryList] = useState<any>(null);
 	const [formShown, setFormShown] = useState<Boolean | null>(null);
-	const [currentReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
+	const [latestReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
+	const [fileError, setFileError] = useState("");
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
 
 	const recognize = async (file: any) => {
@@ -83,19 +84,26 @@ export default function Home() {
 				}
 			})
 		);
-
-		setInputInfo(
-			hasReferenceNumber
-				? "Reference number found! Please check if we got it right and update if we did not."
-				: "We have not found anything that resembles a reference number in the uploaded image. Please check if you uploaded the correct image. If you think you did, please disregard this message."
-		);
-
+		if (hasReferenceNumber) {
+			setInputInfo(
+				"Reference number found! Please check if we got it right and update accordingly."
+			);
+		} else {
+			setInputInfo(
+				"We did not find anything that resembles a reference number in the uploaded image. Please check if you uploaded the correct image. If you did, please disregard this message."
+			);
+			updateForm({
+				target: {
+					name: "referenceNumber",
+					value: "",
+				},
+			});
+		}
 		setInputDisabled(false);
 	};
 
 	const updateForm = (e: any) => {
 		e.target.type === "file" && e.target.value && recognize(e.target.value);
-
 		const { name, value } = e.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
 	};
@@ -134,6 +142,8 @@ export default function Home() {
 	};
 
 	const downloadQR = () => {};
+
+	const removeFile = () => setForm((prev) => ({ ...prev, ...{ receipt: "" } }));
 
 	const helpTemplate = () => (
 		<div className="qr-container">
@@ -176,20 +186,27 @@ export default function Home() {
 		}).then((res) => res.json());
 	};
 
-	const getNextMonth = () => {
-		const date = new Date(currentReceipt?.receiptDate);
-		return `${getMonthName(date)} ${date.getFullYear()}`;
+	const validate = (e: any) => {
+		e.preventDefault();
+		if (!form.receipt) {
+			setFileError("Please add a receipt");
+			return false;
+		}
+		return true;
 	};
 
-	const getDaysLeft = () => {
-		const currentDate = new Date();
-		const receiptDate = new Date(currentReceipt?.receiptDate);
-
-		const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-		const utc1 = Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate());
-		const utc2 = Date.UTC(receiptDate.getFullYear(), receiptDate.getMonth(), receiptDate.getDate());
-
-		return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	const formatDaysLeft = () => {
+		// generate date to compare
+		const date = latestReceipt?.receiptDate
+			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 1 })
+			: DateTime.now();
+		Object.assign(
+			date,
+			date.set({ day: user.cutoff === CUTOFF_TYPE.MID ? 15 : date.endOf("month").day })
+		);
+		// const dueInDate = cutoff === CUTOFF_TYPE.MID ? date.set({ day: 15 }) : date.endOf("month");
+		const { days, hours, minutes } = getDaysLeft(date);
+		return `${days} days and ${hours} hours`;
 	};
 
 	useEffect(() => {
@@ -201,9 +218,9 @@ export default function Home() {
 					switch (code) {
 						case 200:
 							setHistoryList(data.list);
-							setCurrentReceipt(data.currentReceipt);
+							setCurrentReceipt(data.latestReceipt);
 							setFormShown(
-								data.currentReceipt && data.currentReceipt.status !== RECEIPT_STATUS.FAILED
+								data.latestReceipt && data.latestReceipt.status !== RECEIPT_STATUS.FAILED
 									? false
 									: true
 							);
@@ -240,11 +257,11 @@ export default function Home() {
 						</div>
 					) : !formShown ? (
 						<Card className="receipt-status-container">
-							{RECEIPT_STATUS_ICON(currentReceipt?.status, {
+							{RECEIPT_STATUS_ICON(latestReceipt?.status, {
 								height: "100px",
 								marginBottom: "20px",
 							})}
-							{currentReceipt!.status === "ACCEPTED" ? (
+							{latestReceipt!.status === "ACCEPTED" ? (
 								<Fragment>
 									<h1>Receipt accepted</h1>
 									<p>You&apos;re good! Next receipt range will be on [date here] to [date here]</p>
@@ -256,19 +273,18 @@ export default function Home() {
 								</Fragment>
 							)}
 							<ul className="summary">
-								<li className="summary__item">
-									<span>DATE SUBMITTED</span>
-									<p>
-										{currentReceipt && new Date(currentReceipt.createdAt.toString()).toDateString()}
-									</p>
-								</li>
-								<li className="summary__item">
-									<span>FOR</span>
-									<p>
-										{currentReceipt &&
-											new Date(currentReceipt.receiptDate.toString()).toDateString()}
-									</p>
-								</li>
+								{latestReceipt && (
+									<>
+										<li className="summary__item">
+											<span>SUBMITTED</span>
+											<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM d y")}</p>
+										</li>
+										<li className="summary__item">
+											<span>FOR</span>
+											<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM y")}</p>
+										</li>
+									</>
+								)}
 								<li className="summary__item">
 									<span>RATE</span>
 									<p>P1000</p>
@@ -286,20 +302,26 @@ export default function Home() {
 									Show Form
 								</Button>
 							</FormGroup>
-							{/* <pre>{JSON.stringify(currentReceipt, undefined, 2)}</pre> */}
+							{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
 						</Card>
 					) : (
-						<form onSubmit={handleSubmit} style={{ gap: "30px" }} encType="multipart/form">
+						<form
+							onSubmit={(e: Object) => validate(e) && handleSubmit(e)}
+							style={{ gap: "30px" }}
+							encType="multipart/form"
+						>
 							<FormGroup
 								label="Receipt Receipt/Screenshot"
 								help={{ icon: <IconQR />, body: helpTemplate() }}
 							>
 								<FileInput
 									name="receipt"
+									removeFile={removeFile}
 									value={form.receipt}
 									onChange={updateForm}
 									disabled={inputDisabled}
 								/>
+								{fileError && <span className="file-error">{fileError}</span>}
 							</FormGroup>
 							<FormGroup label="Receipt Transaction/Reference Number" required>
 								<TextInput
@@ -341,23 +363,33 @@ export default function Home() {
 									<span>CUTOFF</span>
 									<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
 								</li>
+								{/* {getNextMonth() && (
+									<li className="summary__item">
+										<span>RECEIPT FOR</span>
+										<p>{getNextMonth()}</p>
+									</li>
+								)} */}
 								<li className="summary__item">
 									<span>RECEIPT FOR</span>
-									<p>{getNextMonth()}</p>
+									<p>
+										{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now())
+											.plus({ month: latestReceipt?.receiptDate ? 1 : 0 })
+											.toFormat("MMMM")}
+									</p>
 								</li>
 								<li className="summary__item">
 									<span>DUE IN</span>
-									<p>{getDaysLeft()} days</p>
+									<p>{formatDaysLeft()}</p>
 								</li>
 							</ul>
 							<FormGroup>
-								<Button type="submit" className="info">
+								<Button type="submit" className="info" disabled={inputDisabled}>
 									SEND RECEIPT
 								</Button>
 							</FormGroup>
 						</form>
 					)}
-					{/* <pre>{JSON.stringify(currentReceipt, undefined, 2)}</pre> */}
+					{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
 				</section>
 				<section
 					style={{

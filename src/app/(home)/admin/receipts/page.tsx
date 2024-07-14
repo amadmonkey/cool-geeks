@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { DateTime } from "luxon";
 import {
 	CUTOFF_TYPE,
 	RECEIPT_STATUS,
@@ -9,6 +10,7 @@ import {
 	SKELETON_TYPES,
 	TABLE_HEADERS,
 	VIEW_MODES,
+	getDaysLeft,
 } from "@/utility";
 
 import Image from "next/image";
@@ -148,19 +150,7 @@ export default function Receipts(props: any) {
 									const currentDate = new Date();
 									const receiptDate = new Date(item.receiptDate);
 
-									const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-									const utc1 = Date.UTC(
-										currentDate.getFullYear(),
-										currentDate.getMonth(),
-										currentDate.getDate()
-									);
-									const utc2 = Date.UTC(
-										receiptDate.getFullYear(),
-										receiptDate.getMonth(),
-										receiptDate.getDate()
-									);
-
-									const days = Math.floor((utc2 - utc1) / _MS_PER_DAY);
+									const { days, hours } = getDaysLeft(DateTime.fromJSDate(receiptDate));
 
 									return (
 										<div key={i} className="receipt-card">
@@ -198,32 +188,31 @@ export default function Receipts(props: any) {
 													<button className="invisible">...</button>
 												</div>
 												<div style={{ display: "flex", gap: 20 }}>
-													<div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-														<div className="receipt-card__form-group">
+													<div className="receipt-card receipt-card__due">
+														<label htmlFor="">DUE IN</label>
+														<span>{Math.abs(days) || Math.abs(hours)}</span>
+														<span>
+															{Math.abs(days)
+																? `days${days < 0 ? " ago" : ""}`
+																: `hours${hours < 0 ? " ago" : ""}`}
+														</span>
+													</div>
+													<div className="receipt-card receipt-card__addtl">
+														<div className="form-group">
 															<label htmlFor="">PLAN</label>
 															<span>
 																{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
 															</span>
 														</div>
-														<div className="receipt-card__form-group">
+														<div className="form-group">
 															<label htmlFor="">REF NUMBER</label>
 															<span>{`${item.referenceNumber}`}</span>
 														</div>
-														<div className="receipt-card__form-group">
+														<div className="form-group">
 															<label htmlFor="">DUE FOR</label>
 															{/* <span>{MONTH_NAMES[receiptDate.getMonth()]}</span> */}
 															<span>{receiptDate.toDateString()}</span>
 														</div>
-													</div>
-													<div
-														className="receipt-card__form-group"
-														style={{ alignItems: "center", gap: 0, justifyContent: "center" }}
-													>
-														<label htmlFor="">DUE IN</label>
-														<span style={{ fontSize: 50, lineHeight: "50px" }}>
-															{Math.abs(days)}
-														</span>
-														<span>{`days${days < 0 ? " ago" : ""}`}</span>
 													</div>
 												</div>
 											</Card>

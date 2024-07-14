@@ -29,6 +29,7 @@ const FileInput = (props: any) => {
 	const removeFile = async (e?: any) => {
 		e && e.stopPropagation();
 		imageRef.current!.src = defaultSrc;
+		props.removeFile && props.removeFile();
 		setFile(null);
 		inputRef.current!.value = "";
 	};

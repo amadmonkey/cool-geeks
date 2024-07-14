@@ -6,11 +6,9 @@ import { toast } from "react-toastify";
 import { DEFAULT_VALUES, STRING_UTILS, UI_TYPE, VALID_IMG_TYPES } from "@/utility";
 
 import TextInput from "@/app/ui/components/text-input/text-input";
-import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 import FileInput from "@/app/ui/components/file-input/file-input";
 import Button from "@/app/ui/components/button/button";
 
-import IconHelp from "../../../../../../public/help.svg";
 import "./page.scss";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 
@@ -20,6 +18,7 @@ const AddSubd = () => {
 	const [plans, setPlans]: any = useState([]);
 	const [generalError, setGeneralError] = useState("");
 	const [qrError, setQrError] = useState("");
+	const [usernameExistsError, setUsernameExistsError] = useState("");
 	const [file, setFile] = useState<File | null>(null);
 	const [formSubd, setFormSubd] = useState(DEFAULT_VALUES.subdForm);
 	const [formPlan, setFormPlan] = useState(DEFAULT_VALUES.planForm);
@@ -38,7 +37,7 @@ const AddSubd = () => {
 
 		if (!plan && name === "name") {
 			const exists = await getSubd(value.trim().toUpperCase());
-			exists && setGeneralError("Subdivision name already exists");
+			exists && setUsernameExistsError("Subdivision name already exists");
 		}
 	};
 
@@ -63,23 +62,6 @@ const AddSubd = () => {
 		})
 			.then((res) => res.json())
 			.then((res) => res.data[0]);
-		// 	if (mounted.current) {
-		// 		const { code, data } = res;
-		// 		switch (code) {
-		// 			case 200:
-		// 				setSubd(data[0]);
-		// 				break;
-		// 			case 401:
-		// 				push("/login");
-		// 				break;
-		// 			default:
-		// 				console.log("get subds default", data);
-		// 				push("/login");
-		// 				break;
-		// 		}
-		// 	}
-		// })
-		// .catch((err) => console.log("getSubds catch", err));
 	};
 
 	const addPlan = () => {
@@ -168,7 +150,7 @@ const AddSubd = () => {
 				{(showConfirmModal: any) => {
 					return (
 						<form className="subd-form" onSubmit={(e) => validate(e) && showConfirmModal(e)}>
-							<div className="content content__subd content__subd__create">
+							<div className="content__subd content__subd__create">
 								<div className="subd-container">
 									<div
 										style={{

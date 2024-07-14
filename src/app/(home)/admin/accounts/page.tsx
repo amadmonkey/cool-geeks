@@ -26,7 +26,15 @@ export default function Accounts(props: any) {
 	const [filteredList, setFilteredList] = useState<any>(null);
 
 	const getAccounts = useCallback(() => {
-		const searchOptions = new URLSearchParams(filter.values);
+		const searchOptions = new URLSearchParams({
+			page: "1",
+			limit: "10",
+			sort: JSON.stringify({
+				name: "asc",
+				code: "asc",
+			}),
+		});
+
 		return fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {

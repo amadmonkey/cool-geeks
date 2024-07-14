@@ -17,7 +17,7 @@ import "./page.scss";
 
 const Admin = () => {
 	return (
-		<div className="content content__admin" style={{ flexDirection: "column" }}>
+		<div className="content content__admin" style={{ flexDirection: "column", gap: "100px" }}>
 			<section>
 				<Card>
 					<Link href="/">
@@ -68,10 +68,7 @@ const Admin = () => {
 				viewMode={VIEW_MODES.GRID}
 				style={{ marginTop: 20 }}
 			/>
-			<Link
-				href="/admin/receipts"
-				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
-			>
+			<Link href="/admin/receipts" style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}>
 				VIEW MORE
 			</Link>
 			<Accounts
@@ -85,10 +82,7 @@ const Admin = () => {
 					})
 				}
 			/>
-			<Link
-				href="/admin/accounts"
-				style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", margin: "20px 0" }}
-			>
+			<Link href="/admin/accounts" style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}>
 				VIEW MORE
 			</Link>
 		</div>

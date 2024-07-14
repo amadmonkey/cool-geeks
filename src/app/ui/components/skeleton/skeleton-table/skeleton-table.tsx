@@ -194,7 +194,7 @@ const SkeletonTable = (props: any) => {
 			case SKELETON_TYPES.PLAN:
 				// return Array.from(Array(1).keys()).map((_: any, i: number) => {
 				return (
-					<tr className="plans border">
+					<tr className="plan-item__row">
 						<td>
 							<span className="skeleton">&nbsp;</span>
 						</td>

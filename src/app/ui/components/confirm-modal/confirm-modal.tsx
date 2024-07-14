@@ -15,16 +15,16 @@ const ConfirmModal = (props: any) => {
 
 	const closeConfirmModal = async () => setModalIsShown(false);
 
-	const confirm = () => {
+	const confirm = (e: any) => {
 		closeConfirmModal().then(() => {
-			props.continue();
+			props.continue(e);
 		});
 	};
 
 	return (
 		<>
 			<div>{props.children(showConfirmModal)}</div>
-			<DetectOutsideClick action={closeConfirmModal}>
+			<DetectOutsideClick action={closeConfirmModal} isShown={modalIsShown}>
 				<Modal isShown={modalIsShown} close={closeConfirmModal}>
 					<Card style={{ width: "500px" }}>
 						{props.template && props.template()}

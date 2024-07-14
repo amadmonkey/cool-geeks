@@ -1,8 +1,10 @@
 @import "../../../variables.scss";
 .cg-button {
 	&:hover {
-		> svg {
-			animation: wiggle 1s ease-in infinite;
+		&:not(:disabled) {
+			> svg {
+				animation: wiggle 1s ease-in infinite;
+			}
 		}
 	}
 	&.danger {

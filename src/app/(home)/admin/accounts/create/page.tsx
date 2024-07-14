@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 import Button from "@/app/ui/components/button/button";
@@ -11,6 +11,8 @@ import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
 
 import IconAddUser from "../../../../../../public/add-user.svg";
+import IconMidmonth from "../../../../../../public/midmonth.svg";
+import IconEndOfMonth from "../../../../../../public/end-of-month.svg";
 import "./page.scss";
 
 export default function AddAccount() {
@@ -26,9 +28,9 @@ export default function AddAccount() {
 		subd: { _id: "", price: "", code: "" },
 		plan: { price: "" },
 	});
-
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
+	const [userCount, setUserCount] = useState(0);
 
 	const onSelect = async (selectId: any, newVal: any) => {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
@@ -101,6 +103,42 @@ export default function AddAccount() {
 			.catch((err) => console.log("getPlans catch", err));
 	};
 
+	const getUserCount = async () => {
+		// const searchOptions = new URLSearchParams(filter.values);
+		const searchOptions = new URLSearchParams({
+			page: "1",
+			limit: "",
+			sort: JSON.stringify({
+				name: "asc",
+				code: "asc",
+			}),
+		});
+
+		await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				const { code, data } = res;
+				const { list } = data;
+				switch (code) {
+					case 200:
+						setUserCount(list.length + 1);
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						push("/login");
+						break;
+				}
+			});
+	};
+
 	useEffect(() => {
 		getSubds()
 			.then((res) => {
@@ -119,6 +157,7 @@ export default function AddAccount() {
 				}
 			})
 			.catch((err) => console.error(err));
+		getUserCount();
 	}, [push]);
 
 	const handleSubmit = async (e: any) => {
@@ -132,7 +171,10 @@ export default function AddAccount() {
 				credentials: "include",
 				body: JSON.stringify({
 					...form,
-					accountNumber: `${form.subd.code}-${new Date().getFullYear()}-${Date.now()}`,
+					accountNumber: `${form.subd.code}-${new Date().getFullYear()}-${(userCount + "").padStart(
+						4,
+						"0"
+					)}`,
 				}),
 			});
 			const { code, data } = await res.json();
@@ -297,32 +339,37 @@ export default function AddAccount() {
 											ACCOUNT NUMBER
 										</span>
 										<p style={{ width: "100%", fontWeight: "800", fontSize: "16px" }}>
-											{`${form.subd.code}-${new Date().getFullYear()}-${Date.now()}`}
+											{`${form.subd.code}-${new Date().getFullYear()}-${(userCount + "").padStart(
+												4,
+												"0"
+											)}`}
 										</p>
 									</div>
 								</div>
 							)}
 							<FormGroup label="Preferred Cutoff">
-								<div className="receipt-date-container">
+								<div className="cutoff-container">
 									<label className={form.cutoff === "MID" ? "active" : ""} tabIndex={0}>
-										<Image
+										{/* <Image
 											src={`/midmonth.svg`}
 											height={0}
 											width={0}
 											sizes="100vw"
 											alt="Midmonth icon"
-										/>
+										/> */}
+										<IconMidmonth />
 										<input type="radio" name="cutoff" value="MID" onChange={updateForm} />
 										<span>MIDMONTH</span>
 									</label>
 									<label className={form.cutoff === "END" ? "active" : ""} tabIndex={0}>
-										<Image
+										{/* <Image
 											src={`/end-of-month.svg`}
 											height={0}
 											width={0}
 											sizes="100vw"
 											alt="End of month icon"
-										/>
+										/> */}
+										<IconEndOfMonth />
 										<input type="radio" name="cutoff" value="END" onChange={updateForm} />
 										<span>END OF MONTH</span>
 									</label>

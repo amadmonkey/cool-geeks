@@ -1,0 +1,48 @@
+@import "../../../variables.scss";
+
+.inline-edit-input-container {
+	cursor: pointer;
+	position: relative;
+	display: inline-block;
+	form {
+		display: none;
+		button {
+			border: none;
+			background-color: $info;
+			box-shadow: $box-shadow_fade;
+			color: #fff;
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+			padding: 0 7px;
+			svg {
+				fill: #fff;
+				height: auto;
+				width: 15px;
+			}
+		}
+	}
+	.highlight {
+		.edit-icon {
+			display: none;
+			position: absolute;
+			top: 0;
+			right: -15px;
+			height: 12px !important;
+			fill: $dark;
+		}
+		&:focus,
+		&:hover {
+			> svg {
+				display: block;
+			}
+		}
+	}
+	&.active {
+		.highlight {
+			display: none;
+		}
+		> form {
+			display: flex;
+		}
+	}
+}

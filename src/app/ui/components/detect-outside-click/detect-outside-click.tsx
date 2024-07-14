@@ -21,7 +21,10 @@ function DetectOutsideClick(props: any) {
 	OnOutsideClick(ref, props);
 
 	return (
-		<div ref={ref} style={{ ...props.style }}>
+		<div
+			ref={ref}
+			style={{ ...props.style, ...{ display: props.isShown === false ? "none" : "" } }}
+		>
 			{props.children}
 		</div>
 	);

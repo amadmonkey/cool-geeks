@@ -1,7 +1,32 @@
 .login-container {
-	img {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	> h1 {
+		margin-bottom: 50px;
+		font-size: 12px;
+		font-weight: 800;
+		letter-spacing: 12px;
+		right: -5px;
+		position: relative;
+		color: black;
+	}
+	> img {
+		width: auto;
 		z-index: 0;
 	}
-	#tsparticles {
+	&__head {
+		height: 100px;
+		margin-bottom: 10px;
+	}
+	&__text {
+		height: 37px;
+	}
+	.status-description {
+		font-size: 14px;
+		text-align: center;
+		font-weight: 800;
 	}
 }

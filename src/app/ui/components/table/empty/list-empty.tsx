@@ -1,9 +1,11 @@
 import Image from "next/image";
 import React from "react";
 
+import "./list-empty.scss";
+
 const ListEmpty = (props: any) => {
 	return (
-		<div className="empty-container">
+		<div className="empty-container" style={props.style}>
 			<Image
 				src={`/leaf.png`}
 				height={0}
@@ -12,7 +14,7 @@ const ListEmpty = (props: any) => {
 				sizes="100vw"
 				alt="Picture of the author"
 			/>
-			<h1>{props.label || ""}</h1>
+			<span>{props.label || ""}</span>
 		</div>
 	);
 };

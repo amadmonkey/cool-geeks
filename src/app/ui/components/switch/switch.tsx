@@ -18,14 +18,17 @@ const Switch = (props: any) => {
 		<div
 			className={`switch-container ${props.mini ? "mini" : ""}`}
 			style={{
-				display: "flex",
-				justifyContent: "center",
-				gap: 10,
-				alignItems: "center",
-				height: "30px",
+				...{
+					display: "flex",
+					justifyContent: "center",
+					gap: 10,
+					alignItems: "center",
+					height: "30px",
+				},
+				...props.style,
 			}}
 		>
-			{/* <label
+			<label
 				htmlFor={id}
 				className="switch-label"
 				style={{
@@ -37,8 +40,8 @@ const Switch = (props: any) => {
 				}}
 			>
 				{props.label}
-			</label> */}
-			<div className="switch" style={props.style}>
+			</label>
+			<div className="switch">
 				<ConfirmModal template={props.confirmTemplate} continue={handleOnChange}>
 					{(showConfirmModal: any) => {
 						return (
@@ -58,11 +61,11 @@ const Switch = (props: any) => {
 					}}
 				</ConfirmModal>
 			</div>
-			{props.label && (
+			{/* {props.label && (
 				<label htmlFor={id} className="switch-label">
 					{props.label}
 				</label>
-			)}
+			)} */}
 		</div>
 	);
 };

@@ -6,12 +6,13 @@ const Button = (props: any) => {
 	return (
 		<button
 			name={props.name}
-			className={`cg-button ${props.className} ${props.mini ? "mini" : ""} ${
-				props.danger ? "danger" : ""
-			}`}
+			className={`cg-button ${props.className}${props.mini ? " mini" : ""}${
+				props.danger ? " bg-danger" : ""
+			}${props.success ? " bg-success" : ""}${props.info ? " bg-info" : ""}`}
 			type={props.type || "button"}
 			style={props.style}
-			onClick={props.onClick}
+			onClick={!props.disabled && props.onClick}
+			disabled={props.disabled ? true : false}
 		>
 			{props.children}
 		</button>

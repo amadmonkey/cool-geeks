@@ -130,18 +130,18 @@ const NavSidebar = () => {
 					</ul>
 				</li>
 				<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
-					<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, true)}>
+					<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, false)}>
 						<IconSubd />
 						Subdivisions
 					</Link>
-					{/* <ul className="__pages __pages__accounts">
-						<li className={`${windowPathname === "/admin/subds" ? "active" : ""}`}>
+					<ul className="__pages __pages__subds">
+						<li className={`${pathname === "/admin/subds" ? "active" : ""}`}>
 							<Link href="/admin/subds">List</Link>
 						</li>
-						<li className={`${windowPathname === "/admin/subds/create" ? "active" : ""}`}>
+						<li className={`${pathname === "/admin/subds/create" ? "active" : ""}`}>
 							<Link href="/admin/subds/create">New Subd</Link>
 						</li>
-					</ul> */}
+					</ul>
 				</li>
 				<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
 					<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>

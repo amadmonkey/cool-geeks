@@ -8,7 +8,7 @@ import "./skeleton-subd.scss";
 
 const SkeletonSubd = (props: any) => {
 	return (
-		<div className="content content__subd loading">
+		<div className="content__subd loading">
 			<div className="subd-container">
 				<header>
 					<h1 className="skeleton"></h1>
@@ -46,19 +46,19 @@ const SkeletonSubd = (props: any) => {
 								</th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody className="plan-item">
 							<Skeleton type={SKELETON_TYPES.PLAN} />
 						</tbody>
-						<tbody>
+						<tbody className="plan-item">
 							<Skeleton type={SKELETON_TYPES.PLAN} />
 						</tbody>
-						<tbody>
+						<tbody className="plan-item">
 							<Skeleton type={SKELETON_TYPES.PLAN} />
 						</tbody>
-						<tbody>
+						<tbody className="plan-item">
 							<Skeleton type={SKELETON_TYPES.PLAN} />
 						</tbody>
-						<tbody>
+						<tbody className="plan-item">
 							<Skeleton type={SKELETON_TYPES.PLAN} />
 						</tbody>
 					</table>

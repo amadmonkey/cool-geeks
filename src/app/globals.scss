@@ -104,6 +104,13 @@ a,
 button {
 	font-weight: 800;
 	background: none;
+	&:not(:disabled) {
+		cursor: pointer;
+	}
+	&.invisible {
+		border: none;
+		background-color: transparent;
+	}
 	&.has-icon {
 		display: flex;
 		gap: 5px;
@@ -161,15 +168,6 @@ a:not(.strip) {
 	background-color: #555;
 	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
 }
-
-button {
-	cursor: pointer;
-	&.invisible {
-		border: none;
-		background-color: transparent;
-	}
-}
-
 ul {
 	padding: 0;
 	margin: 0;
@@ -198,19 +196,6 @@ ul {
 			font-size: 15px;
 			font-weight: 800;
 		}
-	}
-}
-
-.empty-container {
-	height: 300px;
-	display: flex;
-	align-items: center;
-	flex-direction: column;
-	justify-content: center;
-	h1 {
-		font-size: 15px;
-		color: #3588b8;
-		letter-spacing: 5px;
 	}
 }
 
@@ -278,17 +263,20 @@ ul {
 		font-size: 20px;
 	}
 	&:hover {
-		left: 3px;
-		position: relative;
-		background-color: darken(#fafafa, 5%);
-		box-shadow: -6px 6px 0px #8d8d8d99;
+		&:not(:disabled) {
+			left: 3px;
+			position: relative;
+			background-color: darken(#fafafa, 5%);
+			box-shadow: -6px 6px 0px #8d8d8d99;
+		}
 	}
 	&.mini {
 		height: 30px;
 		padding: 5px;
 		font-size: 12px;
-		letter-spacing: 0;
+		letter-spacing: 2px;
 		border-radius: 15px;
+		font-weight: 800;
 	}
 	&.info {
 		color: #ececec;
@@ -297,11 +285,13 @@ ul {
 		> svg {
 			fill: #ececec;
 		}
-		&:hover {
-			color: #e7be72;
-			background-color: darken($info, 10%);
-			> svg {
-				fill: #e7be72;
+		&:not(:disabled) {
+			&:hover {
+				color: #e7be72;
+				background-color: darken($info, 10%);
+				> svg {
+					fill: #e7be72;
+				}
 			}
 		}
 	}
@@ -335,6 +325,9 @@ ul {
 			transform: rotate(-45deg);
 			box-shadow: -2px 0px 0 #00000099;
 		}
+	}
+	&:disabled {
+		background-color: lighten($dark, 40%);
 	}
 }
 
@@ -383,10 +376,6 @@ section {
 	display: none;
 }
 
-.danger {
-	color: $danger;
-}
-
 .skeleton {
 	animation: skeleton-loading 1s linear infinite alternate;
 }
@@ -396,7 +385,7 @@ section {
 	&::after {
 		content: "";
 		left: -10px;
-		width: 110%;
+		width: 105%;
 		z-index: 1;
 		height: 50%;
 		bottom: -10px;
@@ -415,6 +404,34 @@ section {
 	fill: $danger;
 }
 
+.text-info {
+	color: $info;
+}
+
+.text-success {
+	color: $success;
+}
+
+.text-danger {
+	color: $danger;
+}
+
 .invalid {
 	fill: $dark;
+}
+
+.bg-info {
+	background-color: $info;
+}
+
+.bg-danger {
+	background-color: $danger;
+}
+
+.bg-success {
+	background-color: $success;
+}
+
+.pointer {
+	cursor: pointer;
 }

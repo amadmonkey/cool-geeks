@@ -12,20 +12,17 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-	// console.log(req);
-	// const body = await req.json();
-	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/login`, {
-	// 	method: "POST",
-	// 	headers: {
-	// 		"Content-Type": "application/json",
-	// 	},
-	// 	credentials: "include",
-	// 	body: JSON.stringify(body),
-	// });
-	// const data = await apiResponse.json();
-	// const newResponse = NextResponse.json(data);
-	// newResponse.headers.set("Set-Cookie", apiResponse.headers.getSetCookie().toString());
-	// return newResponse;
+	try {
+		const body = await req.json();
+		return await REQUEST.post(
+			`${process.env.NEXT_PUBLIC_API}/plan/create`,
+			req,
+			JSON.stringify(body)
+		);
+	} catch (error: any) {
+		console.log(error);
+		return Response.json({ message: error });
+	}
 }
 
 export async function PUT(req: NextRequest) {

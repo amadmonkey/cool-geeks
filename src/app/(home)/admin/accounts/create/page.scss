@@ -5,7 +5,7 @@ form {
 	flex-direction: column;
 }
 
-.receipt-date-container {
+.cutoff-container {
 	gap: 10px;
 	width: 100%;
 	display: flex;
@@ -20,9 +20,10 @@ form {
 		border-radius: 10px;
 		align-items: center;
 		flex-direction: column;
-		border: 2px dashed $dark;
+		border: 1px solid lighten($dark, 50%);
 		transition: background-color 0.1s ease-in-out;
 		position: relative;
+		box-shadow: $box-shadow_fade;
 		&::before {
 			content: "";
 			height: 25px;
@@ -31,9 +32,10 @@ form {
 			left: 5px;
 			top: 5px;
 			border-radius: 50%;
-			border: 1px solid $dark;
+			border: 1px solid lighten($dark, 30%);
 		}
-		img {
+		img,
+		svg {
 			height: auto;
 			width: 50px;
 		}
@@ -41,11 +43,17 @@ form {
 			display: none;
 		}
 		&.active {
-			border-color: $info;
+			border-color: #fff;
 			border-style: solid;
-			background-color: #e7e7f0;
+			background-color: #fff;
+			> svg {
+				fill: $success;
+			}
+			&::before {
+				border-color: $success;
+			}
 			&::after {
-				content: url(../../../../../../public/done.svg);
+				content: url(../../../../../../public/done-colored.svg);
 				height: 19px;
 				width: 19px;
 				position: absolute;

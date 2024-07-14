@@ -22,7 +22,6 @@ export default function SubdsNav(props: any) {
 	const currentPathname = usePathname();
 	const params = useParams<{ subd: string }>();
 	const isNew = useSearchParams().get("new");
-	console.log(isNew);
 
 	const getSubds = () => {
 		setList(null);
@@ -77,7 +76,7 @@ export default function SubdsNav(props: any) {
 		<Section title={sectionTitle(props.title, currentPathname)} others={sectionExtras()}>
 			<div className="content__subds">
 				<div className="list-container">
-					<label>Select one</label>
+					<label>SELECT ONE</label>
 					<Table>
 						{filteredList === null ? (
 							<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
@@ -120,7 +119,6 @@ export default function SubdsNav(props: any) {
 					</Table>
 				</div>
 				<div className="subd-container">{props.children}</div>
-				{/* <pre>{JSON.stringify(filteredList, undefined, 2)}</pre> */}
 			</div>
 		</Section>
 	);

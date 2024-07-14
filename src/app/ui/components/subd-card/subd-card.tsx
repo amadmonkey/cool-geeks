@@ -130,11 +130,6 @@ const SubdCard = (props: any) => {
 
 	const getImage = async () => {
 		const url = `${process.env.NEXT_PUBLIC_API}/qr/${props.subd.gcash.qr.filename}`;
-		// const url = `${process.env.NEXT_PUBLIC_MID}/api/misc/image?${new URLSearchParams({
-		// 	type: "qr",
-		// 	filename: props.subd.gcash.qr.filename,
-		// })}`;
-		// const url = `http://localhost:4000/qr/${props.subd.gcash.qr.filename}`;
 		return await fetch(url, {
 			method: "GET",
 		});

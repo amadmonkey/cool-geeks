@@ -222,6 +222,7 @@ const TextInput = (props: any) => {
 				disabled={props.disabled}
 			/>
 			{errors.length > 0 && <p className="error-message">{errors[0]}</p>}
+			{props.customError && <p className="error-message">{props.customError}</p>}
 		</div>
 	);
 };

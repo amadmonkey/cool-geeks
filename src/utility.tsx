@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { DateTime } from "luxon";
 
 import IconAccepted from "../public/done.svg";
 import IconDenied from "../public/denied.svg";
@@ -7,6 +8,12 @@ import IconPending from "../public/pending.svg";
 const CUTOFF_TYPE = {
 	MID: "MID",
 	END: "END",
+};
+
+const ACCOUNT_STATUS = {
+	PENDING: "PENDING",
+	ACTIVE: "ACTIVE",
+	DEACTIVATED: "DEACTIVATED",
 };
 
 const UI_TYPE = {
@@ -239,10 +246,6 @@ const MONTH_NAMES = [
 	"December",
 ];
 
-const getMonthName = (date: Date) => {
-	return MONTH_NAMES[date.getMonth() + 1];
-};
-
 const STRING_UTILS = {
 	SPACE_TO_DASH: (name: string) => name.split(" ").join("-"),
 	DASH_TO_SPACE: (name: string) => name.split("-").join(" "),
@@ -345,6 +348,17 @@ const DATE_READABLE = (dateString: any) => {
 	})} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
+const getDaysLeft = (d: DateTime) => {
+	// const date = d ? DateTime.fromISO(d) : DateTime.now();
+	// const dueInDate = cutoff === CUTOFF_TYPE.MID ? date.set({ day: 15 }) : date.endOf("month");
+
+	Object.assign(d, d.set({ hour: 23, minute: 59, second: 59, millisecond: 999 }));
+
+	return d.diff(DateTime.now(), ["days", "hours", "minute"]);
+
+	// return `${diff.days} days and ${diff.hours} hours`;
+};
+
 export {
 	REQUEST,
 	HEADERS,
@@ -352,7 +366,6 @@ export {
 	VIEW_MODES,
 	CUTOFF_TYPE,
 	MONTH_NAMES,
-	getMonthName,
 	STRING_UTILS,
 	TABLE_HEADERS,
 	REMOVE_SPACES,
@@ -360,6 +373,7 @@ export {
 	REFRESH_TOKEN,
 	ENHANCE_FORMAT,
 	DEFAULT_VALUES,
+	ACCOUNT_STATUS,
 	RECEIPT_STATUS,
 	SKELETON_TYPES,
 	IS_MODIFIER_KEY,
@@ -367,4 +381,5 @@ export {
 	IS_NUMERIC_INPUT,
 	RECEIPT_STATUS_ICON,
 	RECEIPT_STATUS_BADGE,
+	getDaysLeft,
 };
