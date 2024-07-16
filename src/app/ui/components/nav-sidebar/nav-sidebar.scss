@@ -75,6 +75,7 @@ $header-height: 80px;
 		> li {
 			> a {
 				gap: 10px;
+				width: 100%;
 				color: $dark;
 				display: flex;
 				cursor: pointer;
@@ -82,11 +83,10 @@ $header-height: 80px;
 				font-weight: 800;
 				position: relative;
 				border-radius: 5px;
+				padding: 10px 20px;
 				align-items: center;
 				transition: 0.1s ease-in-out;
 				border: 2px solid transparent;
-				padding: 10px 20px;
-				width: 100%;
 				svg {
 					fill: $dark;
 					width: 20px;
@@ -97,17 +97,14 @@ $header-height: 80px;
 			}
 			&.active {
 				> a {
-					color: darken($info, 20%);
-					background-color: $primary;
-					// box-shadow: -4px 4px 0 darken(#00000030, 30%);
-					box-shadow: $box-shadow_fade;
 					cursor: default;
+					background-color: $primary;
+					box-shadow: $box-shadow_fade;
+					color: lighten($primary, 30%);
 				}
 				svg {
-					fill: #fff;
-					stroke: #fff;
-					fill: darken($info, 20%);
-					stroke: darken($info, 20%);
+					fill: lighten($primary, 30%);
+					stroke: lighten($primary, 30%);
 				}
 				.__pages {
 					padding-top: 10px;

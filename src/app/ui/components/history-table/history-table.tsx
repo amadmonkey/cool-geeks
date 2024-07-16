@@ -4,6 +4,7 @@ import IconLoading from "../../../../../public/loading.svg";
 
 import "./history-table.scss";
 import { RECEIPT_STATUS_ICON } from "@/utility";
+import ListEmpty from "../table/empty/list-empty";
 
 const HistoryTable = (props: any) => {
 	// null = loading
@@ -79,22 +80,10 @@ const HistoryTable = (props: any) => {
 				</tbody>
 			</table>
 		) : (
-			<div className="empty-container">
-				<Image
-					src={`/leaf.png`}
-					height={0}
-					width={0}
-					style={{ height: "100px", width: "auto" }}
-					sizes="100vw"
-					alt="Picture of the author"
-				/>
-				<h1>NO ENTRIES</h1>
-			</div>
+			<ListEmpty label="NO ENTRIES" />
 		)
 	) : (
-		<div className="empty-container">
-			<IconLoading />
-		</div>
+		"LOADING"
 	);
 };
 

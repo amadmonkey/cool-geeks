@@ -104,7 +104,7 @@
 				}
 			}
 			&.accepted {
-				background: linear-gradient(0deg, lighten($success, 20%) 0%, lighten($success, 40%) 50%);
+				background: linear-gradient(0deg, lighten($success, 30%) 0%, lighten($success, 40%) 50%);
 				.header {
 					> * {
 						background-color: lighten($success, 35%);

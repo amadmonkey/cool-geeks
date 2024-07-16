@@ -1,9 +1,31 @@
+@import "../../variables.scss";
+
 .login-container {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		width: 300px;
+		[name="emailAccountNo"] {
+			text-transform: uppercase;
+		}
+		.deactivated-container {
+			padding: 10px 20px;
+			border-radius: 7px;
+			margin: 20px 0;
+			font-size: 13px;
+			font-weight: 800;
+			// background-color: lighten($danger, 20%);
+			color: $danger;
+			text-align: center;
+			// box-shadow: $box-shadow_fade;
+		}
+	}
 	> h1 {
 		margin-bottom: 50px;
 		font-size: 12px;

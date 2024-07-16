@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { setCookie } from "cookies-next";
-import Image from "next/image";
 import { ACCOUNT_STATUS } from "@/utility";
+import Image from "next/image";
 
 import Button from "../../ui/components/button/button";
 import TextInput from "../../ui/components/text-input/text-input";
@@ -17,20 +17,39 @@ import "./page.scss";
 
 const LoginForm = () => {
 	const { push } = useRouter();
-	const [error, setError] = useState("");
+	const [error, setError] = useState<string | null>(null);
 	const [accountStatus, setAccountStatus] = useState<any>(null);
 	const [form, setForm] = useState({
-		emailAccountNo: "",
+		emailAccountNo: "PES-2024-0007",
 		password: "",
+		confirmPassword: "",
 	});
 
 	const updateForm = (e: any) => {
 		const { name, value } = e.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
+		setForm((prev) => ({
+			...prev,
+			[name]: name === "emailAccountNo" ? value.toUpperCase() : value,
+		}));
 	};
 
-	const login = async (e: any) => {
+	const handleSubmit = (e: any) => {
 		e.preventDefault();
+		setError(null);
+		setAccountStatus(ACCOUNT_STATUS.CUSTOM.LOADING);
+		if (form.confirmPassword) {
+			console.log("verify");
+			verify();
+		} else if (form.password) {
+			console.log("login");
+			login();
+		} else {
+			console.log("getAccountStatus");
+			getAccountStatus();
+		}
+	};
+
+	const login = async () => {
 		try {
 			const res = await fetch("/api/auth", {
 				method: "POST",
@@ -50,12 +69,6 @@ const LoginForm = () => {
 					}
 					push(data.user.admin ? "/admin" : "/");
 					break;
-				case 400:
-					setError(data.general);
-					break;
-				case 403:
-					setError(data.general);
-					break;
 				default:
 					setError(data.general);
 					break;
@@ -67,41 +80,31 @@ const LoginForm = () => {
 	};
 
 	const getAccountStatus = async () => {
-		const searchOptions = new URLSearchParams({
-			filter: JSON.stringify({
-				$or: [{ accountNumber: form.emailAccountNo }, { email: form.emailAccountNo }],
-			}),
-			page: "1",
-			limit: "10",
-			sort: JSON.stringify({
-				name: "asc",
-				code: "asc",
-			}),
-		});
 		try {
-			const res = await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				// credentials: "include",
-			});
+			const res = await fetch(
+				`${process.env.NEXT_PUBLIC_MID}/api/auth?${new URLSearchParams({
+					filter: JSON.stringify({ input: form.emailAccountNo }),
+				})}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+				}
+			);
 			const { code, data } = await res.json();
 			console.log(data);
 			switch (code) {
 				case 200:
-					// setCookie("user", data.user);
-					// if (!data.user.admin) {
-					// 	setCookie("subd", data.subd);
-					// 	setCookie("plan", data.plan);
-					// }
-					// push(data.user.admin ? "/admin" : "/");
-					break;
-				case 400:
-					setError(data.general);
-					break;
-				case 403:
-					setError(data.general);
+					switch (data.status) {
+						case ACCOUNT_STATUS.CUSTOM.VERIFY:
+							verify();
+							break;
+						default:
+							break;
+					}
+					setAccountStatus(data.status);
+					if (!data.status) setError("User does not exist");
 					break;
 				default:
 					setError(data.general);
@@ -113,14 +116,171 @@ const LoginForm = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (form.emailAccountNo) {
-			setAccountStatus("LOADING");
-			// getAccountStatus();
-		} else {
-			setAccountStatus(null);
+	const verify = async () => {
+		console.log(form);
+		try {
+			const { code, data } = await fetch("/api/auth", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({
+					endpoint: "verify-email",
+					form: form,
+				}),
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					setAccountStatus(ACCOUNT_STATUS.CUSTOM.VERIFY);
+					break;
+				default:
+					setError(data.general);
+					break;
+			}
+		} catch (e) {
+			console.log("verify catch", e);
+			setError("Server error. Please try again later or contact [number here].");
 		}
-	}, [form]);
+	};
+
+	// const activate = async () => {
+	// 	try {
+	// 		const { code, data } = await fetch("/api/auth", {
+	// 			method: "POST",
+	// 			headers: {
+	// 				"Content-Type": "application/json",
+	// 			},
+	// 			credentials: "include",
+	// 			body: JSON.stringify({
+	// 				endpoint: "activate",
+	// 				form: { ...form, status: ACCOUNT_STATUS.STANDARD },
+	// 			}),
+	// 		}).then((res) => res.json());
+	// 		switch (code) {
+	// 			case 200:
+	// 				// login(true);
+	// 				setAccountStatus(ACCOUNT_STATUS.CUSTOM.VERIFY);
+	// 				break;
+	// 			default:
+	// 				setError(data.general);
+	// 				break;
+	// 		}
+	// 	} catch (e) {
+	// 		console.log("verify catch", e);
+	// 		setError("Server error. Please try again later or contact [number here].");
+	// 	}
+	// };
+
+	const getTemplate = (status: string | null) => {
+		const changeAccountBtn = (
+			<button
+				className="link"
+				onClick={() => {
+					setForm((prev) => ({
+						...prev,
+						...{
+							password: "",
+							confirmPassword: "",
+						},
+					}));
+					setAccountStatus(null);
+				}}
+			>
+				CHANGE ACCOUNT
+			</button>
+		);
+		switch (status) {
+			case ACCOUNT_STATUS.STANDARD:
+				return (
+					<>
+						<FormGroup label="Password">
+							<TextInput
+								type="password"
+								name="password"
+								minLength="8"
+								value={form.password}
+								onChange={updateForm}
+								autoFocus
+								required
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Button type="submit" className="info">
+								LOGIN
+							</Button>
+						</FormGroup>
+						{changeAccountBtn}
+					</>
+				);
+			case ACCOUNT_STATUS.PENDING:
+				return (
+					<>
+						<p className="instructions">
+							You`re almost there! Enter a password below to finalize your account.
+						</p>
+						<FormGroup label="Password">
+							<TextInput
+								type="password"
+								name="password"
+								minLength="8"
+								value={form.password}
+								onChange={updateForm}
+								autoFocus
+								required
+							/>
+						</FormGroup>
+						<FormGroup label="Confirm Password">
+							<TextInput
+								type="password"
+								name="confirmPassword"
+								minLength="8"
+								value={form.confirmPassword}
+								otherPassword={form.password}
+								onChange={updateForm}
+								required
+							/>
+						</FormGroup>
+						<FormGroup>
+							<Button type="submit" className="info">
+								CONTINUE
+							</Button>
+						</FormGroup>
+						{changeAccountBtn}
+					</>
+				);
+			case ACCOUNT_STATUS.DEACTIVATED:
+				return (
+					<>
+						<div className="deactivated-container">
+							Account Deactivated. Please call or text [number here] or email us at [email here] for
+							info
+						</div>
+						{changeAccountBtn}
+					</>
+				);
+			case ACCOUNT_STATUS.CUSTOM.VERIFY:
+				return (
+					<p className="instructions">
+						Email verification sent. Please check your email inbox for the link.
+					</p>
+				);
+			case ACCOUNT_STATUS.CUSTOM.LOADING:
+				return (
+					<div style={{ display: "flex", justifyContent: "center" }}>
+						<IconLoading style={{ height: "auto", width: "100px" }} />
+					</div>
+				);
+			default:
+				return (
+					<FormGroup>
+						<Button type="submit" className="info">
+							CONTINUE
+						</Button>
+					</FormGroup>
+				);
+		}
+	};
 
 	return (
 		<section className="login-container">
@@ -141,78 +301,30 @@ const LoginForm = () => {
 				className="login-container__text"
 			/>
 			<h1>RECEIPT&nbsp;&nbsp;TRACKER</h1>
-			<form
-				onSubmit={login}
-				style={{ display: "flex", flexDirection: "column", gap: 20, width: "300px" }}
-			>
-				<FormGroup>
-					<TextInput
-						type="text"
-						name="emailAccountNo"
-						value={form.emailAccountNo}
-						onChange={updateForm}
-						required
-					/>
-				</FormGroup>
-				<FormGroup label="Password">
-					<TextInput
-						type="password"
-						name="password"
-						value={form.password}
-						minLength="8"
-						onChange={updateForm}
-						required
-					/>
+			<form onSubmit={handleSubmit}>
+				<FormGroup label={accountStatus ? "Logging in as" : "Account Number or Email"}>
+					{!accountStatus ? (
+						<TextInput
+							type="text"
+							name="emailAccountNo"
+							value={form.emailAccountNo}
+							onChange={updateForm}
+							autoFocus={true}
+							required
+						/>
+					) : (
+						<span style={{ fontSize: "16px", fontWeight: 800 }}>{form.emailAccountNo}</span>
+					)}
 				</FormGroup>
 				{error && (
 					<p className="error-message" style={{ textAlign: "center" }}>
 						{error}
 					</p>
 				)}
-				<FormGroup>
-					<Button type="submit" className="info">
-						LOGIN
-					</Button>
-				</FormGroup>
-				{/* {getTemplate(accountStatus)} */}
-
+				{getTemplate(accountStatus)}
 				{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 			</form>
 		</section>
-	);
-};
-
-const getTemplate = (status: string | null) => {
-	switch (status) {
-		case ACCOUNT_STATUS.ACTIVE:
-			return <TemplateActive />;
-		case ACCOUNT_STATUS.DEACTIVATED:
-			return <TemplateDeactivated />;
-		case ACCOUNT_STATUS.PENDING:
-			return <TemplatePending />;
-		case "LOADING":
-			return <TemplateLoading />;
-		default:
-			return <p className="status-description">Enter email or account number</p>;
-	}
-};
-
-const TemplateActive = () => {
-	return <div>TemplateActive</div>;
-};
-
-const TemplateDeactivated = () => {
-	return <div>TemplateDeactivated</div>;
-};
-
-const TemplatePending = () => {
-	return <div>TemplatePending</div>;
-};
-const TemplateLoading = () => {
-	return (
-		<div style={{ display: "flex", justifyContent: "center" }}>
-			<IconLoading style={{ height: "auto", width: "100px" }} />
-		</div>
 	);
 };
 

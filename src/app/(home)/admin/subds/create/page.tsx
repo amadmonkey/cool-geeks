@@ -212,8 +212,8 @@ const AddSubd = () => {
 												? plans.map((plan: any, i: number) => {
 														console.log(plan);
 														return (
-															<tbody key={i}>
-																<tr>
+															<tbody className="plan-item" key={i}>
+																<tr className="plan-item__row">
 																	<td>{plan.name}</td>
 																	<td>₱{plan.price}</td>
 																	<td>{plan.description}</td>
@@ -241,8 +241,8 @@ const AddSubd = () => {
 														);
 												  })
 												: ""}
-											<tbody>
-												<tr>
+											<tbody className="plan-item">
+												<tr className="plan-item__row">
 													<td>
 														<TextInput
 															type="text"
@@ -300,7 +300,7 @@ const AddSubd = () => {
 											</tbody>
 										</table>
 									</div>
-									{generalError && <span className="general-error">{generalError}</span>}
+									{true && <span className="general-error box">{generalError}</span>}
 								</div>
 								<div className="qr-container">
 									<FileInput

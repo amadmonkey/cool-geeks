@@ -68,9 +68,6 @@ const Admin = () => {
 				viewMode={VIEW_MODES.GRID}
 				style={{ marginTop: 20 }}
 			/>
-			<Link href="/admin/receipts" style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}>
-				VIEW MORE
-			</Link>
 			<Accounts
 				title={"Recently Updated Accounts"}
 				searchOptions={
@@ -82,9 +79,6 @@ const Admin = () => {
 					})
 				}
 			/>
-			<Link href="/admin/accounts" style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}>
-				VIEW MORE
-			</Link>
 		</div>
 	);
 };

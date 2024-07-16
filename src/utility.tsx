@@ -11,9 +11,13 @@ const CUTOFF_TYPE = {
 };
 
 const ACCOUNT_STATUS = {
-	PENDING: "PENDING",
-	ACTIVE: "ACTIVE",
-	DEACTIVATED: "DEACTIVATED",
+	STANDARD: "STANDARD", // can login
+	PENDING: "PENDING", // cannot login, ask for password
+	DEACTIVATED: "DEACTIVATED", // cannot login
+	CUSTOM: {
+		LOADING: "LOADING",
+		VERIFY: "VERIFY",
+	},
 };
 
 const UI_TYPE = {

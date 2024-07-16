@@ -12,6 +12,7 @@ import {
 	VIEW_MODES,
 	getDaysLeft,
 } from "@/utility";
+import Link from "next/link";
 
 import Image from "next/image";
 import Card from "@/app/ui/components/card/card";
@@ -397,6 +398,14 @@ export default function Receipts(props: any) {
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
 			{getView()}
+			{props.title && (
+				<Link
+					href="/admin/receipts"
+					style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}
+				>
+					VIEW MORE
+				</Link>
+			)}
 			<Modal isShown={modalIsShown} close={() => setModalIsShown(false)}>
 				<Card
 					style={{

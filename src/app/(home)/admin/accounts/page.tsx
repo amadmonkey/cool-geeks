@@ -10,7 +10,7 @@ import Switch from "@/app/ui/components/switch/switch";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 
-import { DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+import { ACCOUNT_STATUS, DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
 
 import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
@@ -73,7 +73,15 @@ export default function Accounts(props: any) {
 					"Content-Type": "application/json",
 				},
 				credentials: "include",
-				body: JSON.stringify({ ...user, ...{ active: !user.active } }),
+				body: JSON.stringify({
+					...user,
+					...{
+						status:
+							user.status === ACCOUNT_STATUS.STANDARD
+								? ACCOUNT_STATUS.DEACTIVATED
+								: ACCOUNT_STATUS.STANDARD,
+					},
+				}),
 			}).then((res) => res.json());
 			switch (code) {
 				case 200:
@@ -99,7 +107,7 @@ export default function Accounts(props: any) {
 					alignItems: "center",
 				}}
 			>
-				{user.active ? (
+				{user.status === ACCOUNT_STATUS.STANDARD ? (
 					<>
 						<h1 style={{ marginBottom: "10px" }}>Deactivating Account</h1>
 						<p>asdasdasdasd</p>
@@ -134,13 +142,8 @@ export default function Accounts(props: any) {
 					<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
 				) : filteredList.length ? (
 					filteredList?.map((user: any, index: number) => {
-						let isActive = false;
 						return (
-							<tr
-								key={index}
-								className={`accounts ${!user.status ? "inactive" : ""}`}
-								onMouseEnter={() => (isActive = true)}
-							>
+							<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
 								<td>
 									<span
 										style={{
@@ -185,12 +188,12 @@ export default function Accounts(props: any) {
 								</td>
 								<td>{DATE_READABLE(user.createdAt)}</td>
 								<td>{DATE_READABLE(user.updatedAt)}</td>
-								<td className={`account-options ${isActive ? "active" : ""}`}>{isActive}</td>
+								<td className={`account-options${user.status ? " ACTIVE" : ""}`}>{user.status}</td>
 								<td>
 									<Switch
 										name="active"
 										id={user._id}
-										checked={user.active}
+										checked={user.status === ACCOUNT_STATUS.STANDARD}
 										onChange={(e: any) => toggleUserStatus(e, user)}
 										confirmTemplate={() => toggleUserStatusTemplate(user)}
 									/>
@@ -202,26 +205,15 @@ export default function Accounts(props: any) {
 					<ListEmpty label="No entries found" />
 				)}
 			</Table>
+			{props.title && (
+				<Link
+					href="/admin/accounts"
+					style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", marginTop: "30px" }}
+				>
+					VIEW MORE
+				</Link>
+			)}
 		</Section>
-		// <section style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-		// 	<header className="page-header">
-		// 		<h1
-		// 			className="section-title"
-		// 			style={{
-		// 				display: "flex",
-		// 				marginBottom: "unset",
-		// 				gap: "5px",
-		// 				alignItems: "center",
-		// 			}}
-		// 		></h1>
-		// 		<div>
-		// 			<Link href="/admin/accounts/create" className="has-icon outline">
-		// 				<IconAddUser style={{ height: "25px", width: "auto" }} />
-		// 				<span style={{ fontSize: "16px" }}>CREATE NEW ACCOUNT</span>
-		// 			</Link>
-		// 		</div>
-		// 	</header>
-		// </section>
 	);
 }
 

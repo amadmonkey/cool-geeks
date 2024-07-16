@@ -7,16 +7,19 @@ import { createWorker } from "tesseract.js";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import Image from "next/image";
-import HistoryTable from "@/app/ui/components/history-table/history-table";
+
+import Card from "@/app/ui/components/card/card";
 import Button from "@/app/ui/components/button/button";
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import FileInput from "@/app/ui/components/file-input/file-input";
-import Card from "@/app/ui/components/card/card";
+import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import HistoryTable from "@/app/ui/components/history-table/history-table";
+
 import IconQR from "../../../public/qr.svg";
-import IconLoading from "../../../public/loading.svg";
 import IconDownload from "../../../public/download.svg";
+
 import { CUTOFF_TYPE, RECEIPT_STATUS, RECEIPT_STATUS_ICON, getDaysLeft } from "@/utility";
 
 import "./page.scss";
@@ -252,9 +255,7 @@ export default function Home() {
 				>
 					<h1 className="section-title">Submit Receipt</h1>
 					{formShown === null ? (
-						<div className="empty-container">
-							<IconLoading />
-						</div>
+						<ListEmpty />
 					) : !formShown ? (
 						<Card className="receipt-status-container">
 							{RECEIPT_STATUS_ICON(latestReceipt?.status, {

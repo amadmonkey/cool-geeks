@@ -89,9 +89,10 @@ const TextInput = (props: any) => {
 		// console.log(props.noValidate);
 		if (props.noValidate) return;
 		if (e.key === "Enter") {
-			validate(e, null);
+			// validate(e, null);
 		} else if (e.key === "Tab") {
-			validate(e, null);
+			// validate(e, null);
+			// trying removed so id doesnt validate in login changing templates
 		} else {
 			if (!validating) {
 				setValidating(true);
@@ -211,6 +212,7 @@ const TextInput = (props: any) => {
 				type={props.type ? props.type : "text"}
 				name={props.name}
 				value={props.value}
+				autoFocus={props.autoFocus}
 				minLength={props.minLength}
 				maxLength={props.maxLength}
 				className={`${errors.length ? "error" : ""} text-input`}

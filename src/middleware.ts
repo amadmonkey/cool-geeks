@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const outRoutes = ["/login", "/register"];
+const outRoutes = ["/login", "/register", "/verify"];
 
 export function middleware(req: NextRequest) {
 	const { origin, pathname } = req.nextUrl;

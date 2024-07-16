@@ -139,6 +139,18 @@ button {
 			}
 		}
 	}
+	&.link {
+		background-color: transparent;
+		font-size: 12px;
+		box-shadow: none;
+		border: none;
+		width: unset;
+		color: $info;
+		letter-spacing: 3px;
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 }
 
 a:not(.strip) {
@@ -362,6 +374,32 @@ pre {
 	font-weight: 600;
 	font-size: 12px;
 	padding-top: 4px;
+}
+
+.general-error {
+	font-weight: 800;
+	font-size: 14px;
+	margin-top: 20px;
+	color: $danger;
+	display: block;
+	text-align: center;
+	&.box {
+		color: #fff;
+		background-color: $danger;
+		box-shadow: $box-shadow_fade;
+		padding: 10px;
+		border-radius: 5px;
+	}
+}
+
+.instructions {
+	padding: 10px 15px;
+	border-radius: 10px;
+	box-shadow: $box-shadow_fade;
+	font-size: 13px;
+	color: $info;
+	font-weight: 800;
+	border: 2px solid $info;
 }
 
 section {

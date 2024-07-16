@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import Button from "@/app/ui/components/button/button";
 import Section from "@/app/ui/components/section/section";
@@ -13,6 +12,7 @@ import TextInput from "@/app/ui/components/text-input/text-input";
 import IconAddUser from "../../../../../../public/add-user.svg";
 import IconMidmonth from "../../../../../../public/midmonth.svg";
 import IconEndOfMonth from "../../../../../../public/end-of-month.svg";
+
 import "./page.scss";
 
 export default function AddAccount() {
@@ -30,6 +30,7 @@ export default function AddAccount() {
 	});
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
+	const [error, setError] = useState<any>("");
 	const [userCount, setUserCount] = useState(0);
 
 	const onSelect = async (selectId: any, newVal: any) => {
@@ -183,7 +184,7 @@ export default function AddAccount() {
 					push("/admin/accounts");
 					break;
 				case 400:
-					// setError(data.general);
+					setError(data.message);
 					break;
 				default:
 					push("/login");
@@ -382,6 +383,7 @@ export default function AddAccount() {
 							</FormGroup>
 						</div>
 					</div>
+					{error && <span className="general-error box">{error}</span>}
 					<FormGroup style={{ width: "300px", alignSelf: "end" }}>
 						<Button type="submit" className="info" style={{ display: "flex", gap: 10 }}>
 							<IconAddUser style={{ height: "25px", width: "auto" }} />
