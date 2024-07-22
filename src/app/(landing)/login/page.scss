@@ -11,9 +11,6 @@
 		flex-direction: column;
 		gap: 20px;
 		width: 300px;
-		[name="emailAccountNo"] {
-			text-transform: uppercase;
-		}
 		.deactivated-container {
 			padding: 10px 20px;
 			border-radius: 7px;
@@ -24,6 +21,36 @@
 			color: $danger;
 			text-align: center;
 			// box-shadow: $box-shadow_fade;
+		}
+		ul.password-instructions {
+			gap: 0px;
+			height: 0px;
+			display: inline-flex;
+			font-weight: 800;
+			list-style-type: none;
+			flex-direction: column;
+			transition: height 0.1s ease-in-out;
+			overflow: hidden;
+			&.shown {
+				height: 100px;
+			}
+			li {
+				font-size: 12px;
+				display: inline-flex;
+				align-items: center;
+				line-height: 20px;
+				gap: 5px;
+				&.checked {
+					color: $success;
+					> svg {
+						display: unset;
+					}
+				}
+				> svg {
+					display: none;
+					height: 13px;
+				}
+			}
 		}
 	}
 	> h1 {

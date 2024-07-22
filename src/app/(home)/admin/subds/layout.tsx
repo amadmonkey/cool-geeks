@@ -96,11 +96,10 @@ export default function SubdsNav(props: any) {
 														? "/admin/subds"
 														: `/admin/subds/${subd.name.toLowerCase().split(" ").join("-")}`
 												}
-												className={`act`}
 											>
 												{/* {params.subd}
 												{STRING_UTILS.SPACE_TO_DASH(subd.name.toLowerCase())} */}
-												{subd.name} <span>({subd.code})</span>
+												{subd.name} <span>({subd.code.toUpperCase()})</span>
 											</Link>
 										</td>
 									</tr>

@@ -8,6 +8,9 @@ const nextConfig = {
 		});
 		return config;
 	},
+	experimental: {
+		serverComponentsExternalPackages: ["tesseract.js"],
+	},
 	images: {
 		remotePatterns: [
 			{

@@ -10,6 +10,7 @@ body {
 	background-color: $bg;
 	color: #626262;
 	line-height: 1.5;
+	scroll-behavior: smooth;
 	-webkit-font-smoothing: antialiased;
 }
 
@@ -146,7 +147,15 @@ button {
 		border: none;
 		width: unset;
 		color: $info;
+		fill: $info;
 		letter-spacing: 3px;
+		justify-content: center;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		> svg {
+			height: 15px;
+		}
 		&:hover {
 			text-decoration: underline;
 		}
@@ -422,7 +431,8 @@ section {
 	position: relative;
 	&::after {
 		content: "";
-		left: -10px;
+		// left: -10px;
+		left: -5px;
 		width: 105%;
 		z-index: 1;
 		height: 50%;

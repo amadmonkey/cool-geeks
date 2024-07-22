@@ -4,7 +4,9 @@
 	gap: 0 30px;
 	display: grid;
 	position: relative;
-	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	&:not(.empty) {
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	}
 	.receipt-card {
 		position: relative;
 		display: flex;
@@ -86,7 +88,7 @@
 					color: $info;
 					font-weight: 800;
 					padding: 5px 10px;
-					border-radius: 10px;
+					border-radius: 5px;
 					background-color: #fff;
 					box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 					font-size: 15px;
@@ -162,6 +164,13 @@
 						fill: darken($danger, 5%);
 					}
 				}
+				&.invalid {
+					color: lighten($dark, 20%);
+					background-color: lighten($dark, 50%);
+					svg {
+						fill: lighten($dark, 20%);
+					}
+				}
 				&.success {
 					color: $success;
 					background-color: #fff;
@@ -172,6 +181,10 @@
 				&:hover {
 					&.danger {
 						background-color: darken($danger, 5%);
+					}
+					&.invalid {
+						color: #fff;
+						background-color: lighten($dark, 30%);
 					}
 					&.success {
 						color: #fff;

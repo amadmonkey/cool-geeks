@@ -13,28 +13,6 @@
 			align-items: center;
 			justify-content: center;
 			grid-template-columns: 35% 10% 35% 10% 10%;
-			&.failed {
-				grid-template-columns: 35% 10% 55%;
-				td:first-child {
-					span {
-						background-color: lighten($danger, 20%);
-					}
-					&::after {
-						background-color: $danger;
-					}
-				}
-				td:last-child {
-					height: 100%;
-					border-radius: 5px;
-					box-shadow: -3px 3px 0 #00000030;
-					background-color: lighten($danger, 20%);
-					span {
-						color: $danger;
-						font-size: 13px;
-						font-weight: 800;
-					}
-				}
-			}
 			td {
 				display: flex;
 				text-align: center;
@@ -62,13 +40,15 @@
 				align-items: center;
 			}
 			&:not(:last-child) {
-				td:first-child::before {
-					top: 22px;
-					content: "";
-					right: 14px;
-					height: 57px;
-					position: absolute;
-					border: 1px dashed $dark;
+				td:first-child {
+					&::before {
+						top: 22px;
+						content: "";
+						right: 14px;
+						height: 57px;
+						position: absolute;
+						border: 1px dashed $dark;
+					}
 				}
 			}
 			.rate {
@@ -81,7 +61,7 @@
 				position: relative;
 				border-radius: 5px;
 				background-color: #fff;
-				box-shadow: -3px 3px 0 #00000030;
+				box-shadow: $box-shadow_fade;
 				&::before {
 					width: 0;
 					top: 10px;
@@ -96,6 +76,31 @@
 			.refNo {
 				align-items: center;
 				display: inline-flex;
+			}
+			&.failed {
+				grid-template-columns: 35% 10% 55%;
+				td:first-child {
+					span {
+						background-color: lighten($danger, 20%);
+						font-weight: 800;
+						color: $danger;
+					}
+					&::after {
+						background-color: $danger;
+						box-shadow: $box-shadow_fade;
+					}
+				}
+				td:last-child {
+					height: 100%;
+					border-radius: 5px;
+					box-shadow: $box-shadow_fade;
+					background-color: lighten($danger, 20%);
+					span {
+						color: $danger;
+						font-size: 13px;
+						font-weight: 800;
+					}
+				}
 			}
 		}
 	}

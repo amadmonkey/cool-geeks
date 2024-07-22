@@ -25,7 +25,8 @@
 					padding: 5px 10px;
 					color: $dark;
 					span {
-						color: lighten($dark, 30%);
+						// color: lighten($dark, 30%);
+						color: $primary;
 					}
 				}
 			}
@@ -68,7 +69,7 @@
 					a {
 						color: #fff;
 						span {
-							color: $dark;
+							color: darken($primary, 30%);
 						}
 					}
 				}

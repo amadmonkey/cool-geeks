@@ -24,8 +24,9 @@ export default function RootLayout({
 				{children}
 				<ToastContainer
 					position="bottom-center"
-					autoClose={3000}
+					autoClose={5000}
 					newestOnTop={false}
+					closeButton={false}
 					closeOnClick
 					rtl={false}
 					pauseOnFocusLoss

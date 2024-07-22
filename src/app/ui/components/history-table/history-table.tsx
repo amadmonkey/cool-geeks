@@ -3,8 +3,9 @@ import Image from "next/image";
 import IconLoading from "../../../../../public/loading.svg";
 
 import "./history-table.scss";
-import { RECEIPT_STATUS_ICON } from "@/utility";
+import { RECEIPT_STATUS_ICON, SKELETON_TYPES } from "@/utility";
 import ListEmpty from "../table/empty/list-empty";
+import SkeletonTable from "../skeleton/skeleton-table/skeleton-table";
 
 const HistoryTable = (props: any) => {
 	// null = loading
@@ -38,7 +39,7 @@ const HistoryTable = (props: any) => {
 									</span>
 								</td>
 								<td>
-									<span className="rate">{"1000"}</span>
+									<span className="rate">{item.planRef.price}</span>
 								</td>
 								<td>
 									{item.referenceType ? (
@@ -83,7 +84,50 @@ const HistoryTable = (props: any) => {
 			<ListEmpty label="NO ENTRIES" />
 		)
 	) : (
-		"LOADING"
+		<table className="history-table">
+			<thead className="sr-only">
+				<tr>
+					<th>Date</th>
+					<th>Rate</th>
+					<th>Reference Number</th>
+					<th>Receipt</th>
+					<th>Status</th>
+				</tr>
+			</thead>
+			<tbody className="loading">
+				{Array.from(Array(5).keys()).map((item: any, index: number) => {
+					return (
+						<tr key={index} className={item.status?.toLowerCase()}>
+							<td>
+								<span className="date skeleton" style={{ width: "100%" }}>
+									&nbsp;
+								</span>
+							</td>
+							<td>
+								<span className="rate skeleton" style={{ width: "100%", borderRadius: "5px" }}>
+									&nbsp;
+								</span>
+							</td>
+							<td>
+								<span className="refNo skeleton" style={{ width: "100%", borderRadius: "5px" }}>
+									&nbsp;
+								</span>
+							</td>
+							{item.status !== "FAILED" && (
+								<>
+									<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
+										<button className="invisible">&nbsp;</button>
+									</td>
+									<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
+										&nbsp;
+									</td>
+								</>
+							)}
+						</tr>
+					);
+				})}
+			</tbody>
+		</table>
 	);
 };
 

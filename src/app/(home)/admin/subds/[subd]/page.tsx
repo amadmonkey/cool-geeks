@@ -54,7 +54,7 @@ const Subd = (props: any) => {
 			props.searchOptions ||
 			new URLSearchParams({
 				filter: JSON.stringify({
-					name: STRING_UTILS.DASH_TO_SPACE(props.params.subd).toLocaleUpperCase(),
+					name: STRING_UTILS.DASH_TO_SPACE(props.params.subd),
 				}),
 				page: "1",
 				limit: "1",
@@ -268,7 +268,7 @@ const Subd = (props: any) => {
 		});
 
 	const getImage = async (subd: any) => {
-		const url = `${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`;
+		const url = `${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`;
 		return await fetch(url, {
 			method: "GET",
 		})
@@ -863,7 +863,7 @@ const Subd = (props: any) => {
 					height={0}
 					width={0}
 					unoptimized
-					src={`${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`}
+					src={`${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`}
 					onClick={() => inputRef.current!.click()}
 				/>
 				<input

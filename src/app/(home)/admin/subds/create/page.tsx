@@ -14,30 +14,28 @@ import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 
 const AddSubd = () => {
 	const { push } = useRouter();
-	const pathname = usePathname();
 	const [plans, setPlans]: any = useState([]);
 	const [generalError, setGeneralError] = useState("");
 	const [qrError, setQrError] = useState("");
-	const [usernameExistsError, setUsernameExistsError] = useState("");
 	const [file, setFile] = useState<File | null>(null);
 	const [formSubd, setFormSubd] = useState(DEFAULT_VALUES.subdForm);
 	const [formPlan, setFormPlan] = useState(DEFAULT_VALUES.planForm);
 
-	const updateForm = async (e: any, plan?: Boolean) => {
+	const updateForm = async (e: any, isPlan?: Boolean) => {
 		let { name, value } = e.target;
 		setQrError("");
 		setGeneralError("");
 		name === "qr" && setFile(value);
-		plan
-			? setFormPlan((prev: any) => ({ ...prev, [name]: value.toUpperCase() }))
+		isPlan
+			? setFormPlan((prev: any) => ({ ...prev, [name]: value }))
 			: setFormSubd((prev: any) => ({
 					...prev,
-					[name]: name === "qr" ? value : value.toUpperCase(),
+					[name]: value,
 			  }));
 
-		if (!plan && name === "name") {
+		if (!isPlan && name === "name") {
 			const exists = await getSubd(value.trim().toUpperCase());
-			exists && setUsernameExistsError("Subdivision name already exists");
+			exists && setGeneralError("Subdivision name already exists");
 		}
 	};
 
@@ -227,6 +225,7 @@ const AddSubd = () => {
 																				letterSpacing: "0px",
 																				fontWeight: "800",
 																			}}
+																			className="danger"
 																			danger
 																			onClick={() => removePlan(i)}
 																		>
@@ -300,7 +299,7 @@ const AddSubd = () => {
 											</tbody>
 										</table>
 									</div>
-									{true && <span className="general-error box">{generalError}</span>}
+									{generalError && <span className="general-error box">{generalError}</span>}
 								</div>
 								<div className="qr-container">
 									<FileInput

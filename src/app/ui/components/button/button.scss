@@ -12,4 +12,13 @@
 		border: none;
 		color: #fff;
 	}
+	&.hanging {
+		border-radius: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		&:hover {
+			box-shadow: $box-shadow_fade;
+			left: 0;
+		}
+	}
 }

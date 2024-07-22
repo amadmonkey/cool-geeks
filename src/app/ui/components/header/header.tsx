@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { Context, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getCookie, deleteCookie } from "cookies-next";
+import { getCookie, deleteCookie, getCookies } from "cookies-next";
 import Link from "next/link";
 import Image from "next/image";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -14,9 +14,9 @@ import IconSettings from "../../../../../public/settings.svg";
 
 import "./header.scss";
 
-const Header = () => {
+const Header = (props: any) => {
 	const { push } = useRouter();
-	const user = useRef(JSON.parse(getCookie("user") || ""));
+	const user = useRef(JSON.parse(props.user.value));
 	const [userDropdownActive, setUserDropdownActive] = useState(false);
 
 	const redirect = (e: any) => {

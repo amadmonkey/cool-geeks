@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 import Button from "@/app/ui/components/button/button";
 import Section from "@/app/ui/components/section/section";
@@ -30,6 +31,7 @@ export default function AddAccount() {
 	});
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
+	const [cutOffError, setCutOffError] = useState<string | null>(null);
 	const [error, setError] = useState<any>("");
 	const [userCount, setUserCount] = useState(0);
 
@@ -172,15 +174,13 @@ export default function AddAccount() {
 				credentials: "include",
 				body: JSON.stringify({
 					...form,
-					accountNumber: `${form.subd.code}-${new Date().getFullYear()}-${(userCount + "").padStart(
-						4,
-						"0"
-					)}`,
+					accountNumber: setAccountNumber(form.subd.code, userCount),
 				}),
 			});
 			const { code, data } = await res.json();
 			switch (code) {
 				case 200:
+					toast.success("Account created successfully.");
 					push("/admin/accounts");
 					break;
 				case 400:
@@ -195,10 +195,25 @@ export default function AddAccount() {
 		}
 	};
 
+	const setAccountNumber = (code: string, count: number) =>
+		`${code}-${new Date().getFullYear()}-${(count + "").padStart(4, "0")}`.toUpperCase();
+
+	const validate = (e: any) => {
+		e.preventDefault();
+		if (!form.cutoff) {
+			setCutOffError("Please select a cut off type");
+			return false;
+		}
+		return true;
+	};
+
 	return (
 		<Section title={sectionTitle}>
 			<div style={{ display: "flex", justifyContent: "center", gap: 50 }}>
-				<form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 50 }}>
+				<form
+					onSubmit={(e: any) => validate(e) && handleSubmit(e)}
+					style={{ display: "flex", flexDirection: "column", gap: 50 }}
+				>
 					<div style={{ display: "flex", flexDirection: "row", gap: 50 }}>
 						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
 							<FormGroup label="First Name">
@@ -340,10 +355,7 @@ export default function AddAccount() {
 											ACCOUNT NUMBER
 										</span>
 										<p style={{ width: "100%", fontWeight: "800", fontSize: "16px" }}>
-											{`${form.subd.code}-${new Date().getFullYear()}-${(userCount + "").padStart(
-												4,
-												"0"
-											)}`}
+											{setAccountNumber(form.subd.code, userCount)}
 										</p>
 									</div>
 								</div>
@@ -351,30 +363,17 @@ export default function AddAccount() {
 							<FormGroup label="Preferred Cutoff">
 								<div className="cutoff-container">
 									<label className={form.cutoff === "MID" ? "active" : ""} tabIndex={0}>
-										{/* <Image
-											src={`/midmonth.svg`}
-											height={0}
-											width={0}
-											sizes="100vw"
-											alt="Midmonth icon"
-										/> */}
 										<IconMidmonth />
 										<input type="radio" name="cutoff" value="MID" onChange={updateForm} />
 										<span>MIDMONTH</span>
 									</label>
 									<label className={form.cutoff === "END" ? "active" : ""} tabIndex={0}>
-										{/* <Image
-											src={`/end-of-month.svg`}
-											height={0}
-											width={0}
-											sizes="100vw"
-											alt="End of month icon"
-										/> */}
 										<IconEndOfMonth />
 										<input type="radio" name="cutoff" value="END" onChange={updateForm} />
 										<span>END OF MONTH</span>
 									</label>
 								</div>
+								{cutOffError && <span className="general-error">{cutOffError}</span>}
 								<p className="input-info">
 									Midmonth warns every 15<sup>th</sup> and cuts every 19<sup>th</sup>. End of month
 									warns at whatever the last day of the month is and cuts at the 4<sup>th</sup> the

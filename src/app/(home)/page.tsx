@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { createWorker } from "tesseract.js";
@@ -14,7 +14,6 @@ import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import FileInput from "@/app/ui/components/file-input/file-input";
-import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import HistoryTable from "@/app/ui/components/history-table/history-table";
 
 import IconQR from "../../../public/qr.svg";
@@ -56,6 +55,7 @@ type Receipt = {
 
 export default function Home() {
 	const { push } = useRouter();
+	const mounted = useRef(false);
 	const [inputInfo, setInputInfo] = useState(
 		"Select the correct payment method you used and enter the reference number"
 	);
@@ -112,6 +112,7 @@ export default function Home() {
 	};
 
 	const handleSubmit = async (e: any) => {
+		console.log("HANDLE SUBMIT");
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append("referenceType", JSON.stringify(form.referenceType));
@@ -155,7 +156,9 @@ export default function Home() {
 				height={0}
 				width={0}
 				src={
-					user ? `${process.env.NEXT_PUBLIC_API}/qr/${user.subdRef.gcash.qr.filename}` : "/qr.png"
+					user
+						? `${process.env.NEXT_PUBLIC_API}/uploads/qr/${user.subdRef.gcash.qr.filename}`
+						: "/qr.png"
 				}
 				unoptimized
 				style={{ height: "90%", width: "auto", borderRadius: 10 }}
@@ -180,13 +183,34 @@ export default function Home() {
 			sortBy: "createdAt",
 			sortOrder: "desc",
 		});
-		return await fetch(`/api/receipt?${searchOptions}`, {
+		const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			credentials: "include",
 		}).then((res) => res.json());
+
+		// .then((res) => {
+		if (mounted) {
+			switch (code) {
+				case 200:
+					setHistoryList(data.list);
+					setCurrentReceipt(data.latestReceipt);
+					setFormShown(
+						data.latestReceipt && data.latestReceipt.status !== RECEIPT_STATUS.FAILED ? false : true
+					);
+					break;
+				case 401:
+					push("/login");
+					break;
+				default:
+					push("/login");
+					break;
+			}
+		}
+		// })
+		// .catch((err) => console.log("getHistoryList catch", err));
 	};
 
 	const validate = (e: any) => {
@@ -202,7 +226,7 @@ export default function Home() {
 		// generate date to compare
 		const date = latestReceipt?.receiptDate
 			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 1 })
-			: DateTime.now();
+			: DateTime.now().plus({ month: 1 });
 		Object.assign(
 			date,
 			date.set({ day: user.cutoff === CUTOFF_TYPE.MID ? 15 : date.endOf("month").day })
@@ -213,35 +237,9 @@ export default function Home() {
 	};
 
 	useEffect(() => {
-		let mounted = true;
-		getHistoryList()
-			.then((res) => {
-				if (mounted) {
-					const { code, data } = res;
-					switch (code) {
-						case 200:
-							setHistoryList(data.list);
-							setCurrentReceipt(data.latestReceipt);
-							setFormShown(
-								data.latestReceipt && data.latestReceipt.status !== RECEIPT_STATUS.FAILED
-									? false
-									: true
-							);
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							push("/login");
-							break;
-					}
-				}
-			})
-			.catch((err) => console.log("getHistoryList catch", err));
-		return () => {
-			mounted = false;
-		};
-	}, [push]);
+		getHistoryList();
+		console.log("i fire once");
+	}, []);
 
 	return (
 		<main>
@@ -255,7 +253,10 @@ export default function Home() {
 				>
 					<h1 className="section-title">Submit Receipt</h1>
 					{formShown === null ? (
-						<ListEmpty />
+						<Card
+							className="receipt-status-container skeleton loading"
+							style={{ minHeight: "300px" }}
+						/>
 					) : !formShown ? (
 						<Card className="receipt-status-container">
 							{RECEIPT_STATUS_ICON(latestReceipt?.status, {
@@ -288,7 +289,7 @@ export default function Home() {
 								)}
 								<li className="summary__item">
 									<span>RATE</span>
-									<p>P1000</p>
+									<p>{user.planRef.price}</p>
 								</li>
 								<li className="summary__item">
 									<span>RECEIPT</span>
@@ -374,7 +375,7 @@ export default function Home() {
 									<span>RECEIPT FOR</span>
 									<p>
 										{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now())
-											.plus({ month: latestReceipt?.receiptDate ? 1 : 0 })
+											.plus({ month: 1 })
 											.toFormat("MMMM")}
 									</p>
 								</li>

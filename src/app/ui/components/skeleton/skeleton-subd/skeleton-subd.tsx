@@ -76,7 +76,7 @@ const SkeletonSubd = (props: any) => {
 						height={0}
 						width={0}
 						unoptimized
-						src={`${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`}
+						src={`${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`}
 						onClick={() => inputRef.current!.click()}
 					/> */}
 			</div>

@@ -129,7 +129,7 @@ const SubdCard = (props: any) => {
 	};
 
 	const getImage = async () => {
-		const url = `${process.env.NEXT_PUBLIC_API}/qr/${props.subd.gcash.qr.filename}`;
+		const url = `${process.env.NEXT_PUBLIC_API}/uploads/qr/${props.subd.gcash.qr.filename}`;
 		return await fetch(url, {
 			method: "GET",
 		});
@@ -419,7 +419,7 @@ const SubdCard = (props: any) => {
 										alt="qr"
 										height={0}
 										width={0}
-										src={`${process.env.NEXT_PUBLIC_API}/qr/${subd.gcash.qr.filename}`}
+										src={`${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`}
 										unoptimized
 										style={{ height: "100px", width: "auto", borderRadius: 10 }}
 									/>

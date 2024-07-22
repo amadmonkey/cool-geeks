@@ -14,16 +14,24 @@ const ACCOUNT_STATUS = {
 	STANDARD: "STANDARD", // can login
 	PENDING: "PENDING", // cannot login, ask for password
 	DEACTIVATED: "DEACTIVATED", // cannot login
-	CUSTOM: {
-		LOADING: "LOADING",
-		VERIFY: "VERIFY",
-	},
+	VERIFY: "VERIFY",
 };
 
 const UI_TYPE = {
 	info: "info",
 	danger: "danger",
 	success: "success",
+};
+
+const RECEIPT_STATUS = {
+	FAILED: "FAILED",
+	DENIED: "DENIED",
+	PENDING: "PENDING",
+	ACCEPTED: "ACCEPTED",
+};
+
+const REGEX = {
+	PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(\W|_)).{9,}$/,
 };
 
 const IS_NUMERIC_INPUT = (event: any): Boolean => {
@@ -76,13 +84,6 @@ const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	}
 };
 
-const RECEIPT_STATUS = {
-	FAILED: "FAILED",
-	DENIED: "DENIED",
-	PENDING: "PENDING",
-	ACCEPTED: "ACCEPTED",
-};
-
 const RECEIPT_STATUS_BADGE = (status: any) => {
 	switch (status) {
 		case RECEIPT_STATUS.ACCEPTED:
@@ -110,6 +111,12 @@ const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 			return <IconAccepted style={{ ...test }} className="success" />;
 		case RECEIPT_STATUS.DENIED:
 			return <IconDenied style={test} className="danger" />;
+		default:
+			return (
+				<div className="skeleton" style={test}>
+					&nbsp;
+				</div>
+			);
 	}
 };
 
@@ -151,11 +158,12 @@ const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
-			console.log("accessToken", accessToken);
-			console.log("refreshResponse", refreshResponse);
+			// console.log("accessToken", accessToken);
+			// console.log("refreshResponse", refreshResponse);
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
-				console.log("newResponse");
+				("");
+				console.log("newResponse", newResponse);
 				newResponse.cookies.delete("user");
 				newResponse.cookies.delete("accessToken");
 				newResponse.cookies.delete("refreshToken");
@@ -166,7 +174,6 @@ const REQUEST = {
 				headers: HEADERS(req, accessToken),
 				credentials: "include",
 			}).then((res) => res.json());
-			console.log("GET:", apiResponse);
 			return newResponse(apiResponse, refreshResponse);
 		} catch (e) {
 			return NextResponse.json(NextResponse.json(e));
@@ -364,6 +371,7 @@ const getDaysLeft = (d: DateTime) => {
 };
 
 export {
+	REGEX,
 	REQUEST,
 	HEADERS,
 	UI_TYPE,

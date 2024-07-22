@@ -11,7 +11,6 @@ import IconAddUser from "../../../../public/add-user.svg";
 
 import Receipts from "./receipts/page";
 import Accounts from "./accounts/page";
-import Subds from "./subds/page";
 
 import "./page.scss";
 

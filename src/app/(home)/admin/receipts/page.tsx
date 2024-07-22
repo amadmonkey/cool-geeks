@@ -30,6 +30,7 @@ import IconGrid from "../../../../../public/grid.svg";
 import IconNext from "../../../../../public/next.svg";
 import IconList from "../../../../../public/list.svg";
 import IconDeny from "../../../../../public/denied.svg";
+import IconInvalid from "../../../../../public/invalid.svg";
 import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
 import IconCarousel from "../../../../../public/carousel.svg";
@@ -45,11 +46,13 @@ export default function Receipts(props: any) {
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
+	// move
 	const confirmUpdateReceipt = (item: any, accepted: boolean) => {
 		setSelectedReceipt({ ...item, ...{ accepted } });
 		setModalIsShown(true);
 	};
 
+	// move
 	const updateReceipt = async () => {
 		const { code, data } = await fetch("/api/receipt", {
 			method: "PUT",
@@ -126,8 +129,8 @@ export default function Receipts(props: any) {
 			case VIEW_MODES.CAROUSEL:
 				return (
 					<div
-						className={`receipt-cards-container ${viewMode.toLowerCase()} ${
-							filteredList === null ? "loading" : ""
+						className={`receipt-cards-container ${viewMode.toLowerCase()}${
+							filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
 						}`}
 					>
 						{viewMode === VIEW_MODES.CAROUSEL && (
@@ -144,14 +147,11 @@ export default function Receipts(props: any) {
 						)}
 						{filteredList === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-						) : (
+						) : filteredList.length ? (
 							filteredList
 								.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
 								.map((item: any, i: number) => {
-									const currentDate = new Date();
-									const receiptDate = new Date(item.receiptDate);
-
-									const { days, hours } = getDaysLeft(DateTime.fromJSDate(receiptDate));
+									const { days, hours } = getDaysLeft(DateTime.fromISO(item.receiptDate));
 
 									return (
 										<div key={i} className="receipt-card">
@@ -160,7 +160,7 @@ export default function Receipts(props: any) {
 													alt="qr"
 													height={0}
 													width={0}
-													src={`${process.env.NEXT_PUBLIC_API}/receipts/${item.receiptName}`}
+													src={`${process.env.NEXT_PUBLIC_API}/uploads/receipts/${item.receiptName}`}
 													unoptimized
 												/>
 											</div>
@@ -212,7 +212,9 @@ export default function Receipts(props: any) {
 														<div className="form-group">
 															<label htmlFor="">DUE FOR</label>
 															{/* <span>{MONTH_NAMES[receiptDate.getMonth()]}</span> */}
-															<span>{receiptDate.toDateString()}</span>
+															<span>
+																{DateTime.fromISO(item.receiptDate).toFormat("LLLL dd, yyyy")}
+															</span>
 														</div>
 													</div>
 												</div>
@@ -220,11 +222,11 @@ export default function Receipts(props: any) {
 											{item.status === RECEIPT_STATUS.PENDING && (
 												<footer>
 													<button
-														className="danger invisible"
+														className="invalid invisible"
 														onClick={() => confirmUpdateReceipt(item, false)}
 													>
-														<IconDeny />
-														<label>REJECT</label>
+														<IconInvalid />
+														<label>INVALID</label>
 													</button>
 													<button
 														className="success invisible"
@@ -238,6 +240,8 @@ export default function Receipts(props: any) {
 										</div>
 									);
 								})
+						) : (
+							<ListEmpty label="No entries found" />
 						)}
 						{viewMode === VIEW_MODES.CAROUSEL && (
 							<button
@@ -332,7 +336,7 @@ export default function Receipts(props: any) {
 															className="invisible button__action"
 															onClick={() => confirmUpdateReceipt(item, false)}
 														>
-															<IconDeny className="danger" />
+															<IconDeny className="invalid" />
 														</button>
 														<label htmlFor="deny" className="sr-only">
 															Deny
@@ -447,7 +451,7 @@ export default function Receipts(props: any) {
 											letterSpacing: "5px",
 										}}
 									>
-										REJECT RECEIPT
+										INVALID RECEIPT
 									</h1>
 									<label
 										htmlFor="reject-reason"

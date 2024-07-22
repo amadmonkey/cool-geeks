@@ -23,24 +23,40 @@ const ConfirmModal = (props: any) => {
 
 	return (
 		<>
-			<div>{props.children(showConfirmModal)}</div>
+			{props.children(showConfirmModal)}
 			<DetectOutsideClick action={closeConfirmModal} isShown={modalIsShown}>
 				<Modal isShown={modalIsShown} close={closeConfirmModal}>
-					<Card style={{ width: "500px" }}>
-						{props.template && props.template()}
-						<div style={{ width: "100%", position: "relative", display: "flex", gap: 10 }}>
-							<FormGroup style={{ width: "100%" }}>
-								<Button type="button" onClick={closeConfirmModal}>
-									CANCEL
-								</Button>
-							</FormGroup>
-							<FormGroup style={{ width: "100%" }}>
-								<Button type="button" className="info" onClick={confirm}>
-									CONTINUE
-								</Button>
-							</FormGroup>
-						</div>
-					</Card>
+					<Card style={{ width: "500px" }}>{props.template && props.template()}</Card>
+					<div
+						style={{
+							width: "100%",
+							display: "inline-flex",
+							justifyContent: "center",
+							position: "relative",
+							gap: 10,
+						}}
+					>
+						<FormGroup style={{ width: "150px" }}>
+							<Button
+								type="button"
+								className="hanging"
+								onClick={closeConfirmModal}
+								style={{ letterSpacing: "2px" }}
+							>
+								CANCEL
+							</Button>
+						</FormGroup>
+						<FormGroup style={{ width: "150px" }}>
+							<Button
+								type="button"
+								className="info hanging"
+								onClick={confirm}
+								style={{ letterSpacing: "2px" }}
+							>
+								CONTINUE
+							</Button>
+						</FormGroup>
+					</div>
 				</Modal>
 			</DetectOutsideClick>
 		</>

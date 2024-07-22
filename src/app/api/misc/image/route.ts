@@ -5,7 +5,9 @@ export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
 		return await REQUEST.get(
-			`${process.env.NEXT_PUBLIC_API}/${searchParams.get("type")}/${searchParams.get("filename")}`,
+			`${process.env.NEXT_PUBLIC_API}/uploads/${searchParams.get("type")}/${searchParams.get(
+				"filename"
+			)}`,
 			req
 		);
 	} catch (error: any) {

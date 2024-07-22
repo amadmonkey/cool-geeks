@@ -132,6 +132,12 @@ const TextInput = (props: any) => {
 							newErrors.push("Passwords do not match");
 						}
 					}
+					if (props.test) {
+						console.log(props.test.test(inputVal));
+						if (!props.test.test(inputVal)) {
+							newErrors.push("Invalid password");
+						}
+					}
 					break;
 				default:
 					break;
