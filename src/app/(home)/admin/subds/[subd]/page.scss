@@ -242,6 +242,13 @@ $grid-template-columns: 35% 15% 30% 15%;
 													display: grid;
 													grid-template-columns: 60% 40%;
 												}
+												thead {
+													tr {
+														background-color: lighten($dark, 65%);
+														border-radius: 5px;
+														box-shadow: $box-shadow_fade;
+													}
+												}
 												tbody {
 													td {
 														font-size: 14px;
@@ -281,7 +288,6 @@ $grid-template-columns: 35% 15% 30% 15%;
 						&.selected {
 							tr td .plan-content-container {
 								height: 300px;
-								overflow: unset;
 							}
 						}
 						&:hover {

@@ -76,6 +76,7 @@
 			justify-content: center;
 			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 			> .header {
+				gap: 10px;
 				top: -20px;
 				width: 90%;
 				display: flex;
@@ -100,16 +101,28 @@
 						width: auto;
 					}
 				}
+				> span {
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+					min-width: 50px;
+					display: inline-block;
+					padding: 2px 7px;
+				}
 				.cutoff-icon {
-					border-radius: 50%;
-					box-sizing: content-box;
+					width: auto;
+					padding: 5px;
+					height: 30px;
+					border-radius: 5px;
+					background-color: #fff;
+					box-shadow: $box-shadow_fade;
 				}
 			}
 			&.accepted {
-				background: linear-gradient(0deg, lighten($success, 30%) 0%, lighten($success, 40%) 50%);
+				background: linear-gradient(0deg, lighten($success, 35%) 0%, lighten($success, 40%) 50%);
 				.header {
 					> * {
-						background-color: lighten($success, 35%);
+						// background-color: lighten($success, 35%);
 					}
 				}
 				.status {
@@ -117,10 +130,10 @@
 				}
 			}
 			&.denied {
-				background: linear-gradient(0deg, lighten($danger, 20%) 0%, lighten($danger, 30%) 30%);
+				background: linear-gradient(0deg, lighten($danger, 25%) 0%, lighten($danger, 30%) 30%);
 				.header {
 					> * {
-						background-color: lighten($danger, 25%);
+						// background-color: lighten($danger, 25%);
 					}
 				}
 				.status {
@@ -136,9 +149,6 @@
 			position: absolute;
 			justify-content: center;
 			bottom: 50px;
-			&:has(> button:hover) {
-				bottom: 45px;
-			}
 			button {
 				gap: 5px;
 				width: 50%;
@@ -155,7 +165,7 @@
 					pointer-events: none;
 				}
 				svg {
-					height: 10px;
+					height: 15px;
 				}
 				&.danger {
 					color: #fff;
@@ -163,32 +173,32 @@
 					svg {
 						fill: darken($danger, 5%);
 					}
-				}
-				&.invalid {
-					color: lighten($dark, 20%);
-					background-color: lighten($dark, 50%);
-					svg {
-						fill: lighten($dark, 20%);
-					}
-				}
-				&.success {
-					color: $success;
-					background-color: #fff;
-					svg {
-						fill: $success;
-					}
-				}
-				&:hover {
-					&.danger {
-						background-color: darken($danger, 5%);
-					}
-					&.invalid {
+					&:hover {
 						color: #fff;
 						background-color: lighten($dark, 30%);
 					}
-					&.success {
+				}
+				&.invalid {
+					color: #fff;
+					background-color: $danger;
+					svg {
+						fill: $danger;
+					}
+					&.active,
+					&:hover {
+						background-color: darken($danger, 5%);
+					}
+				}
+				&.success {
+					color: #fff;
+					background-color: $success;
+					svg {
+						fill: $success;
+					}
+					&.active,
+					&:hover {
 						color: #fff;
-						background-color: lighten($success, 5%);
+						background-color: darken($success, 5%);
 					}
 				}
 			}

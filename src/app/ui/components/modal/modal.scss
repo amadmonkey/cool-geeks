@@ -1,27 +1,23 @@
 .modal-container {
-	position: fixed;
 	top: 0;
 	left: 0;
-	height: 100%;
-	width: 100%;
-	backdrop-filter: blur(5px);
 	z-index: 9;
-	background-color: #00000036;
-	display: flex;
+	opacity: 0;
+	width: 100%;
+	height: 100%;
+	display: none;
+	position: fixed;
+	align-items: center;
 	flex-direction: column;
 	justify-content: center;
-	align-items: center;
-	opacity: 0;
-	display: none;
-	transition: 3s ease;
+	backdrop-filter: blur(5px);
+	background-color: #00000036;
 	&.clear {
 		background: none;
 		backdrop-filter: unset;
 	}
 	&.show {
-		display: flex;
 		opacity: 1;
-	}
-	&__content {
+		display: flex;
 	}
 }
