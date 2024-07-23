@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useCallback, useMemo, useState } from "react";
-import { usePathname, useRouter } from "next/navigation";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { DEFAULT_VALUES, STRING_UTILS, UI_TYPE, VALID_IMG_TYPES } from "@/utility";
+import { DEFAULT_VALUES, STRING_UTILS, VALID_IMG_TYPES } from "@/utility";
 
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FileInput from "@/app/ui/components/file-input/file-input";
@@ -40,7 +40,7 @@ const AddSubd = () => {
 	};
 
 	const getSubd = async (name: string) => {
-		const searchOptions = new URLSearchParams({
+		const searchOptions = {
 			filter: JSON.stringify({
 				name: name,
 			}),
@@ -50,14 +50,17 @@ const AddSubd = () => {
 				name: "asc",
 				code: "asc",
 			}),
-		});
-		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		})
+		};
+		return await fetch(
+			`${process.env.NEXT_PUBLIC_MID}/api/subd?${new URLSearchParams(searchOptions)}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		)
 			.then((res) => res.json())
 			.then((res) => res.data[0]);
 	};

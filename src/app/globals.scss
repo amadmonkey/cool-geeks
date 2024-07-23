@@ -452,6 +452,10 @@ section {
 	fill: $danger;
 }
 
+.text-white {
+	color: #fff;
+}
+
 .text-info {
 	color: $info;
 }
@@ -464,12 +468,16 @@ section {
 	color: $danger;
 }
 
+.fill-white {
+	fill: #fff;
+}
+
 .invalid {
 	fill: $dark;
 }
 
 .bg-info {
-	background-color: $info;
+	background-color: $info !important;
 }
 
 .bg-danger {

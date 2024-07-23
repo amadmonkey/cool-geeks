@@ -1,85 +1,71 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DateTime } from "luxon";
+import Link from "next/link";
 import {
-	CUTOFF_TYPE,
 	RECEIPT_STATUS,
 	RECEIPT_STATUS_BADGE,
 	SKELETON_TYPES,
 	TABLE_HEADERS,
 	VIEW_MODES,
-	getDaysLeft,
 } from "@/utility";
-import Link from "next/link";
 
 import Image from "next/image";
-import Card from "@/app/ui/components/card/card";
-import Modal from "@/app/ui/components/modal/modal";
+import Receipt from "@/app/ui/types/Receipt";
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
-import Button from "@/app/ui/components/button/button";
+import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
-import FormGroup from "@/app/ui/components/form-group/form-group";
+import ReceiptCard from "@/app/ui/components/receipt-card/page";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
-import Section from "@/app/ui/components/section/section";
+import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 
 import IconGrid from "../../../../../public/grid.svg";
-import IconNext from "../../../../../public/next.svg";
 import IconList from "../../../../../public/list.svg";
 import IconDeny from "../../../../../public/denied.svg";
-import IconInvalid from "../../../../../public/invalid.svg";
 import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
 import IconCarousel from "../../../../../public/carousel.svg";
-import IconPrevious from "../../../../../public/previous.svg";
+
 import "./page.scss";
 
 export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
-	const [modalIsShown, setModalIsShown] = useState(false);
-	const [selectedReceipt, setSelectedReceipt] = useState<any>(null);
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
-	// move
-	const confirmUpdateReceipt = (item: any, accepted: boolean) => {
-		setSelectedReceipt({ ...item, ...{ accepted } });
-		setModalIsShown(true);
-	};
-
-	// move
-	const updateReceipt = async () => {
-		const { code, data } = await fetch("/api/receipt", {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				toUpdate: selectedReceipt._id,
-				newStatus: selectedReceipt.accepted ? "ACCEPTED" : "DENIED",
-			}),
-			credentials: "include",
-		}).then((res) => res.json());
-		switch (code) {
-			case 200:
-				const updatedList = list.map((item: any) =>
-					item._id === selectedReceipt._id ? data : item
-				);
-				setList(updatedList);
-				setFilteredList(updatedList);
-				break;
-			case 400:
-				// parse errors
-				break;
-			default:
-				break;
+	const updateReceipt = async (props: any) => {
+		try {
+			const { code, data } = await fetch("/api/receipt", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					...props.data,
+					...{ status: props.action },
+				}),
+				credentials: "include",
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					const updatedList = list.map((item: any) => (item._id === data._id ? data : item));
+					setList(updatedList);
+					setFilteredList(updatedList);
+					break;
+				case 400:
+					// parse errors
+					break;
+				default:
+					break;
+			}
+		} catch (e) {
+			console.error(e);
 		}
-		setModalIsShown(false);
 	};
 
 	const getHistoryList = useCallback(async () => {
@@ -123,7 +109,7 @@ export default function Receipts(props: any) {
 			.catch((err) => console.error(err));
 	}, [props.searchOptions, push]);
 
-	const getView = () => {
+	const getView = (showConfirmModal: Function) => {
 		switch (viewMode) {
 			case VIEW_MODES.GRID:
 			case VIEW_MODES.CAROUSEL:
@@ -133,127 +119,19 @@ export default function Receipts(props: any) {
 							filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
 						}`}
 					>
-						{viewMode === VIEW_MODES.CAROUSEL && (
-							<button
-								id="carousel-previous"
-								name="carousel-previous"
-								className="invisible nav nav__previous"
-							>
-								<IconPrevious />
-								<label htmlFor="carousel-previous" className="sr-only">
-									Previous
-								</label>
-							</button>
-						)}
 						{filteredList === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 						) : filteredList.length ? (
 							filteredList
 								.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
 								.map((item: any, i: number) => {
-									const { days, hours } = getDaysLeft(DateTime.fromISO(item.receiptDate));
-
+									console.log("RENDER", item);
 									return (
-										<div key={i} className="receipt-card">
-											<div className="image-container">
-												<Image
-													alt="qr"
-													height={0}
-													width={0}
-													src={`${process.env.NEXT_PUBLIC_API}/uploads/receipts/${item.receiptName}`}
-													unoptimized
-												/>
-											</div>
-											<Card className={`receipt-details ${item.status?.toLowerCase() || ""}`}>
-												<div className="header">
-													<span>
-														{`${item.userRef.firstName} ${item.userRef.lastName}`}
-														{item.cutoff === CUTOFF_TYPE.MID ? (
-															<Image
-																src={`/midmonth.svg`}
-																height={0}
-																width={0}
-																sizes="100vw"
-																alt="MIDMONTH ICON"
-															/>
-														) : (
-															<Image
-																src={`/end-of-month.svg`}
-																height={0}
-																width={0}
-																sizes="100vw"
-																alt="END OF MONTH ICON"
-															/>
-														)}
-													</span>
-													<button className="invisible">...</button>
-												</div>
-												<div style={{ display: "flex", gap: 20 }}>
-													<div className="receipt-card receipt-card__due">
-														<label htmlFor="">DUE IN</label>
-														<span>{Math.abs(days) || Math.abs(hours)}</span>
-														<span>
-															{Math.abs(days)
-																? `days${days < 0 ? " ago" : ""}`
-																: `hours${hours < 0 ? " ago" : ""}`}
-														</span>
-													</div>
-													<div className="receipt-card receipt-card__addtl">
-														<div className="form-group">
-															<label htmlFor="">PLAN</label>
-															<span>
-																{`${item.planRef.name}`} <b>PHP{`${item.planRef.price}`}</b>
-															</span>
-														</div>
-														<div className="form-group">
-															<label htmlFor="">REF NUMBER</label>
-															<span>{`${item.referenceNumber}`}</span>
-														</div>
-														<div className="form-group">
-															<label htmlFor="">DUE FOR</label>
-															{/* <span>{MONTH_NAMES[receiptDate.getMonth()]}</span> */}
-															<span>
-																{DateTime.fromISO(item.receiptDate).toFormat("LLLL dd, yyyy")}
-															</span>
-														</div>
-													</div>
-												</div>
-											</Card>
-											{item.status === RECEIPT_STATUS.PENDING && (
-												<footer>
-													<button
-														className="invalid invisible"
-														onClick={() => confirmUpdateReceipt(item, false)}
-													>
-														<IconInvalid />
-														<label>INVALID</label>
-													</button>
-													<button
-														className="success invisible"
-														onClick={() => confirmUpdateReceipt(item, true)}
-													>
-														<IconAccept />
-														<label>ACCEPT</label>
-													</button>
-												</footer>
-											)}
-										</div>
+										<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
 									);
 								})
 						) : (
-							<ListEmpty label="No entries found" />
-						)}
-						{viewMode === VIEW_MODES.CAROUSEL && (
-							<button
-								id="carousel-previous"
-								name="carousel-previous"
-								className="invisible nav nav__next"
-							>
-								<IconNext />
-								<label htmlFor="carousel-previous" className="sr-only">
-									Next
-								</label>
-							</button>
+							""
 						)}
 					</div>
 				);
@@ -267,11 +145,11 @@ export default function Receipts(props: any) {
 						{filteredList === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
 						) : filteredList.length ? (
-							filteredList?.map((item: any, index: number) => {
+							filteredList?.map((item: any) => {
 								const receiptDate = new Date(item.receiptDate);
 								return (
 									<tr
-										key={index}
+										key={item._id}
 										className={`receipts ${item.status === "FAILED" ? "row-failed" : ""}`}
 									>
 										<td>
@@ -334,7 +212,7 @@ export default function Receipts(props: any) {
 														<button
 															name="deny"
 															className="invisible button__action"
-															onClick={() => confirmUpdateReceipt(item, false)}
+															onClick={() => showConfirmModal({ data: item, action: "DENIED" })}
 														>
 															<IconDeny className="invalid" />
 														</button>
@@ -344,7 +222,7 @@ export default function Receipts(props: any) {
 														<button
 															name="accept"
 															className="invisible button__action"
-															onClick={() => confirmUpdateReceipt(item, true)}
+															onClick={() => showConfirmModal({ data: item, action: "ACCEPTED" })}
 														>
 															<span className="sr-only">Accept</span>
 															<IconAccept className="success" />
@@ -401,7 +279,49 @@ export default function Receipts(props: any) {
 
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
-			{getView()}
+			<ConfirmModal template={updateConfirmTemplate} continue={updateReceipt}>
+				{(showConfirmModal: any) => {
+					return getView(showConfirmModal);
+					// return (
+					// 	<div
+					// 		className={`receipt-cards-container ${viewMode.toLowerCase()}${
+					// 			filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
+					// 		}`}
+					// 	>
+					// 		{filteredList === null ? (
+					// 			<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+					// 		) : filteredList.length ? (
+					// 			filteredList
+					// 				.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
+					// 				.map((item: any, i: number) => {
+					// 					console.log("RENDER", item);
+					// 					return (
+					// 						<ReceiptCard
+					// 							key={item._id}
+					// 							data={item}
+					// 							showConfirmModal={(props: any) => {
+					// 								setSelectedReceipt(props.data);
+					// 								showConfirmModal(props);
+					// 							}}
+					// 						/>
+					// 					);
+					// 				})
+					// 		) : (
+					// 			""
+					// 		)}
+					// 	</div>
+					// );
+				}}
+			</ConfirmModal>
+			{/* <pre>
+				{list &&
+					list.length &&
+					JSON.stringify(
+						list.map((item: any) => item.status),
+						undefined,
+						2
+					)}
+			</pre> */}
 			{props.title && (
 				<Link
 					href="/admin/receipts"
@@ -410,91 +330,6 @@ export default function Receipts(props: any) {
 					VIEW MORE
 				</Link>
 			)}
-			<Modal isShown={modalIsShown} close={() => setModalIsShown(false)}>
-				<Card
-					style={{
-						width: "400px",
-						display: "flex",
-						flexDirection: "column",
-						alignItems: "center",
-					}}
-				>
-					{selectedReceipt && (
-						<>
-							{selectedReceipt.accepted ? (
-								<>
-									<h1
-										style={{
-											fontSize: "15px",
-											marginBottom: "30px",
-											fontWeight: 800,
-											letterSpacing: "5px",
-										}}
-									>
-										ACCEPTING RECEIPT
-									</h1>
-									<p style={{ textAlign: "center" }}>
-										Are you sure you want to accept this receipt from{" "}
-										<span style={{ fontWeight: 800 }}>
-											{`${selectedReceipt.userRef.firstName} ${selectedReceipt.userRef.lastName}`}
-										</span>
-										?
-									</p>
-								</>
-							) : (
-								<>
-									<h1
-										style={{
-											fontSize: "15px",
-											marginBottom: "30px",
-											fontWeight: 800,
-											letterSpacing: "5px",
-										}}
-									>
-										INVALID RECEIPT
-									</h1>
-									<label
-										htmlFor="reject-reason"
-										style={{ fontWeight: 800, fontSize: "13px", alignSelf: "start" }}
-									>
-										Enter reason for rejection (Optional)
-									</label>
-									<textarea
-										name="reject-reason"
-										id="reject-reason"
-										rows={5}
-										style={{ resize: "none", padding: "5px 10px" }}
-									></textarea>
-								</>
-							)}
-							{/* <h1 style={{ fontSize: "25px", marginBottom: "30px" }}>
-								{selectedReceipt.accepted ? "Accept" : "Deny"} this receipt?
-							</h1> */}
-							<div
-								style={{
-									display: "flex",
-									width: "100%",
-									justifyContent: "space-between",
-									gap: "10px",
-									marginTop: "10px",
-								}}
-							>
-								<FormGroup style={{ width: "100%" }}>
-									<Button type="button" onClick={() => setModalIsShown(false)}>
-										Close
-									</Button>
-								</FormGroup>
-								<FormGroup style={{ width: "100%" }}>
-									<Button type="button" className="info" onClick={updateReceipt}>
-										Confirm
-									</Button>
-								</FormGroup>
-							</div>
-						</>
-					)}
-					{/* <pre>{JSON.stringify(selectedReceipt, undefined, 2)}</pre> */}
-				</Card>
-			</Modal>
 		</Section>
 	);
 }
@@ -505,6 +340,52 @@ const sectionTitle = (title: string) => (
 		{title || "Receipts"}
 	</>
 );
+
+interface updateReceiptTemplateProps {
+	data: Object;
+	action: string;
+}
+
+const updateConfirmTemplate = (props: updateReceiptTemplateProps) => {
+	return (
+		props && (
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					flexDirection: "column",
+					alignItems: "center",
+				}}
+			>
+				{props.action === RECEIPT_STATUS.PENDING ? (
+					<>
+						<h1 style={{ fontSize: "14px", marginBottom: "10px" }}>REMOVE STATUS</h1>
+						<p style={{ fontSize: "14px", textAlign: "center", margin: "10px" }}>
+							This will set this receipt`s status back to <strong>PENDING</strong>
+						</p>
+						<p style={{ fontSize: "14px", margin: "10px 0" }}>Continue?</p>
+					</>
+				) : (
+					<>
+						<h1 style={{ fontSize: "14px", marginBottom: "10px" }}>UPDATING RECEIPT STATUS</h1>
+
+						<p style={{ fontSize: "14px", textAlign: "center", margin: "10px" }}>
+							This will set the receipt`s status to{" "}
+							<strong
+								className={
+									props.action === RECEIPT_STATUS.ACCEPTED ? "text-success" : "text-danger"
+								}
+							>
+								{props.action}
+							</strong>
+						</p>
+						<p style={{ fontSize: "14px", margin: "10px 0" }}>Continue?</p>
+					</>
+				)}
+			</div>
+		)
+	);
+};
 
 const sectionOthers = (viewMode: any, setViewMode: any) => (
 	<RadioGroup

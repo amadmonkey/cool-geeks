@@ -225,20 +225,19 @@ export default function Home() {
 	const formatDaysLeft = () => {
 		// generate date to compare
 		const date = latestReceipt?.receiptDate
-			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 1 })
-			: DateTime.now().plus({ month: 1 });
+			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 2 })
+			: DateTime.now().plus({ month: 2 });
 		Object.assign(
 			date,
 			date.set({ day: user.cutoff === CUTOFF_TYPE.MID ? 15 : date.endOf("month").day })
 		);
-		// const dueInDate = cutoff === CUTOFF_TYPE.MID ? date.set({ day: 15 }) : date.endOf("month");
 		const { days, hours, minutes } = getDaysLeft(date);
-		return `${days} days and ${hours} hours`;
+		return days > 0 ? `${days} days` : hours > 0 ? `${hours} hours` : `${minutes} minutes`;
 	};
 
 	useEffect(() => {
 		getHistoryList();
-		console.log("i fire once");
+		console.log("why am i firing twice");
 	}, []);
 
 	return (

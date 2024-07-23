@@ -13,12 +13,15 @@ import {
 	VALID_IMG_TYPES,
 } from "@/utility";
 
+import Plan from "@/app/ui/types/Plan";
 import Switch from "@/app/ui/components/switch/switch";
 import Button from "@/app/ui/components/button/button";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
+import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
+import InlineEditInput from "@/app/ui/components/inline-edit-input/inline-edit-input";
 
 import IconMore from "../../../../../../public/more.svg";
 import IconHelp from "../../../../../../public/help.svg";
@@ -28,8 +31,6 @@ import IconReplace from "../../../../../../public/replace.svg";
 import IconTrash from "../../../../../../public/trash2.svg";
 
 import "./page.scss";
-import InlineEditInput from "@/app/ui/components/inline-edit-input/inline-edit-input";
-import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 
 const Subd = (props: any) => {
 	const { push } = useRouter();
@@ -37,8 +38,8 @@ const Subd = (props: any) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
 	const [subd, setSubd] = useState<any>(null);
-	const [plans, setPlans] = useState<any>(null);
-	const [users, setUsers] = useState<Array<Object> | null>(null);
+	const [plans, setPlans] = useState<Plan[]>([]);
+	const [users, setUsers] = useState<any>({});
 	const [file, setFile] = useState<File | null>(null);
 	const [subdForm, setSubdForm] = useState<any>(null);
 	const [planForm, setPlanForm] = useState<any>([]);
@@ -310,7 +311,7 @@ const Subd = (props: any) => {
 								const planObj = data.filter(
 									(plan: any) => STRING_UTILS.SPACE_TO_DASH(plan.name) === activePlan
 								)[0];
-								getUsers(planObj._id);
+								planObj && getUsers(planObj._id);
 							}
 							break;
 						case 401:
@@ -338,32 +339,30 @@ const Subd = (props: any) => {
 				code: "asc",
 			}),
 		});
-		return fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
+		const { code, data } = await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
 			},
 			credentials: "include",
-		})
-			.then((res) => res.json())
-			.then((res) => {
-				if (mounted) {
-					const { code, data } = res;
-					switch (code) {
-						case 200:
-							console.log("users", data.list);
-							setUsers(data.list);
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							push("/login");
-							break;
-					}
-				}
-			})
-			.catch((err) => console.error(err));
+		}).then((res) => res.json());
+
+		switch (code) {
+			case 200:
+				console.log("users", data.list);
+				setUsers((prev: any) => ({ ...prev, ...{ [id]: data.list } }));
+				// setUsers((prev: any) => ({ ...prev, ...{ planId, ...{ list: data.list } } }));
+				break;
+			case 401:
+				push("/login");
+				break;
+			default:
+				push("/login");
+				break;
+		}
+		// }
+		// })
+		// .catch((err) => console.error(err));
 	};
 
 	const handleFileChange = async (subd: any, file: File) => {
@@ -447,7 +446,7 @@ const Subd = (props: any) => {
 			const planObj = plans.filter(
 				(plan: any) => STRING_UTILS.SPACE_TO_DASH(plan.name) === activePlan
 			)[0];
-			getUsers(planObj._id);
+			planObj && getUsers(planObj._id);
 			setPlanForm(plans);
 		}
 		return () => {
@@ -543,7 +542,7 @@ const Subd = (props: any) => {
 						{plans !== null ? (
 							plans.length ? (
 								<>
-									{plans.map((plan: any, i: number) => {
+									{plans.map((plan: Plan, i: number) => {
 										return (
 											<tbody
 												key={plan._id}
@@ -649,26 +648,41 @@ const Subd = (props: any) => {
 																						<td>SINCE</td>
 																					</tr>
 																				</thead>
-																				{users === null ? (
+																				{!users[plan._id] ? (
 																					<tbody>
 																						<tr>
 																							<td>loading</td>
 																						</tr>
 																					</tbody>
-																				) : users.length ? (
+																				) : users[plan._id].length ? (
 																					<tbody>
 																						{users === null
 																							? "loading"
-																							: users.map((user: any) => {
+																							: users[plan._id].map((user: any) => {
 																									return (
-																										<tr key={user._id}>
-																											<td>
-																												<Link
-																													href={`/admin/accounts/${user.firstName}-${user.lastName}`}
-																												>{`${user.firstName} ${user.lastName}`}</Link>
-																											</td>
-																											<td>{DATE_READABLE(subd.createdAt)}</td>
-																										</tr>
+																										<>
+																											<tr key={user._id}>
+																												<td>
+																													<Link
+																														href={`/admin/accounts/${STRING_UTILS.SPACE_TO_DASH(
+																															user.firstName.trim()
+																														)}-${STRING_UTILS.SPACE_TO_DASH(
+																															user.lastName.trim()
+																														)}`}
+																													>{`${user.firstName} ${user.lastName}`}</Link>
+																												</td>
+																												<td>{DATE_READABLE(subd.createdAt)}</td>
+																											</tr>
+
+																											<tr key={user._id}>
+																												<td>
+																													<Link
+																														href={`/admin/accounts/${user.firstName}-${user.lastName}`}
+																													>{`${user.firstName} ${user.lastName}`}</Link>
+																												</td>
+																												<td>{DATE_READABLE(subd.createdAt)}</td>
+																											</tr>
+																										</>
 																									);
 																							  })}
 																					</tbody>
@@ -681,7 +695,7 @@ const Subd = (props: any) => {
 																							}}
 																						>
 																							<td>
-																								<ListEmpty />
+																								<ListEmpty style={{ minHeight: "100px" }} />
 																							</td>
 																						</tr>
 																					</tbody>
