@@ -4,7 +4,7 @@ import "./radio-group.scss";
 
 const RadioGroup = (props: any) => {
 	return (
-		<div className="radio-toggle">
+		<div className="radio-toggle" style={props.style}>
 			{props.list &&
 				props.list.map((item: any, i: number) => {
 					return (

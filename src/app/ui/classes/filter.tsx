@@ -1,31 +1,40 @@
 export class Filter {
+	query: string = "";
 	page: string = "1";
 	limit: string = "10";
-	sortBy: string = "createdAt";
-	sortOrder: string = "DESC";
+	sort: Object = {
+		createdAt: "desc",
+	};
+
 	constructor(values?: any) {
-		const { page, limit, sortBy, sortOrder } = values || {};
+		const { query, page, limit, sort } = values || {};
+
+		if (query !== undefined) {
+			this.query = JSON.stringify(query);
+		}
+
 		if (page !== undefined) {
 			this.page = page;
 		}
 		if (limit !== undefined) {
 			this.limit = limit;
 		}
-		if (sortBy !== undefined) {
-			this.sortBy = sortBy;
-		}
-		if (sortOrder !== undefined) {
-			this.sortOrder = sortOrder;
+
+		if (sort !== undefined) {
+			this.sort = JSON.stringify(sort);
 		}
 	}
+
 	get values() {
 		return {
+			filter: JSON.parse(this.query),
 			page: this.page,
 			limit: this.limit,
-			sortBy: this.sortBy,
-			sortOrder: this.sortOrder,
+			sort: this.sort,
 		};
 	}
 
-	set values(obj) {}
+	setQuery(query: any) {
+		this.query = query ? JSON.stringify(query) : "";
+	}
 }

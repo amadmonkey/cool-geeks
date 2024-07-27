@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Head from "next/head";
 import { ToastContainer, Bounce } from "react-toastify";
 
-import "./globals.scss";
 import "react-toastify/dist/ReactToastify.css";
+import "./globals.scss";
 
 export const metadata: Metadata = {
 	title: "Cool Geeks",
@@ -17,9 +16,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<Head>
+			{/* <Head>
 				<title>asdasd</title>
-			</Head>
+			</Head> */}
 			<body className="antialiased">
 				{children}
 				<ToastContainer

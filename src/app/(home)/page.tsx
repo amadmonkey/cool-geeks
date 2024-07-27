@@ -4,13 +4,13 @@ import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import { createWorker } from "tesseract.js";
+import { toast } from "react-toastify";
 import { DateTime } from "luxon";
 import Link from "next/link";
 import Image from "next/image";
 
 import Card from "@/app/ui/components/card/card";
 import Button from "@/app/ui/components/button/button";
-import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import FileInput from "@/app/ui/components/file-input/file-input";
@@ -19,9 +19,16 @@ import HistoryTable from "@/app/ui/components/history-table/history-table";
 import IconQR from "../../../public/qr.svg";
 import IconDownload from "../../../public/download.svg";
 
-import { CUTOFF_TYPE, RECEIPT_STATUS, RECEIPT_STATUS_ICON, getDaysLeft } from "@/utility";
+import {
+	CUTOFF_TYPE,
+	RECEIPT_STATUS,
+	RECEIPT_STATUS_ICON,
+	VALID_IMG_TYPES,
+	getDaysLeft,
+} from "@/utility";
 
 import "./page.scss";
+import Receipt from "../ui/types/Receipt";
 
 const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
@@ -38,19 +45,6 @@ const defaultForm = {
 		icon: "",
 	},
 	referenceNumber: "",
-};
-
-type Receipt = {
-	_id: string;
-	userRef: string;
-	planRef: string;
-	referenceType: object;
-	referenceNumber: string;
-	receiptName: string;
-	status: string;
-	receiptDate: any;
-	createdAt: string;
-	updatedAt: string;
 };
 
 export default function Home() {
@@ -112,7 +106,6 @@ export default function Home() {
 	};
 
 	const handleSubmit = async (e: any) => {
-		console.log("HANDLE SUBMIT");
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append("referenceType", JSON.stringify(form.referenceType));
@@ -142,6 +135,37 @@ export default function Home() {
 			default:
 				push("/login");
 				break;
+		}
+	};
+
+	const handleFileChange = async (receipt: Receipt, file: File) => {
+		try {
+			if (VALID_IMG_TYPES.includes(file.type)) {
+				const formData = new FormData();
+
+				formData.append("_id", receipt._id);
+				formData.append("receipt", file);
+
+				const { code, data } = await fetch("/api/receipt", {
+					method: "POST",
+					headers: {},
+					body: formData,
+					credentials: "include",
+				}).then((res) => res.json());
+				debugger;
+				switch (code) {
+					case 200:
+						getHistoryList();
+						toast.success("Receipt updated");
+						break;
+					case 400:
+						break;
+					default:
+						break;
+				}
+			}
+		} catch (err) {
+			console.error(err);
 		}
 	};
 
@@ -180,8 +204,7 @@ export default function Home() {
 		const searchOptions = new URLSearchParams({
 			page: "1",
 			limit: "10",
-			sortBy: "createdAt",
-			sortOrder: "desc",
+			sort: JSON.stringify({ createdAt: "desc" }),
 		});
 		const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
 			method: "GET",
@@ -209,8 +232,6 @@ export default function Home() {
 					break;
 			}
 		}
-		// })
-		// .catch((err) => console.log("getHistoryList catch", err));
 	};
 
 	const validate = (e: any) => {
@@ -288,7 +309,7 @@ export default function Home() {
 								)}
 								<li className="summary__item">
 									<span>RATE</span>
-									<p>{user.planRef.price}</p>
+									<p>₱{user.planRef.price}</p>
 								</li>
 								<li className="summary__item">
 									<span>RECEIPT</span>
@@ -373,7 +394,7 @@ export default function Home() {
 								<li className="summary__item">
 									<span>RECEIPT FOR</span>
 									<p>
-										{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now())
+										{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now().toString())
 											.plus({ month: 1 })
 											.toFormat("MMMM")}
 									</p>
@@ -408,7 +429,7 @@ export default function Home() {
 						}}
 					>
 						<div style={{ display: "flex", width: "70%", gap: "10px" }}>
-							<Dropdown
+							{/* <Dropdown
 								list={[
 									{ id: 1, name: "2024" },
 									{ id: 2, name: "2023" },
@@ -438,12 +459,12 @@ export default function Home() {
 								]}
 								style={{ width: "200px" }}
 								placeholder="MONTH"
-							/>
+							/> */}
 						</div>
 						<Link href="">VIEW ALL</Link>
 					</div>
 					<div className="home-table">
-						<HistoryTable list={historyList} />
+						<HistoryTable list={historyList} handleFileChange={handleFileChange} />
 					</div>
 					{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
 				</section>

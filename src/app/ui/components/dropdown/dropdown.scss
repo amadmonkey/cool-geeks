@@ -5,9 +5,9 @@
 	padding: 0;
 	margin: 0;
 	height: 40px;
-	border: 2px solid $dark;
 	border-radius: 5px;
-	box-shadow: -3px 3px 0 #00000030;
+	box-shadow: $box-shadow_fade;
+	background-color: #fff;
 	&.error {
 		border-color: $danger;
 		background-color: #fae0e0;
@@ -48,7 +48,7 @@
 		}
 	}
 	&__search {
-		height: 37px;
+		height: 40px;
 		padding: 10px;
 		font-weight: 800;
 		font-size: 14px;
@@ -66,18 +66,15 @@
 		height: 100%;
 		display: block;
 		max-height: 200px;
-		width: calc(100% + 4px);
-		top: -6px;
-		left: -2px;
+		top: 6px;
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
 		box-sizing: border-box;
-		border: 2px solid $dark;
 		border-radius: 5px;
-		background-color: $bg;
+		background-color: #fff;
+		box-shadow: $box-shadow_fade;
 		animation: listHide 0.05s ease-in forwards;
-		// transition: height 0.1s ease-in-out, padding-top 0.1s ease-in-out;
 		li {
 			display: flex;
 			height: 40px;
@@ -87,19 +84,25 @@
 			cursor: pointer;
 			align-items: center;
 			.option-wrapper {
-				padding: 10px 5px;
+				padding: 10px;
 				border-radius: 5px;
 				line-height: 30px;
 				width: 100%;
 				// transition: 0.1s;
 				line-height: 14px;
+				&.active,
+				&:hover,
+				&:focus {
+					color: $dark;
+					background-color: lighten($dark, 60%);
+					box-shadow: $box-shadow_fade;
+				}
 			}
-			&.active,
-			&:hover,
-			&:focus {
+			&.selected {
 				.option-wrapper {
 					color: #fff;
-					background-color: #8b8b8b;
+					background-color: $primary;
+					box-shadow: $box-shadow_fade;
 				}
 			}
 		}
@@ -116,39 +119,6 @@
 	}
 	.list-container {
 		position: relative;
-		&::before {
-			content: "";
-			position: absolute;
-			height: 5px;
-			width: 100%;
-			top: -6px;
-			border-bottom-left-radius: 3px;
-			border-bottom-right-radius: 3px;
-			background-color: $bg;
-			z-index: 1;
-		}
-		&.active {
-			&::before {
-				z-index: 3;
-			}
-			&::after {
-				opacity: 1;
-			}
-		}
-		&::after {
-			content: "";
-			opacity: 0;
-			left: 50%;
-			transform: translateX(-50%);
-			position: absolute;
-			border-radius: 10px;
-			height: 3px;
-			width: 70%;
-			top: -2px;
-			z-index: 3;
-			background-color: #6c6c6c;
-			// transition: 0.2s;
-		}
 	}
 	&::after {
 		content: "";
@@ -161,7 +131,6 @@
 		border-top-color: $dark;
 	}
 	&.disabled {
-		border: 2px solid #cccccc;
 		background-color: #e6e6e6;
 		&::after {
 			border-top-color: #cccccc;

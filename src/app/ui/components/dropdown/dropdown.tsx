@@ -10,7 +10,7 @@ const Dropdown = (props: any) => {
 	const DOWN = "ArrowDown";
 	const UP = "ArrowUp";
 
-	const [value, setValue] = useState("");
+	const [value, setValue] = useState(props?.value?.name || "");
 	const [nameFocused, setNameFocused] = useState(false);
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const [filteredList, setFilteredList] = useState(props.list);
@@ -81,8 +81,7 @@ const Dropdown = (props: any) => {
 
 	useEffect(() => {
 		setFilteredList(props.list);
-		setValue("");
-	}, [props.list]);
+	}, [props]);
 
 	return (
 		<DetectOutsideClick action={() => setNameFocused(false)} style={{ display: "flex" }}>
@@ -106,7 +105,7 @@ const Dropdown = (props: any) => {
 						required={props.required ? true : false}
 					/>
 				</li>
-				<li className={`list-container ${nameFocused ? "active" : ""}`}>
+				<li className={`list-container${nameFocused ? " active" : ""}`}>
 					<ul className={`dropdown__list ${nameFocused ? "active" : ""}`} tabIndex={-1}>
 						{filteredList?.map((listItem: any, index: number) => {
 							return (
@@ -114,7 +113,9 @@ const Dropdown = (props: any) => {
 									role="button"
 									id={listItem._id}
 									key={`${listItem._id}-${index}`}
-									className={`dropdown__list-item ${activeIndex === index ? "active" : ""}`}
+									className={`dropdown__list-item ${activeIndex === index ? "active" : ""}  ${
+										value === listItem.name ? " selected" : " "
+									} `}
 									tabIndex={-1}
 									onSelect={() => onSelect(listItem)}
 									onClick={() => onSelect(listItem)}

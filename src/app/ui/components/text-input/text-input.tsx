@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ENHANCE_FORMAT, IS_MODIFIER_KEY, REMOVE_SPACES } from "@/utility";
+import IconLoading from "../../../../../public/loader.svg";
 
 import "./text-input.scss";
 
@@ -167,11 +168,12 @@ const TextInput = (props: any) => {
 
 	return (
 		<div
-			className={`input-container ${props.type} ${props.mini ? "mini" : ""} ${
-				props.line ? "line" : ""
-			}`}
+			className={`input-container ${props.type} ${props.mini ? " mini" : ""}${
+				props.line ? " line" : ""
+			}${props.hasIcon ? " has-icon" : ""}`}
 			style={props.style}
 		>
+			<div className="input-icon">{props.icon}</div>
 			{props.type === "mini-dropdown" && (
 				<div className={`mini-dropdown ${refNoActive ? "active" : ""}`}>
 					<button
@@ -228,7 +230,13 @@ const TextInput = (props: any) => {
 				onChange={props.onChange}
 				required={props.required}
 				disabled={props.disabled}
+				autoComplete={props.autoComplete || "off"}
 			/>
+			{props.loading && (
+				<span className="input-loading">
+					<IconLoading />
+				</span>
+			)}
 			{errors.length > 0 && <p className="error-message">{errors[0]}</p>}
 			{props.customError && <p className="error-message">{props.customError}</p>}
 		</div>

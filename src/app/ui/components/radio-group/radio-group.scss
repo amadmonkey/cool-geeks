@@ -1,11 +1,15 @@
 @import "../../../variables.scss";
 
-$border-radius: 7px;
+$border-radius: 5px;
 
 .radio-toggle {
-	display: flex;
+	display: inline-flex;
 	overflow: hidden;
 	position: relative;
+
+	background-color: #fff;
+	border-radius: $border-radius;
+	box-shadow: $box-shadow_fade;
 	&:after {
 		top: 0;
 		left: 0;
@@ -14,33 +18,34 @@ $border-radius: 7px;
 		content: "";
 		position: absolute;
 		pointer-events: none;
-		border: 2px solid $primary;
 		border-radius: $border-radius;
 	}
 	&__item {
+		display: flex;
 		&__input {
 			display: none;
 			&:checked + .radio-toggle__item__label {
-				fill: #fff;
-				color: #fff;
+				fill: $bg;
+				color: $bg;
 				background-color: $primary;
+				box-shadow: $box-shadow_fade-selected-inset;
 			}
 		}
 		&__label {
+			fill: $dark;
 			display: flex;
-			fill: $primary;
-			color: $primary;
+			color: $dark;
+			font-weight: 800;
 			cursor: pointer;
+			min-width: 50px;
+			min-height: 40px;
 			padding: 5px 10px;
 			position: relative;
 			align-items: center;
-			justify-content: space-around;
+			justify-content: center;
 			transition: all 0.2s ease-out;
 		}
 		&:not(:last-of-type) {
-			label {
-				border-right: 2px solid $primary;
-			}
 		}
 		&:first-of-type {
 			label {

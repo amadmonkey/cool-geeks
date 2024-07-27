@@ -60,8 +60,9 @@ const Admin = () => {
 					new URLSearchParams({
 						page: "1",
 						limit: "3",
-						sortBy: "createdAt",
-						sortOrder: "DESC",
+						sort: JSON.stringify({
+							createdAt: "desc",
+						}),
 					})
 				}
 				viewMode={VIEW_MODES.GRID}
@@ -73,8 +74,7 @@ const Admin = () => {
 					new URLSearchParams({
 						page: "1",
 						limit: "5",
-						sortBy: "createdAt",
-						sortOrder: "DESC",
+						sort: JSON.stringify({ createdAt: "desc" }),
 					})
 				}
 			/>

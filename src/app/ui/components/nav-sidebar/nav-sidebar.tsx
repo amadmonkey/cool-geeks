@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { deleteCookie } from "cookies-next";
 import Link from "next/link";
-// import moment from "moment";
 import moment from "moment-timezone";
+
 import IconSubd from "../../../../../public/subd.svg";
 import IconClock from "../../../../../public/clock2.svg";
 import IconAccounts from "../../../../../public/users.svg";
@@ -13,6 +13,7 @@ import IconSignOut from "../../../../../public/signout.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
 import IconSettings from "../../../../../public/settings.svg";
 import IconDashboard from "../../../../../public/dashboard.svg";
+
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {
@@ -102,75 +103,77 @@ const NavSidebar = () => {
 					</time>
 				)}
 			</header>
-			<ul className="nav-sidebar__list">
-				<li className={`${activePage === "/admin" ? "active" : ""}`}>
-					<Link href="/admin" className="strip" onClick={(e: any) => navigate(e, true)}>
-						<IconDashboard />
-						Dashboard
-					</Link>
-				</li>
-				<li className={`${activePage.includes("/admin/receipts") ? "active" : ""}`}>
-					<Link href="/admin/receipts" className="strip" onClick={(e: any) => navigate(e, true)}>
-						<IconReceipt />
-						Receipts
-					</Link>
-				</li>
-				<li className={`${activePage.includes("/admin/accounts") ? "active" : ""}`}>
-					<Link href="/admin/accounts" className="strip" onClick={(e: any) => navigate(e, false)}>
-						<IconAccounts />
-						Accounts
-					</Link>
-					<ul className="__pages __pages__accounts">
-						<li className={`${pathname === "/admin/accounts" ? "active" : ""}`}>
-							<Link href="/admin/accounts">List</Link>
-						</li>
-						<li className={`${pathname === "/admin/accounts/create" ? "active" : ""}`}>
-							<Link href="/admin/accounts/create">New Account</Link>
-						</li>
-					</ul>
-				</li>
-				<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
-					<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, false)}>
-						<IconSubd />
-						Subdivisions
-					</Link>
-					<ul className="__pages __pages__subds">
-						<li className={`${pathname === "/admin/subds" ? "active" : ""}`}>
-							<Link href="/admin/subds">List</Link>
-						</li>
-						<li className={`${pathname === "/admin/subds/create" ? "active" : ""}`}>
-							<Link href="/admin/subds/create">New Subd</Link>
-						</li>
-					</ul>
-				</li>
-				<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
-					<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>
-						<IconSettings />
-						Settings
-					</Link>
-					<ul className="__pages __pages__settings">
-						<li>
-							<Link href="/admin/settings">Account Settings</Link>
-						</li>
-						<li>
-							<Link href="/admin/settings">App Settings</Link>
-						</li>
-						<li>
-							<Link href="/admin/settings">Notification Settings</Link>
-						</li>
-					</ul>
-				</li>
-				<li>
-					<button
-						style={{ display: "flex", color: "#fff", gap: 5, alignItems: "center", fontSize: 14 }}
-						className="invisible"
-						onClick={logout}
-					>
-						<IconSignOut />
-						Logout
-					</button>
-				</li>
-			</ul>
+			{activePage && (
+				<ul className="nav-sidebar__list">
+					<li className={`${activePage === "/admin" ? "active" : ""}`}>
+						<Link href="/admin" className="strip" onClick={(e: any) => navigate(e, true)}>
+							<IconDashboard />
+							Dashboard
+						</Link>
+					</li>
+					<li className={`${activePage.includes("/admin/receipts") ? "active" : ""}`}>
+						<Link href="/admin/receipts" className="strip" onClick={(e: any) => navigate(e, true)}>
+							<IconReceipt />
+							Receipts
+						</Link>
+					</li>
+					<li className={`${activePage.includes("/admin/accounts") ? "active" : ""}`}>
+						<Link href="/admin/accounts" className="strip" onClick={(e: any) => navigate(e, false)}>
+							<IconAccounts />
+							Accounts
+						</Link>
+						<ul className="__pages __pages__accounts">
+							<li className={`${pathname === "/admin/accounts" ? "active" : ""}`}>
+								<Link href="/admin/accounts">List</Link>
+							</li>
+							<li className={`${pathname === "/admin/accounts/create" ? "active" : ""}`}>
+								<Link href="/admin/accounts/create">New Account</Link>
+							</li>
+						</ul>
+					</li>
+					<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
+						<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, false)}>
+							<IconSubd />
+							Subdivisions
+						</Link>
+						<ul className="__pages __pages__subds">
+							<li className={`${pathname === "/admin/subds" ? "active" : ""}`}>
+								<Link href="/admin/subds">List</Link>
+							</li>
+							<li className={`${pathname === "/admin/subds/create" ? "active" : ""}`}>
+								<Link href="/admin/subds/create">New Subd</Link>
+							</li>
+						</ul>
+					</li>
+					<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
+						<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>
+							<IconSettings />
+							Settings
+						</Link>
+						<ul className="__pages __pages__settings">
+							<li>
+								<Link href="/admin/settings">Account Settings</Link>
+							</li>
+							<li>
+								<Link href="/admin/settings">App Settings</Link>
+							</li>
+							<li>
+								<Link href="/admin/settings">Notification Settings</Link>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<button
+							style={{ display: "flex", color: "#fff", gap: 5, alignItems: "center", fontSize: 14 }}
+							className="invisible"
+							onClick={logout}
+						>
+							<IconSignOut />
+							Logout
+						</button>
+					</li>
+				</ul>
+			)}
 		</div>
 	);
 };

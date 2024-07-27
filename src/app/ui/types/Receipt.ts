@@ -11,4 +11,13 @@ export default interface Receipt {
 	status: string;
 	cutoff: string;
 	referenceNumber: string;
+	referenceType: ReferenceType;
+	createdAt: string;
+	updatedAt: string;
 }
+
+type ReferenceType = {
+	id: string;
+	name: string;
+	icon: string;
+};

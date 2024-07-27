@@ -1,18 +1,17 @@
 "use client";
 
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
-	RECEIPT_STATUS,
-	RECEIPT_STATUS_BADGE,
-	SKELETON_TYPES,
-	TABLE_HEADERS,
 	VIEW_MODES,
+	TABLE_HEADERS,
+	RECEIPT_STATUS,
+	SKELETON_TYPES,
+	RECEIPT_STATUS_BADGE,
 } from "@/utility";
 
 import Image from "next/image";
-import Receipt from "@/app/ui/types/Receipt";
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
@@ -21,6 +20,8 @@ import ReceiptCard from "@/app/ui/components/receipt-card/page";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
+import FormGroup from "@/app/ui/components/form-group/form-group";
+import ReceiptsFilters from "./filters/filters";
 
 import IconGrid from "../../../../../public/grid.svg";
 import IconList from "../../../../../public/list.svg";
@@ -29,17 +30,21 @@ import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
 import IconCarousel from "../../../../../public/carousel.svg";
 
+import { Filter } from "@/app/ui/classes/filter";
 import "./page.scss";
 
 export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [list, setList] = useState<any>({});
+	const filter = new Filter({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
+	const [rejectReason, setRejectReason] = useState("");
 
 	const updateReceipt = async (props: any) => {
 		try {
+			setRejectReason("");
 			const { code, data } = await fetch("/api/receipt", {
 				method: "PUT",
 				headers: {
@@ -47,6 +52,7 @@ export default function Receipts(props: any) {
 				},
 				body: JSON.stringify({
 					...props.data,
+					...{ rejectReason: rejectReason },
 					...{ status: props.action },
 				}),
 				credentials: "include",
@@ -68,46 +74,94 @@ export default function Receipts(props: any) {
 		}
 	};
 
-	const getHistoryList = useCallback(async () => {
-		setList(null);
-		setFilteredList(null);
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "10",
-			sortBy: "createdAt",
-			sortOrder: "DESC",
-		});
-		return await fetch(
-			`${process.env.NEXT_PUBLIC_MID}/api/receipt?${props.searchOptions || searchOptions}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
+	const getHistoryList = useCallback(
+		async (query?: any) => {
+			setList(null);
+			setFilteredList(null);
+			new URLSearchParams();
+
+			const searchOptions = new Filter({
+				page: "1",
+				limit: "9",
+				sort: {
+					createdAt: query?.sortOrder || "desc",
 				},
-				credentials: "include",
-			}
-		)
-			.then((res) => res.json())
-			.then((res) => {
-				if (mounted.current) {
-					const { code, data } = res;
-					switch (code) {
-						case 200:
-							setList(data.list);
-							setFilteredList(data.list);
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							console.log("getHistoryList default", data);
-							push("/login");
-							break;
-					}
+			});
+
+			if (filter) searchOptions.setQuery(query);
+
+			return await fetch(
+				`${process.env.NEXT_PUBLIC_MID}/api/receipt?${new URLSearchParams(
+					props.searchOptions || searchOptions
+				)}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
 				}
-			})
-			.catch((err) => console.error(err));
-	}, [props.searchOptions, push]);
+			)
+				.then((res) => res.json())
+				.then((res) => {
+					if (mounted.current) {
+						const { code, data } = res;
+						switch (code) {
+							case 200:
+								setList(data.list);
+								setFilteredList(data.list);
+								break;
+							case 401:
+								push("/login");
+								break;
+							default:
+								console.log("getHistoryList default", data);
+								push("/login");
+								break;
+						}
+					}
+				})
+				.catch((err) => console.error(err));
+		},
+		[props.searchOptions, push]
+	);
+
+	let timeoutId = useRef<number>();
+	let timeoutId2 = useRef<number>();
+	let isEnd = false;
+	let isLoading = useRef(false);
+
+	const onScroll = useCallback(() => {
+		const el = document.documentElement;
+
+		const loadMore = () => {
+			isLoading.current = true;
+			console.log("loadmore");
+			clearTimeout(timeoutId2.current);
+
+			timeoutId2.current = window.setTimeout(() => {
+				console.log(filteredList);
+				console.log([...[filteredList], ...[filteredList]]);
+				isLoading.current = false;
+			}, 3000);
+		};
+
+		clearTimeout(timeoutId.current);
+
+		if (isEnd || isLoading.current) return;
+		timeoutId.current = window.setTimeout(() => {
+			if (el.scrollTop + el.clientHeight >= el.scrollHeight - 250) {
+				loadMore();
+			}
+		}, 300);
+	}, [isEnd, isLoading, timeoutId, timeoutId2]);
+
+	useEffect(() => {
+		window.addEventListener("scroll", onScroll);
+		return () => {
+			window.removeEventListener("scroll", onScroll);
+		};
+	}, []);
 
 	const getView = (showConfirmModal: Function) => {
 		switch (viewMode) {
@@ -119,19 +173,24 @@ export default function Receipts(props: any) {
 							filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
 						}`}
 					>
-						{filteredList === null ? (
-							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-						) : filteredList.length ? (
-							filteredList
-								.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
-								.map((item: any, i: number) => {
-									console.log("RENDER", item);
-									return (
-										<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
-									);
-								})
+						{filteredList && !filteredList.length ? (
+							<ListEmpty label="No entries found" />
 						) : (
-							""
+							<>
+								{filteredList &&
+									filteredList
+										.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
+										.map((item: any, i: number) => {
+											return (
+												<ReceiptCard
+													key={item._id}
+													data={item}
+													showConfirmModal={showConfirmModal}
+												/>
+											);
+										})}
+								{!props.title && <Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />}
+							</>
 						)}
 					</div>
 				);
@@ -279,49 +338,20 @@ export default function Receipts(props: any) {
 
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
-			<ConfirmModal template={updateConfirmTemplate} continue={updateReceipt}>
+			{!props.title && (
+				<ReceiptsFilters
+					handleFilter={(query: any) => getHistoryList(query)}
+					style={{ marginBottom: "30px" }}
+				/>
+			)}
+			<ConfirmModal
+				template={(props: any) => updateConfirmTemplate(props, rejectReason, setRejectReason)}
+				continue={updateReceipt}
+			>
 				{(showConfirmModal: any) => {
 					return getView(showConfirmModal);
-					// return (
-					// 	<div
-					// 		className={`receipt-cards-container ${viewMode.toLowerCase()}${
-					// 			filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
-					// 		}`}
-					// 	>
-					// 		{filteredList === null ? (
-					// 			<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-					// 		) : filteredList.length ? (
-					// 			filteredList
-					// 				.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
-					// 				.map((item: any, i: number) => {
-					// 					console.log("RENDER", item);
-					// 					return (
-					// 						<ReceiptCard
-					// 							key={item._id}
-					// 							data={item}
-					// 							showConfirmModal={(props: any) => {
-					// 								setSelectedReceipt(props.data);
-					// 								showConfirmModal(props);
-					// 							}}
-					// 						/>
-					// 					);
-					// 				})
-					// 		) : (
-					// 			""
-					// 		)}
-					// 	</div>
-					// );
 				}}
 			</ConfirmModal>
-			{/* <pre>
-				{list &&
-					list.length &&
-					JSON.stringify(
-						list.map((item: any) => item.status),
-						undefined,
-						2
-					)}
-			</pre> */}
 			{props.title && (
 				<Link
 					href="/admin/receipts"
@@ -346,7 +376,11 @@ interface updateReceiptTemplateProps {
 	action: string;
 }
 
-const updateConfirmTemplate = (props: updateReceiptTemplateProps) => {
+const updateConfirmTemplate = (
+	props: updateReceiptTemplateProps,
+	rejectReason: string,
+	setRejectReason: Function
+) => {
 	return (
 		props && (
 			<div
@@ -379,6 +413,21 @@ const updateConfirmTemplate = (props: updateReceiptTemplateProps) => {
 								{props.action}
 							</strong>
 						</p>
+						{props.action === RECEIPT_STATUS.DENIED && (
+							<FormGroup
+								label={
+									<span>
+										Reason <span>(Optional)</span>
+									</span>
+								}
+								style={{ width: "100%", margin: "20px" }}
+							>
+								<textarea
+									onChange={(e: any) => setRejectReason(e.target.value)}
+									value={rejectReason}
+								/>
+							</FormGroup>
+						)}
 						<p style={{ fontSize: "14px", margin: "10px 0" }}>Continue?</p>
 					</>
 				)}
@@ -404,7 +453,7 @@ const sectionOthers = (viewMode: any, setViewMode: any) => (
 				case VIEW_MODES.CAROUSEL:
 					return {
 						name: VIEW_MODES.CAROUSEL,
-						label: <IconCarousel style={{ height: 30, width: "auto" }} />,
+						label: <IconCarousel style={{ height: 27, width: "auto" }} />,
 					};
 			}
 		})}
@@ -412,3 +461,6 @@ const sectionOthers = (viewMode: any, setViewMode: any) => (
 		onChange={(newValue: any) => setViewMode(newValue)}
 	/>
 );
+function addCards(arg0: any) {
+	throw new Error("Function not implemented.");
+}

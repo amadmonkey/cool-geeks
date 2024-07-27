@@ -6,6 +6,7 @@ import IconDenied from "../public/denied.svg";
 import IconPending from "../public/pending.svg";
 
 const CUTOFF_TYPE = {
+	ALL: "ALL",
 	MID: "MID",
 	END: "END",
 };
@@ -24,10 +25,18 @@ const UI_TYPE = {
 };
 
 const RECEIPT_STATUS = {
-	FAILED: "FAILED",
-	DENIED: "DENIED",
 	PENDING: "PENDING",
 	ACCEPTED: "ACCEPTED",
+	DENIED: "DENIED",
+	FAILED: "FAILED",
+};
+
+const SEARCH_TYPE = {
+	RECEIPT: {
+		REFNO: "Reference Number",
+		USER: "User",
+		PLAN: "Plan",
+	},
 };
 
 const REGEX = {
@@ -138,7 +147,6 @@ const REFRESH_TOKEN = async (req: NextRequest) => {
 	let refreshResponse: any = null;
 	if (!accessToken) {
 		refreshResponse = await tokenRefresh(req.cookies.get("refreshToken")?.value);
-		// console.log("=========", refreshResponse);
 		if (refreshResponse.status !== 200) return { refreshResponse: refreshResponse };
 		accessToken = PARSE_TOKEN(refreshResponse.headers.getSetCookie()[0]);
 	}
@@ -158,12 +166,8 @@ const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
-			// console.log("accessToken", accessToken);
-			// console.log("refreshResponse", refreshResponse);
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
-				("");
-				console.log("newResponse", newResponse);
 				newResponse.cookies.delete("user");
 				newResponse.cookies.delete("accessToken");
 				newResponse.cookies.delete("refreshToken");
@@ -378,6 +382,7 @@ export {
 	VIEW_MODES,
 	CUTOFF_TYPE,
 	MONTH_NAMES,
+	SEARCH_TYPE,
 	STRING_UTILS,
 	TABLE_HEADERS,
 	REMOVE_SPACES,

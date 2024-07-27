@@ -8,10 +8,13 @@ import Button from "../button/button";
 const FormGroup = (props: any) => {
 	const [isShown, setIsShown] = useState(false);
 	return (
-		<div className="form-group" style={{ ...props.style }}>
+		<div className={`form-group${props.row ? " row" : ""}`} style={{ ...props.style }}>
 			{props.label && (
 				<label htmlFor="text-input">
-					<span>{`${props.label} ${props.required ? "*" : ""}`}</span>
+					<span>
+						{props.label}
+						{props.required ? "*" : ""}
+					</span>
 					{props.help && (
 						<button type="button" onClick={() => setIsShown(true)}>
 							<span className="sr-only">Help</span>

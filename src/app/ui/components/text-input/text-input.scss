@@ -9,13 +9,13 @@
 	}
 	&.tel {
 		&::before {
-			content: "(+63)";
-			position: absolute;
-			font-weight: 800;
-			font-size: 14px;
-			left: 15px;
 			top: 10px;
+			left: 15px;
 			color: $dark;
+			font-size: 14px;
+			content: "(+63)";
+			font-weight: 800;
+			position: absolute;
 		}
 		.text-input {
 			padding-left: 50px;
@@ -31,32 +31,63 @@
 			}
 		}
 	}
-	.text-input {
+	&.has-icon {
+		.text-input {
+			padding-left: 40px;
+		}
+	}
+	.input-icon {
+		fill: $dark;
+		width: 40px;
 		height: 40px;
-		width: 100%;
 		padding: 10px;
-		font-weight: 800;
-		font-size: 16px;
-		box-sizing: border-box;
+		display: flex;
+		position: absolute;
+		align-items: center;
+		justify-content: center;
+	}
+	.input-loading {
+		top: 0;
+		right: 0;
+		width: 40px;
+		height: 40px;
+		padding: 10px;
+		display: flex;
+		position: absolute;
+		align-items: center;
+		justify-content: center;
+		svg {
+			fill: $dark;
+			width: auto;
+			height: 15px;
+		}
+	}
+	.text-input {
+		width: 100%;
+		height: 40px;
 		color: $dark;
 		border: none;
+		padding: 10px;
+		font-size: 16px;
+		font-weight: 800;
 		border-radius: 5px;
+		box-sizing: border-box;
 		background-color: #fff;
 		box-shadow: $box-shadow_fade;
 		&:disabled {
-			background-color: lighten($dark, 50%);
 			border-color: lighten($dark, 40%);
+			background-color: lighten($dark, 50%);
 		}
 	}
 	.error {
+		color: $danger;
 		border-color: $danger;
 		background-color: #fae0e0;
-		color: $danger;
 	}
 	.mini-dropdown {
+		top: 0;
 		padding: 0 10px;
 		position: absolute;
-		top: 0;
 		&.active {
 			.refDropdown {
 				height: auto;
@@ -72,8 +103,8 @@
 			box-shadow: none;
 			background-color: transparent;
 			&:disabled {
-				filter: grayscale(100%);
 				pointer-events: none;
+				filter: grayscale(100%);
 			}
 			img: {
 				height: 25px;
@@ -86,22 +117,22 @@
 				right: -10px;
 				position: relative;
 				display: inline-block;
-				border: 5px solid transparent;
 				border-top-color: $dark;
+				border: 5px solid transparent;
 			}
 		}
 		.refDropdown {
 			height: 0;
-			padding: 0px;
-			transition: 0.1s;
-			overflow: hidden;
 			margin: 0;
 			top: 40px;
 			padding: 0;
 			z-index: 1;
 			left: 10px;
 			width: 80px;
+			padding: 0px;
 			display: flex;
+			transition: 0.1s;
+			overflow: hidden;
 			position: absolute;
 			border-radius: 5px;
 			align-items: center;
@@ -137,9 +168,9 @@
 	&.line {
 		> input {
 			border: none;
-			border-bottom: 1px solid lighten($dark, 40%);
-			border-radius: unset;
 			box-shadow: none;
+			border-radius: unset;
+			border-bottom: 1px solid lighten($dark, 40%);
 		}
 	}
 }

@@ -130,36 +130,7 @@ const ReceiptCard = (props: Props) => {
 						<label>CHANGE STATUS</label>
 					</button>
 				)}
-				{/* <button
-					className={`invalid invisible${
-						receipt.status === RECEIPT_STATUS.DENIED ? " active" : ""
-					}`}
-					onClick={() =>
-						props.showConfirmModal({
-							data: receipt,
-							action: receipt.status === RECEIPT_STATUS.DENIED ? "PENDING" : "DENIED",
-						})
-					}
-				>
-					<IconInvalid />
-					<label>INVALID</label>
-				</button>
-				<button
-					className={`success invisible${
-						receipt.status === RECEIPT_STATUS.ACCEPTED ? " active" : ""
-					}`}
-					onClick={() =>
-						props.showConfirmModal({
-							data: receipt,
-							action: receipt.status === RECEIPT_STATUS.ACCEPTED ? "PENDING" : "ACCEPTED",
-						})
-					}
-				>
-					<IconAccept />
-					<label>ACCEPT</label>
-				</button> */}
 			</footer>
-			{/* )} */}
 		</div>
 	);
 };

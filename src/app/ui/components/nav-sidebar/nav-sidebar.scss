@@ -123,11 +123,11 @@ $header-height: 80px;
 				a {
 					transform: scale(105%);
 					transform-origin: center;
-					color: darken($bg, 40%);
+					color: $primary;
 					border: 2px solid $primary;
 					svg {
-						fill: darken($bg, 40%);
-						stroke: darken($bg, 40%);
+						fill: $primary;
+						stroke: $primary;
 						animation: wiggle 1s ease-in;
 					}
 				}

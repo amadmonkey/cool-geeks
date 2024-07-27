@@ -12,18 +12,19 @@ form {
 	flex-direction: row;
 	justify-content: space-between;
 	> label {
-		gap: 5px;
+		gap: 7px;
 		width: 50%;
 		display: flex;
 		padding: 20px;
 		cursor: pointer;
+		font-weight: 800;
+		position: relative;
 		border-radius: 10px;
 		align-items: center;
 		flex-direction: column;
+		box-shadow: $box-shadow_fade;
 		border: 1px solid lighten($dark, 50%);
 		transition: background-color 0.1s ease-in-out;
-		position: relative;
-		box-shadow: $box-shadow_fade;
 		&::before {
 			content: "";
 			height: 25px;
@@ -37,7 +38,8 @@ form {
 		img,
 		svg {
 			height: auto;
-			width: 50px;
+			width: 60px;
+			fill: $dark;
 		}
 		input {
 			display: none;
@@ -46,8 +48,9 @@ form {
 			border-color: #fff;
 			border-style: solid;
 			background-color: #fff;
+			color: darken($info, 10%);
 			> svg {
-				fill: $success;
+				fill: darken($info, 10%);
 			}
 			&::before {
 				border-color: $success;

@@ -56,6 +56,7 @@
 				font-weight: 800;
 			}
 			.date {
+				font-weight: 800;
 				padding: 5px 10px;
 				text-align: right;
 				position: relative;
@@ -103,5 +104,24 @@
 				}
 			}
 		}
+	}
+}
+
+.replace-button {
+	border: none;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	gap: 5px;
+	font-size: 15px;
+	background-color: #fff;
+	color: $dark;
+	fill: $dark;
+	padding: 10px 15px;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	box-shadow: $box-shadow_fade;
+	svg {
+		height: 15px;
 	}
 }
