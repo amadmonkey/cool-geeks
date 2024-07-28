@@ -15,13 +15,13 @@ import { ACCOUNT_STATUS, DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/
 import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
 import "./page.scss";
-import { Filter } from "@/app/ui/classes/filter";
+import { Filters } from "@/app/ui/classes/filters";
 import Section from "@/app/ui/components/section/section";
 
 export default function Accounts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
-	const filter = new Filter();
+	const filter = new Filters();
 	const [list, setList] = useState<any>({});
 	const [filteredList, setFilteredList] = useState<any>(null);
 

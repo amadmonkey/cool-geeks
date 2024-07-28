@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Card from "@/app/ui/components/card/card";
-import { VIEW_MODES } from "@/utility";
+import { RECEIPT_STATUS, VIEW_MODES } from "@/utility";
 
 import IconReceipt from "../../../../public/receipt.svg";
 import IconOverdue from "../../../../public/overdue.svg";
@@ -56,27 +56,26 @@ const Admin = () => {
 			</section>
 			<Receipts
 				title={"Recent Receipts"}
-				searchOptions={
-					new URLSearchParams({
-						page: "1",
-						limit: "3",
-						sort: JSON.stringify({
-							createdAt: "desc",
-						}),
-					})
-				}
+				searchOptions={{
+					query: {
+						status: RECEIPT_STATUS.PENDING,
+					},
+					page: "1",
+					limit: "3",
+					sort: {
+						createdAt: "desc",
+					},
+				}}
 				viewMode={VIEW_MODES.GRID}
 				style={{ marginTop: 20 }}
 			/>
 			<Accounts
 				title={"Recently Updated Accounts"}
-				searchOptions={
-					new URLSearchParams({
-						page: "1",
-						limit: "5",
-						sort: JSON.stringify({ createdAt: "desc" }),
-					})
-				}
+				searchOptions={{
+					page: "1",
+					limit: "5",
+					sort: JSON.stringify({ createdAt: "desc" }),
+				}}
 			/>
 		</div>
 	);

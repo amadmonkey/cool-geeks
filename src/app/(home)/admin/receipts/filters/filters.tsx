@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
@@ -27,7 +27,7 @@ interface SearchType {
 	name: string;
 }
 
-interface Filter {
+interface ReceiptsFilter {
 	search: string;
 	sortOrder: string;
 	dateRange: DateRange;
@@ -82,20 +82,21 @@ const cutOffTypeList = [
 ];
 
 const ReceiptsFilters = (props: any) => {
-	const d = DateTime.now();
+	let timeoutId = useRef<number>();
+	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
-	const [form, setForm] = useState<Filter>({
+	const [searchType, setSearchType] = useState<SearchType | null>(null);
+	const [form, setForm] = useState<ReceiptsFilter>({
 		search: "",
 		sortOrder: sortOrderList[0].name,
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
-			start: "",
-			end: "",
+			start: dateTypeList[0].range!.start,
+			end: dateTypeList[0].range!.end,
 		},
 		status: "ALL",
 	});
-	const [searchType, setSearchType] = useState<SearchType | null>(null);
 
 	const updateForm = (e: any) => {
 		let { name, value } = e.target;
@@ -104,7 +105,6 @@ const ReceiptsFilters = (props: any) => {
 
 	const updateFormDate = (e: any) => {
 		let { name, value } = e.target;
-		// if (name.toLowerCase().includes("start")) {
 		setForm((prev) => ({
 			...prev,
 			dateRange: {
@@ -112,9 +112,6 @@ const ReceiptsFilters = (props: any) => {
 				...{ [name.toLowerCase().includes("start") ? "start" : "end"]: value },
 			},
 		}));
-		// } else {
-		// 	setForm((prev) => ({ ...prev, dateRange: { ...form.dateRange, ...{ end: value } } }));
-		// }
 	};
 
 	useEffect(() => {
@@ -130,19 +127,19 @@ const ReceiptsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
+	// const isSent = useRef(false);
 	useEffect(() => {
-		props.handleFilter({ ...form, ...{ searchType: searchType } });
+		// if (!isSent.current) {
+		// 	isSent.current = true;
+		props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+		// 	timeoutId.current = window.setTimeout(() => {
+		// 		isSent.current = false;
+		// 	}, 500);
+		// }
+		// return () => {
+		// 	clearTimeout(timeoutId.current);
+		// };
 	}, [form]);
-
-	// run date value onload to prevent dehydration
-	useEffect(() => {
-		updateForm({
-			target: {
-				name: "dateRange",
-				value: dateTypeList[0].range,
-			},
-		});
-	}, []);
 
 	return (
 		<div
@@ -231,10 +228,11 @@ const ReceiptsFilters = (props: any) => {
 					onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 				/>
 			</div>
-			{/* <FormGroup required>
-					<SelectInput list={[{ name: "Reference Number" }, { name: "User" }]} />
-				</FormGroup> */}
-			{/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
+			<span style={{ fontSize: "15px" }}>{`Showing ${filters.itemsCurrent} result${
+				filters.itemsCurrent > 1 ? "s" : ""
+			} out of ${filters.itemsTotal} from ${DateTime.fromISO(form.dateRange.start).toFormat(
+				"LLLL dd, yyyy"
+			)} to ${DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}`}</span>
 		</div>
 	);
 };

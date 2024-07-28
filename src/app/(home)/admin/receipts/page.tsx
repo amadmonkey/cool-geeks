@@ -12,15 +12,16 @@ import {
 } from "@/utility";
 
 import Image from "next/image";
+import Receipt from "@/app/ui/types/Receipt";
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ReceiptCard from "@/app/ui/components/receipt-card/page";
+import FormGroup from "@/app/ui/components/form-group/form-group";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
-import FormGroup from "@/app/ui/components/form-group/form-group";
 import ReceiptsFilters from "./filters/filters";
 
 import IconGrid from "../../../../../public/grid.svg";
@@ -30,14 +31,25 @@ import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
 import IconCarousel from "../../../../../public/carousel.svg";
 
-import { Filter } from "@/app/ui/classes/filter";
+import { Filters } from "@/app/ui/classes/filters";
 import "./page.scss";
 
 export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
-	const [list, setList] = useState<any>({});
-	const filter = new Filter({});
+	const [filters] = useState(
+		new Filters(
+			props.searchOptions || {
+				page: "1",
+				limit: "9",
+				sort: {
+					createdAt: "desc",
+				},
+			}
+		)
+	);
+	const aLocalList = useRef<any>(null);
+	// const [list, setList] = useState<any>([]);
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 	const [rejectReason, setRejectReason] = useState("");
@@ -59,8 +71,11 @@ export default function Receipts(props: any) {
 			}).then((res) => res.json());
 			switch (code) {
 				case 200:
-					const updatedList = list.map((item: any) => (item._id === data._id ? data : item));
-					setList(updatedList);
+					const updatedList = aLocalList.current.map((item: any) =>
+						item._id === data._id ? data : item
+					);
+					aLocalList.current = updatedList;
+					// TODO: figure out a way to rerender using ref
 					setFilteredList(updatedList);
 					break;
 				case 400:
@@ -73,95 +88,84 @@ export default function Receipts(props: any) {
 			console.error(e);
 		}
 	};
+	const controller = useRef<any>();
+	const signal = useRef<any>();
 
+	// let controller = new AbortController();
 	const getHistoryList = useCallback(
-		async (query?: any) => {
-			setList(null);
-			setFilteredList(null);
-			new URLSearchParams();
-
-			const searchOptions = new Filter({
-				page: "1",
-				limit: "9",
-				sort: {
-					createdAt: query?.sortOrder || "desc",
-				},
-			});
-
-			if (filter) searchOptions.setQuery(query);
-
-			return await fetch(
-				`${process.env.NEXT_PUBLIC_MID}/api/receipt?${new URLSearchParams(
-					props.searchOptions || searchOptions
-				)}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
+		async (fromFilter?: boolean, query?: any) => {
+			try {
+				// reset list when something in the filter changed
+				if (fromFilter) {
+					aLocalList.current = [];
+					filters.setPagesCurrent(1);
+					filters.setItemsCurrent(0);
 				}
-			)
-				.then((res) => res.json())
-				.then((res) => {
-					if (mounted.current) {
-						const { code, data } = res;
-						switch (code) {
-							case 200:
-								setList(data.list);
-								setFilteredList(data.list);
-								break;
-							case 401:
-								push("/login");
-								break;
-							default:
-								console.log("getHistoryList default", data);
-								push("/login");
-								break;
-						}
+
+				// if has db query, set it
+				if (query) {
+					filters.setQuery(query);
+					filters.setSort({ createdAt: query.sortOrder });
+				}
+
+				// abort previous calls
+				if (controller.current) controller.current.abort();
+				controller.current = new AbortController();
+				signal.current = controller.current.signal;
+
+				const { code, data } = await fetch(
+					`${process.env.NEXT_PUBLIC_MID}/api/receipt?${new URLSearchParams(filters.valuesString)}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						signal: signal.current,
+						credentials: "include",
 					}
-				})
-				.catch((err) => console.error(err));
+				).then((res) => res.json());
+				switch (code) {
+					case 200:
+						if (mounted.current) {
+							const { list, totalCount } = data;
+
+							filters.addItemsCurrent(list.length);
+							filters.setItemsTotal(totalCount);
+
+							aLocalList.current = aLocalList.current ? [...aLocalList.current, ...list] : list;
+							// TODO: figure out a way to rerender using ref
+							setFilteredList(list);
+						}
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						console.log("getHistoryList default", data);
+						push("/login");
+						break;
+				}
+			} catch (e) {
+				console.log(e);
+			}
 		},
-		[props.searchOptions, push]
+		[filters, push]
 	);
 
 	let timeoutId = useRef<number>();
-	let timeoutId2 = useRef<number>();
-	let isEnd = false;
-	let isLoading = useRef(false);
 
 	const onScroll = useCallback(() => {
 		const el = document.documentElement;
 
-		const loadMore = () => {
-			isLoading.current = true;
-			console.log("loadmore");
-			clearTimeout(timeoutId2.current);
-
-			timeoutId2.current = window.setTimeout(() => {
-				console.log(filteredList);
-				console.log([...[filteredList], ...[filteredList]]);
-				isLoading.current = false;
-			}, 3000);
-		};
-
 		clearTimeout(timeoutId.current);
-
-		if (isEnd || isLoading.current) return;
+		if (Number(filters.pagesCurrent) >= Number(filters.pagesTotal)) return;
 		timeoutId.current = window.setTimeout(() => {
-			if (el.scrollTop + el.clientHeight >= el.scrollHeight - 250) {
-				loadMore();
+			if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
+				filters.incrementPage();
+				getHistoryList();
 			}
 		}, 300);
-	}, [isEnd, isLoading, timeoutId, timeoutId2]);
-
-	useEffect(() => {
-		window.addEventListener("scroll", onScroll);
-		return () => {
-			window.removeEventListener("scroll", onScroll);
-		};
-	}, []);
+	}, [filters, getHistoryList]);
 
 	const getView = (showConfirmModal: Function) => {
 		switch (viewMode) {
@@ -170,27 +174,30 @@ export default function Receipts(props: any) {
 				return (
 					<div
 						className={`receipt-cards-container ${viewMode.toLowerCase()}${
-							filteredList === null ? " loading" : filteredList.length === 0 ? " empty" : ""
+							aLocalList.current === null
+								? " loading"
+								: aLocalList.current.length === 0
+								? " empty"
+								: ""
 						}`}
 					>
-						{filteredList && !filteredList.length ? (
-							<ListEmpty label="No entries found" />
-						) : (
+						{aLocalList.current === null ? (
+							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+						) : aLocalList.current.length ? (
 							<>
-								{filteredList &&
-									filteredList
-										.slice(0, viewMode === VIEW_MODES.GRID ? filteredList.length : 1)
-										.map((item: any, i: number) => {
-											return (
-												<ReceiptCard
-													key={item._id}
-													data={item}
-													showConfirmModal={showConfirmModal}
-												/>
-											);
-										})}
-								{!props.title && <Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />}
+								{aLocalList.current
+									.slice(0, viewMode === VIEW_MODES.GRID ? aLocalList.current.length : 1)
+									.map((item: Receipt) => {
+										return (
+											<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
+										);
+									})}
 							</>
+						) : (
+							<ListEmpty label="No entries found" />
+						)}
+						{!props.title && Number(filters.pagesCurrent) < Number(filters.pagesTotal) && (
+							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 						)}
 					</div>
 				);
@@ -199,12 +206,12 @@ export default function Receipts(props: any) {
 					<Table
 						type="receipts"
 						headers={TABLE_HEADERS.receipts}
-						className={filteredList === null ? "loading" : ""}
+						className={aLocalList.current === null ? "loading" : ""}
 					>
-						{filteredList === null ? (
+						{aLocalList.current === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
-						) : filteredList.length ? (
-							filteredList?.map((item: any) => {
+						) : aLocalList.current.length ? (
+							aLocalList.current?.map((item: any) => {
 								const receiptDate = new Date(item.receiptDate);
 								return (
 									<tr
@@ -330,9 +337,11 @@ export default function Receipts(props: any) {
 
 	useEffect(() => {
 		mounted.current = true;
+		!props.title && window.addEventListener("scroll", onScroll);
 		getHistoryList();
 		return () => {
 			mounted.current = false;
+			!props.title && window.removeEventListener("scroll", onScroll);
 		};
 	}, []);
 
@@ -340,7 +349,8 @@ export default function Receipts(props: any) {
 		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
 			{!props.title && (
 				<ReceiptsFilters
-					handleFilter={(query: any) => getHistoryList(query)}
+					filters={filters}
+					handleFilter={getHistoryList}
 					style={{ marginBottom: "30px" }}
 				/>
 			)}
@@ -352,6 +362,8 @@ export default function Receipts(props: any) {
 					return getView(showConfirmModal);
 				}}
 			</ConfirmModal>
+			{/* {aLocalList.current && <pre>{JSON.stringify(aLocalList.current.length, null, 2)}</pre>} */}
+			{/* <Button onClick={() => getHistoryList("load more")}>Load More</Button> */}
 			{props.title && (
 				<Link
 					href="/admin/receipts"
@@ -461,6 +473,3 @@ const sectionOthers = (viewMode: any, setViewMode: any) => (
 		onChange={(newValue: any) => setViewMode(newValue)}
 	/>
 );
-function addCards(arg0: any) {
-	throw new Error("Function not implemented.");
-}

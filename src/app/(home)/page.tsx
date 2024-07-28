@@ -152,7 +152,6 @@ export default function Home() {
 					body: formData,
 					credentials: "include",
 				}).then((res) => res.json());
-				debugger;
 				switch (code) {
 					case 200:
 						getHistoryList();
