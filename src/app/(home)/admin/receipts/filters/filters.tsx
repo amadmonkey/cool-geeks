@@ -82,18 +82,17 @@ const cutOffTypeList = [
 ];
 
 const ReceiptsFilters = (props: any) => {
-	let timeoutId = useRef<number>();
 	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
-	const [searchType, setSearchType] = useState<SearchType | null>(null);
+	const [searchType, setSearchType] = useState<SearchType>({ name: "" });
 	const [form, setForm] = useState<ReceiptsFilter>({
 		search: "",
 		sortOrder: sortOrderList[0].name,
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
-			start: dateTypeList[0].range!.start,
-			end: dateTypeList[0].range!.end,
+			start: "",
+			end: "",
 		},
 		status: "ALL",
 	});
@@ -127,23 +126,24 @@ const ReceiptsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
-	// const isSent = useRef(false);
 	useEffect(() => {
-		// if (!isSent.current) {
-		// 	isSent.current = true;
-		props.handleFilter(true, { ...form, ...{ searchType: searchType } });
-		// 	timeoutId.current = window.setTimeout(() => {
-		// 		isSent.current = false;
-		// 	}, 500);
-		// }
-		// return () => {
-		// 	clearTimeout(timeoutId.current);
-		// };
+		if (form.dateRange.start) {
+			props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+		}
 	}, [form]);
+
+	useEffect(() => {
+		updateForm({
+			target: {
+				name: "dateRange",
+				value: dateTypeList[0].range,
+			},
+		});
+	}, []);
 
 	return (
 		<div
-			className={`filters ${props.className}`}
+			className={`filters ${props.className || ""}`}
 			style={{ ...props.style, ...{ flexDirection: "column", gap: "10px" } }}
 		>
 			<div style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}>
@@ -201,7 +201,7 @@ const ReceiptsFilters = (props: any) => {
 						placeholder="Search By"
 						required
 					/>
-					{searchType && (
+					{searchType.name && (
 						<TextInput
 							name="search"
 							placeholder="Search"
@@ -228,11 +228,25 @@ const ReceiptsFilters = (props: any) => {
 					onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 				/>
 			</div>
-			<span style={{ fontSize: "15px" }}>{`Showing ${filters.itemsCurrent} result${
-				filters.itemsCurrent > 1 ? "s" : ""
-			} out of ${filters.itemsTotal} from ${DateTime.fromISO(form.dateRange.start).toFormat(
-				"LLLL dd, yyyy"
-			)} to ${DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}`}</span>
+			<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+				Showing{" "}
+				<span className="text-info" style={{ fontWeight: 800 }}>
+					{filters.itemsCurrent}
+				</span>{" "}
+				out of{" "}
+				<span className="text-info" style={{ fontWeight: 800 }}>
+					{filters.itemsTotal}
+				</span>{" "}
+				result
+				{filters.itemsCurrent > 1 ? "s" : ""} from{" "}
+				<span className="text-info" style={{ fontWeight: 800 }}>
+					{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
+				</span>{" "}
+				to{" "}
+				<span className="text-info" style={{ fontWeight: 800 }}>
+					{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
+				</span>
+			</span>
 		</div>
 	);
 };

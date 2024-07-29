@@ -9,6 +9,8 @@ import Receipt from "../../types/Receipt";
 import IconAccept from "../../../../../public/done.svg";
 import IconInvalid from "../../../../../public/invalid.svg";
 import IconReplace from "../../../../../public/replace.svg";
+import IconMid from "../../../../../public/midmonth.svg";
+import IconEnd from "../../../../../public/end-of-month.svg";
 
 interface Props {
 	data: Receipt;
@@ -39,25 +41,7 @@ const ReceiptCard = (props: Props) => {
 				<div className="header">
 					<span>{`${receipt.userRef.firstName} ${receipt.userRef.lastName}`}</span>
 					<div style={{ display: "flex", gap: "5px" }}>
-						{receipt.cutoff === CUTOFF_TYPE.MID ? (
-							<Image
-								className="cutoff-icon"
-								src={`/midmonth.svg`}
-								height={0}
-								width={0}
-								sizes="100vw"
-								alt="MIDMONTH ICON"
-							/>
-						) : (
-							<Image
-								className="cutoff-icon"
-								src={`/end-of-month.svg`}
-								height={0}
-								width={0}
-								sizes="100vw"
-								alt="END OF MONTH ICON"
-							/>
-						)}
+						{receipt.cutoff === CUTOFF_TYPE.MID ? <IconMid /> : <IconEnd />}
 						<button className="invisible">...</button>
 					</div>
 				</div>

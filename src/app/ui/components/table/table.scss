@@ -63,7 +63,8 @@
 			}
 			tr {
 				display: grid;
-				background-color: #f3f3f3 !important;
+				background-color: transparent;
+				box-shadow: none;
 			}
 		}
 		tbody {
@@ -163,19 +164,6 @@
 					text-align: center;
 				}
 			}
-		}
-	}
-	&.loading {
-		&::after {
-			content: "";
-			left: -2px;
-			width: 100%;
-			height: 50%;
-			bottom: -2px;
-			position: absolute;
-			background-color: black;
-			background: rgb(2, 0, 36);
-			background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
 		}
 	}
 }

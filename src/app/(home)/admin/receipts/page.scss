@@ -58,7 +58,7 @@
 			display: flex;
 			overflow: hidden;
 			border-radius: 10px;
-			box-shadow: -5px 5px 0 #00000020;
+			box-shadow: $box-shadow_fade_dark;
 			img {
 				width: 100%;
 				height: auto;
@@ -78,6 +78,7 @@
 			align-items: center;
 			flex-direction: column;
 			justify-content: center;
+			transition: 0.3s ease-in-out;
 			box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 			> .header {
 				gap: 10px;
@@ -90,7 +91,7 @@
 				justify-content: space-between;
 				> span,
 				button {
-					color: $info;
+					color: darken($info, 10%);
 					font-weight: 800;
 					padding: 5px 10px;
 					border-radius: 5px;
@@ -104,6 +105,14 @@
 						height: 15px;
 						width: auto;
 					}
+				}
+				svg {
+					height: 30px;
+					background-color: #fff;
+					padding: 5px;
+					fill: $dark;
+					border-radius: 5px;
+					box-shadow: $box-shadow_fade;
 				}
 				> span {
 					overflow: hidden;
@@ -123,7 +132,8 @@
 				}
 			}
 			&.accepted {
-				background: linear-gradient(0deg, lighten($success, 35%) 0%, lighten($success, 40%) 50%);
+				background-color: lighten($success, 35%);
+				background: linear-gradient(0deg, lighten($success, 20%) 0%, lighten($success, 40%) 50%);
 				.header {
 					> * {
 						// background-color: lighten($success, 35%);
@@ -134,7 +144,8 @@
 				}
 			}
 			&.denied {
-				background: linear-gradient(0deg, lighten($danger, 25%) 0%, lighten($danger, 30%) 30%);
+				color: black;
+				background: linear-gradient(0deg, lighten($danger, 20%) 0%, lighten($danger, 30%) 50%);
 				.header {
 					> * {
 						// background-color: lighten($danger, 25%);

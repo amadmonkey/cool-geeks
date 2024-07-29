@@ -12,6 +12,7 @@ export default interface Receipt {
 	cutoff: string;
 	referenceNumber: string;
 	referenceType: ReferenceType;
+	rejectReason: string | null;
 	createdAt: string;
 	updatedAt: string;
 }

@@ -145,8 +145,9 @@ export default function Home() {
 
 				formData.append("_id", receipt._id);
 				formData.append("receipt", file);
+				formData.append("action", "update");
 
-				const { code, data } = await fetch("/api/receipt", {
+				const { code } = await fetch("/api/receipt", {
 					method: "POST",
 					headers: {},
 					body: formData,
@@ -245,8 +246,8 @@ export default function Home() {
 	const formatDaysLeft = () => {
 		// generate date to compare
 		const date = latestReceipt?.receiptDate
-			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 2 })
-			: DateTime.now().plus({ month: 2 });
+			? DateTime.fromISO(latestReceipt?.receiptDate).plus({ month: 1 })
+			: DateTime.now().plus({ month: 1 });
 		Object.assign(
 			date,
 			date.set({ day: user.cutoff === CUTOFF_TYPE.MID ? 15 : date.endOf("month").day })
@@ -384,12 +385,6 @@ export default function Home() {
 									<span>CUTOFF</span>
 									<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
 								</li>
-								{/* {getNextMonth() && (
-									<li className="summary__item">
-										<span>RECEIPT FOR</span>
-										<p>{getNextMonth()}</p>
-									</li>
-								)} */}
 								<li className="summary__item">
 									<span>RECEIPT FOR</span>
 									<p>

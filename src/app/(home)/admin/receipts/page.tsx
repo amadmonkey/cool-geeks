@@ -29,7 +29,6 @@ import IconList from "../../../../../public/list.svg";
 import IconDeny from "../../../../../public/denied.svg";
 import IconAccept from "../../../../../public/done.svg";
 import IconReceipt from "../../../../../public/receipt2.svg";
-import IconCarousel from "../../../../../public/carousel.svg";
 
 import { Filters } from "@/app/ui/classes/filters";
 import "./page.scss";
@@ -48,9 +47,8 @@ export default function Receipts(props: any) {
 			}
 		)
 	);
-	const aLocalList = useRef<any>(null);
-	// const [list, setList] = useState<any>([]);
-	const [filteredList, setFilteredList] = useState<any>(null);
+	const listRef = useRef<any>(null);
+	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 	const [rejectReason, setRejectReason] = useState("");
 
@@ -71,11 +69,10 @@ export default function Receipts(props: any) {
 			}).then((res) => res.json());
 			switch (code) {
 				case 200:
-					const updatedList = aLocalList.current.map((item: any) =>
+					const updatedList = listRef.current.map((item: any) =>
 						item._id === data._id ? data : item
 					);
-					aLocalList.current = updatedList;
-					// TODO: figure out a way to rerender using ref
+					listRef.current = updatedList;
 					setFilteredList(updatedList);
 					break;
 				case 400:
@@ -97,7 +94,7 @@ export default function Receipts(props: any) {
 			try {
 				// reset list when something in the filter changed
 				if (fromFilter) {
-					aLocalList.current = [];
+					listRef.current = [];
 					filters.setPagesCurrent(1);
 					filters.setItemsCurrent(0);
 				}
@@ -132,8 +129,7 @@ export default function Receipts(props: any) {
 							filters.addItemsCurrent(list.length);
 							filters.setItemsTotal(totalCount);
 
-							aLocalList.current = aLocalList.current ? [...aLocalList.current, ...list] : list;
-							// TODO: figure out a way to rerender using ref
+							listRef.current = listRef.current ? [...listRef.current, ...list] : list;
 							setFilteredList(list);
 						}
 						break;
@@ -170,29 +166,20 @@ export default function Receipts(props: any) {
 	const getView = (showConfirmModal: Function) => {
 		switch (viewMode) {
 			case VIEW_MODES.GRID:
-			case VIEW_MODES.CAROUSEL:
 				return (
 					<div
 						className={`receipt-cards-container ${viewMode.toLowerCase()}${
-							aLocalList.current === null
-								? " loading"
-								: aLocalList.current.length === 0
-								? " empty"
-								: ""
+							listRef.current === null ? " loading" : listRef.current.length === 0 ? " empty" : ""
 						}`}
 					>
-						{aLocalList.current === null ? (
+						{listRef.current === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-						) : aLocalList.current.length ? (
-							<>
-								{aLocalList.current
-									.slice(0, viewMode === VIEW_MODES.GRID ? aLocalList.current.length : 1)
-									.map((item: Receipt) => {
-										return (
-											<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
-										);
-									})}
-							</>
+						) : listRef.current.length ? (
+							listRef.current.slice(0, listRef.current.length).map((item: Receipt) => {
+								return (
+									<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
+								);
+							})
 						) : (
 							<ListEmpty label="No entries found" />
 						)}
@@ -206,12 +193,12 @@ export default function Receipts(props: any) {
 					<Table
 						type="receipts"
 						headers={TABLE_HEADERS.receipts}
-						className={aLocalList.current === null ? "loading" : ""}
+						className={listRef.current === null ? "loading" : ""}
 					>
-						{aLocalList.current === null ? (
+						{listRef.current === null ? (
 							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
-						) : aLocalList.current.length ? (
-							aLocalList.current?.map((item: any) => {
+						) : listRef.current.length ? (
+							listRef.current?.map((item: any) => {
 								const receiptDate = new Date(item.receiptDate);
 								return (
 									<tr
@@ -338,7 +325,7 @@ export default function Receipts(props: any) {
 	useEffect(() => {
 		mounted.current = true;
 		!props.title && window.addEventListener("scroll", onScroll);
-		getHistoryList();
+		props.title && getHistoryList();
 		return () => {
 			mounted.current = false;
 			!props.title && window.removeEventListener("scroll", onScroll);
@@ -351,7 +338,7 @@ export default function Receipts(props: any) {
 				<ReceiptsFilters
 					filters={filters}
 					handleFilter={getHistoryList}
-					style={{ marginBottom: "30px" }}
+					style={{ marginBottom: "10px" }}
 				/>
 			)}
 			<ConfirmModal
@@ -362,12 +349,11 @@ export default function Receipts(props: any) {
 					return getView(showConfirmModal);
 				}}
 			</ConfirmModal>
-			{/* {aLocalList.current && <pre>{JSON.stringify(aLocalList.current.length, null, 2)}</pre>} */}
-			{/* <Button onClick={() => getHistoryList("load more")}>Load More</Button> */}
 			{props.title && (
 				<Link
+					className="button"
 					href="/admin/receipts"
-					style={{ letterSpacing: 5, fontSize: 11, textAlign: "center" }}
+					style={{ marginTop: "20px", letterSpacing: 5, fontSize: 11, textAlign: "center" }}
 				>
 					VIEW MORE
 				</Link>
@@ -462,11 +448,14 @@ const sectionOthers = (viewMode: any, setViewMode: any) => (
 						name: VIEW_MODES.LIST,
 						label: <IconList style={{ height: 30, width: "auto" }} />,
 					};
-				case VIEW_MODES.CAROUSEL:
-					return {
-						name: VIEW_MODES.CAROUSEL,
-						label: <IconCarousel style={{ height: 27, width: "auto" }} />,
-					};
+				// case VIEW_MODES.CAROUSEL:
+				// 	return {
+				// 		name: VIEW_MODES.CAROUSEL,
+				// 		label: <IconCarousel style={{ height: 27, width: "auto" }} />,
+				// 	};
+				default:
+					console.error("MODE NOT FOUND");
+					break;
 			}
 		})}
 		selected={viewMode}

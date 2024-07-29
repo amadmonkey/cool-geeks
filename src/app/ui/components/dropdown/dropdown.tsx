@@ -10,9 +10,10 @@ const Dropdown = (props: any) => {
 	const DOWN = "ArrowDown";
 	const UP = "ArrowUp";
 
-	const [value, setValue] = useState(props?.value?.name || "");
-	const [nameFocused, setNameFocused] = useState(false);
+	const [errors, setErrors] = useState<any>([]);
 	const [activeIndex, setActiveIndex] = useState(-1);
+	const [nameFocused, setNameFocused] = useState(false);
+	const [value, setValue] = useState(props?.value?.name || "");
 	const [filteredList, setFilteredList] = useState(props.list);
 
 	const isDisabled = () => (props.disabled || props.list?.length ? false : true);
@@ -51,7 +52,6 @@ const Dropdown = (props: any) => {
 		);
 	};
 
-	const [errors, setErrors] = useState<any>([]);
 	const onBlur = (e: any) => {
 		setNameFocused(false);
 		setFilteredList(props.list);
@@ -81,6 +81,7 @@ const Dropdown = (props: any) => {
 
 	useEffect(() => {
 		setFilteredList(props.list);
+		setValue(props.value.name);
 	}, [props]);
 
 	return (

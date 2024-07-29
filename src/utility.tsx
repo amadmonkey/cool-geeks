@@ -110,7 +110,6 @@ const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 	let test = {
 		height: "20px",
 		width: "auto",
-		marginRight: "10px",
 	};
 	if (styles) test = { ...test, ...styles };
 	switch (status?.toUpperCase()) {
@@ -243,7 +242,6 @@ const SKELETON_TYPES = {
 const VIEW_MODES = {
 	GRID: "GRID",
 	LIST: "LIST",
-	CAROUSEL: "CAROUSEL",
 };
 
 const MONTH_NAMES = [

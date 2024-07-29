@@ -1,36 +1,53 @@
 @import "../../../variables.scss";
 
 .hover-bubble {
-	position: relative;
 	cursor: pointer;
+	position: relative;
+	font-size: 13px;
+	font-weight: 800;
+	&.right {
+		.bubble {
+			left: unset;
+			transform: unset;
+			right: -20px;
+			&::before {
+				left: unset;
+				transform: unset;
+				right: 20px;
+			}
+		}
+	}
 	.bubble {
-		// display: none;
-		pointer-events: none;
-		z-index: 99;
-		position: absolute;
 		left: 50%;
-		transform: translateX(-50%);
-		background-color: #fff;
-		padding: 10px 15px;
-		box-shadow: $box-shadow_fade;
-		border-radius: 5px;
+		opacity: 0;
+		z-index: 99;
 		margin-top: 20px;
 		max-width: 200px;
 		width: max-content;
+		padding: 10px 15px;
+		position: absolute;
+		border-radius: 5px;
+		pointer-events: none;
 		box-sizing: content-box;
+		background-color: #fff;
+		transform: translateX(-50%);
+		box-shadow: $box-shadow_fade;
 		transform-origin: center center;
-		opacity: 0;
 		transition: opacity 0.1s ease-in-out;
+		button > svg {
+			fill: lighten($dark, 30%);
+			stroke: lighten($dark, 30%);
+		}
 		&::before {
+			width: 0;
+			height: 0;
+			left: 50%;
+			top: -18px;
 			content: "";
 			position: absolute;
-			height: 0;
-			width: 0;
 			border: 10px solid transparent;
 			border-bottom-color: #fff;
-			left: 50%;
 			transform: translateX(-50%);
-			top: -18px;
 		}
 	}
 	&.info {
@@ -63,27 +80,7 @@
 	&:hover {
 		.bubble {
 			opacity: 1;
-			// display: block;
-			// animation: gelatine 0.5s;
+			display: block;
 		}
-	}
-}
-
-.gelatine {
-	animation: gelatine 0.5s infinite;
-}
-@keyframes gelatine {
-	from,
-	to {
-		transform: translateX(-50%) scale(1, 1);
-	}
-	25% {
-		transform: translateX(-50%) scale(0.98, 1.02);
-	}
-	50% {
-		transform: translateX(-50%) scale(1.02, 0.98);
-	}
-	75% {
-		transform: translateX(-50%) scale(0.98, 1.02);
 	}
 }

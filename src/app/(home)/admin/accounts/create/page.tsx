@@ -27,7 +27,7 @@ export default function AddAccount() {
 		email: "",
 		cutoff: "",
 		subd: { _id: "", price: "", code: "" },
-		plan: { price: "" },
+		plan: { name: "", price: "" },
 	});
 	const [subdList, setSubdList] = useState<any>([]);
 	const [planList, setPlanList] = useState<any>([]);
@@ -39,7 +39,7 @@ export default function AddAccount() {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
 		if (selectId === "subd") {
 			// if subd changed refresh plans
-			newFormObj = { ...newFormObj, ...{ plan: { price: "" } } };
+			newFormObj = { ...newFormObj, ...{ plan: { name: "", price: "" } } };
 			await getPlans(newFormObj.subd._id);
 		}
 		setForm(newFormObj);
@@ -107,7 +107,6 @@ export default function AddAccount() {
 	};
 
 	const getUserCount = async () => {
-		// const searchOptions = new URLSearchParams(filter.values);
 		const searchOptions = new URLSearchParams({
 			page: "1",
 			limit: "",

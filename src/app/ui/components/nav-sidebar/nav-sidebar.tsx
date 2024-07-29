@@ -50,7 +50,7 @@ const NavSidebar = () => {
 
 	const logout = async () => {
 		try {
-			await fetch("/api/user", {
+			await fetch("/api/auth", {
 				method: "DELETE",
 				headers: {},
 				credentials: "include",

@@ -56,20 +56,20 @@ export async function PUT(req: NextRequest) {
 	}
 }
 
-// export async function DELETE(req: NextRequest) {
-// 	const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/user/logout`, {
-// 		method: "DELETE",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		credentials: "include",
-// 	});
-// 	const data = await apiResponse.json();
-// 	const newResponse = NextResponse.json(data);
+export async function DELETE(req: NextRequest) {
+	const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/logout`, {
+		method: "DELETE",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		credentials: "include",
+	});
+	const data = await apiResponse.json();
+	const newResponse = NextResponse.json(data);
 
-// 	newResponse.cookies.delete("user");
-// 	newResponse.cookies.delete("accessToken");
-// 	newResponse.cookies.delete("refreshToken");
+	newResponse.cookies.delete("user");
+	newResponse.cookies.delete("accessToken");
+	newResponse.cookies.delete("refreshToken");
 
-// 	return newResponse;
-// }
+	return newResponse;
+}

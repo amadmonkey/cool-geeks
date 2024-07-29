@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, RECEIPT_STATUS, RECEIPT_STATUS_ICON } from "@/utility";
+import { ACCOUNT_STATUS, RECEIPT_STATUS, RECEIPT_STATUS_ICON, UI_TYPE } from "@/utility";
 
 import Modal from "../modal/modal";
 import Button from "../button/button";
@@ -11,11 +11,15 @@ import IconReplace from "../../../../../public/replace.svg";
 import "./history-table.scss";
 import Receipt from "../../types/Receipt";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
+import HoverBubble from "../hover-bubble/hover-bubble";
+import { useRouter } from "next/navigation";
 
 const HistoryTable = (props: any) => {
 	// null = loading
 	// [] = empty
 	// [...] = show table
+	const { push } = useRouter();
+	// const [lastReason, setLastReason] = useState<string | null>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [filteredList, setFilteredList] = useState<any>(null);
 	const [receipt, setReceipt] = useState<Receipt | null>(null);
@@ -23,6 +27,40 @@ const HistoryTable = (props: any) => {
 	useEffect(() => {
 		setFilteredList(props.list);
 	}, [props.list]);
+
+	const getRejectReason = async (receipt: Receipt, index: number) => {
+		if (!receipt.rejectReason) {
+			const searchOptions = new URLSearchParams({
+				filter: JSON.stringify({
+					receiptRef: receipt._id,
+				}),
+				action: "/reason",
+			});
+			const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					console.log(data);
+					const newList = filteredList.map((item: Receipt) =>
+						item._id === data.receiptRef ? { ...item, ...{ rejectReason: data.content } } : item
+					);
+					// Re-render with the new array
+					setFilteredList(newList);
+					break;
+				case 401:
+					push("/login");
+					break;
+				default:
+					push("/login");
+					break;
+			}
+		}
+	};
 
 	return (
 		<>
@@ -40,9 +78,9 @@ const HistoryTable = (props: any) => {
 								</tr>
 							</thead>
 							<tbody>
-								{filteredList.map((item: any, index: number) => {
+								{filteredList.map((item: Receipt, index: number) => {
 									return (
-										<tr key={index} className={item.status?.toLowerCase()}>
+										<tr key={item._id + index} className={item.status?.toLowerCase()}>
 											<td>
 												<span className="date">
 													{DateTime.fromISO(item.receiptDate).toFormat("LLLL yyyy")}
@@ -58,7 +96,7 @@ const HistoryTable = (props: any) => {
 															src={item.referenceType && `/${item.referenceType.name}.png`}
 															height={0}
 															width={0}
-															style={{ height: "20px", width: "auto", marginRight: "10px" }}
+															style={{ height: "20px", width: "auto" }}
 															sizes="100vw"
 															alt="Picture of the author"
 														/>
@@ -71,21 +109,37 @@ const HistoryTable = (props: any) => {
 											{item.status !== "FAILED" && (
 												<>
 													<td>
-														<button className="invisible" onClick={() => setReceipt(item)}>
+														<button
+															className="receipt-button invisible"
+															onClick={() => setReceipt(item)}
+														>
 															<Image
 																src={`/image.svg`}
 																height={0}
 																width={0}
-																style={{ height: "20px", width: "auto", marginRight: "10px" }}
+																style={{ height: "20px", width: "auto" }}
 																sizes="100vw"
 																alt="Picture of the author"
 															/>
 														</button>
 													</td>
 													<td>
-														<button className="invisible" onClick={() => setReceipt(item)}>
-															{RECEIPT_STATUS_ICON(item.status, null)}
-														</button>
+														<HoverBubble
+															style={{ display: "flex", gap: "3px" }}
+															message={item.rejectReason}
+															disabled={item.status !== RECEIPT_STATUS.DENIED}
+															right
+														>
+															<span
+																className="invisible"
+																onMouseEnter={() =>
+																	item.status === RECEIPT_STATUS.DENIED &&
+																	getRejectReason(item, index)
+																}
+															>
+																{RECEIPT_STATUS_ICON(item.status, null)}
+															</span>
+														</HoverBubble>
 													</td>
 												</>
 											)}

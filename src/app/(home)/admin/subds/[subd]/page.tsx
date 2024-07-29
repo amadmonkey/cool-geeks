@@ -329,41 +329,44 @@ const Subd = (props: any) => {
 	};
 
 	const getUsers = async (id: any) => {
-		const searchOptions = new URLSearchParams({
-			filter: JSON.stringify({
-				planRef: id,
-			}),
-			page: "1",
-			limit: "10",
-			sort: JSON.stringify({
-				name: "asc",
-				code: "asc",
-			}),
-		});
-		const { code, data } = await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		}).then((res) => res.json());
+		try {
+			const searchOptions = new URLSearchParams({
+				filter: JSON.stringify({
+					planRef: id,
+				}),
+				page: "1",
+				limit: "10",
+				sort: JSON.stringify({
+					name: "asc",
+					code: "asc",
+				}),
+			});
+			const { code, data } = await fetch(
+				`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}
+			).then((res) => res.json());
 
-		switch (code) {
-			case 200:
-				console.log("users", data.list);
-				setUsers((prev: any) => ({ ...prev, ...{ [id]: data.list } }));
-				// setUsers((prev: any) => ({ ...prev, ...{ planId, ...{ list: data.list } } }));
-				break;
-			case 401:
-				push("/login");
-				break;
-			default:
-				push("/login");
-				break;
+			switch (code) {
+				case 200:
+					console.log("users", data.list);
+					setUsers((prev: any) => ({ ...prev, ...{ [id]: data.list } }));
+					break;
+				case 401:
+					push("/login");
+					break;
+				default:
+					push("/login");
+					break;
+			}
+		} catch (e) {
+			console.error(e);
 		}
-		// }
-		// })
-		// .catch((err) => console.error(err));
 	};
 
 	const handleFileChange = async (subd: any, file: File) => {
@@ -670,15 +673,6 @@ const Subd = (props: any) => {
 																														)}-${STRING_UTILS.SPACE_TO_DASH(
 																															user.lastName.trim()
 																														)}`}
-																													>{`${user.firstName} ${user.lastName}`}</Link>
-																												</td>
-																												<td>{DATE_READABLE(subd.createdAt)}</td>
-																											</tr>
-
-																											<tr key={user._id}>
-																												<td>
-																													<Link
-																														href={`/admin/accounts/${user.firstName}-${user.lastName}`}
 																													>{`${user.firstName} ${user.lastName}`}</Link>
 																												</td>
 																												<td>{DATE_READABLE(subd.createdAt)}</td>

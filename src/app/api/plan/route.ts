@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { REQUEST } from "@/utility";
 
 export async function GET(req: NextRequest) {
@@ -39,15 +39,4 @@ export async function PUT(req: NextRequest) {
 	}
 }
 
-export async function DELETE(req: NextRequest) {
-	// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/logout`, {
-	// 	method: "DELETE",
-	// 	headers: {
-	// 		"Content-Type": "application/json",
-	// 	},
-	// 	credentials: "include",
-	// });
-	// const data = await apiResponse.json();
-	// const newResponse = NextResponse.json(data);
-	// return newResponse;
-}
+export async function DELETE(req: NextRequest) {}
