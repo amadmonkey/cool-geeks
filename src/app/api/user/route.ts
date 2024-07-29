@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { REQUEST } from "@/utility";
 
 export async function GET(req: NextRequest) {
@@ -10,24 +10,6 @@ export async function GET(req: NextRequest) {
 		return Response.json({ message: error });
 	}
 }
-
-// export async function POST(req: NextRequest) {
-// 	const body = await req.json();
-
-// 	const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/user/login`, {
-// 		method: "POST",
-// 		headers: {
-// 			"Content-Type": "application/json",
-// 		},
-// 		credentials: "include",
-// 		body: JSON.stringify(body),
-// 	});
-
-// 	const data = await apiResponse.json();
-// 	const newResponse = NextResponse.json(data);
-// 	newResponse.headers.set("Set-Cookie", apiResponse.headers.getSetCookie().toString());
-// 	return newResponse;
-// }
 
 export async function PUT(req: NextRequest) {
 	try {

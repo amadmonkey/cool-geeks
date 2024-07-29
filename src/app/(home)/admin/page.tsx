@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Card from "@/app/ui/components/card/card";
 import { RECEIPT_STATUS, VIEW_MODES } from "@/utility";
+
+import Card from "@/app/ui/components/card/card";
 
 import IconReceipt from "../../../../public/receipt.svg";
 import IconOverdue from "../../../../public/overdue.svg";
@@ -15,6 +18,40 @@ import Accounts from "./accounts/page";
 import "./page.scss";
 
 const Admin = () => {
+	const { push } = useRouter();
+
+	const [pendingUsers, setPendingUsers] = useState<number | null>(null);
+	const [pendingReceipts, setPendingReceipts] = useState<number | null>(null);
+	const [overdueAccounts, setOverdueAccounts] = useState<number | null>(null);
+
+	const getAddtl = async () => {
+		const { code, data } = await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user/dashboard`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		}).then((res) => res.json());
+		switch (code) {
+			case 200:
+				setPendingUsers(data.pendingUsers);
+				setPendingReceipts(data.pendingReceipts);
+				setOverdueAccounts(data.overdueAccounts);
+				break;
+			case 401:
+				push("/login");
+				break;
+			default:
+				console.log("getHistoryList default", data);
+				push("/login");
+				break;
+		}
+	};
+
+	useEffect(() => {
+		getAddtl();
+	}, []);
+
 	return (
 		<div className="content content__admin" style={{ flexDirection: "column", gap: "100px" }}>
 			<section>
@@ -22,7 +59,9 @@ const Admin = () => {
 					<Link href="/">
 						<IconReceipt />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>2</h1>
+							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+								{pendingReceipts}
+							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Pending receipts</h3>
 						</div>
 					</Link>
@@ -31,7 +70,9 @@ const Admin = () => {
 					<Link href="/">
 						<IconOverdue />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>6</h1>
+							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+								{overdueAccounts}
+							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Overdue accounts</h3>
 						</div>
 					</Link>
@@ -40,7 +81,9 @@ const Admin = () => {
 					<Link href="/">
 						<IconPending style={{ stroke: "unset" }} />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>0</h1>
+							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+								{pendingUsers}
+							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Pending accounts</h3>
 						</div>
 					</Link>
