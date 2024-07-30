@@ -3,13 +3,19 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		return await fetch(`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		});
+		const apiResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		);
+		const data = await apiResponse.json();
+		const newResponse = NextResponse.json(data);
+		return newResponse;
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
