@@ -34,6 +34,10 @@ const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
 		console.log(m);
 	},
+	errorHandler: (err) => {
+		console.log(err);
+		return err;
+	},
 });
 
 const defaultForm = {
