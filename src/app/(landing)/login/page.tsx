@@ -102,7 +102,7 @@ const LoginForm = () => {
 	const getAccountStatus = async () => {
 		try {
 			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_MID}/api/auth?${new URLSearchParams({
+				`/api/auth?${new URLSearchParams({
 					filter: JSON.stringify({ input: form.emailAccountNo }),
 				})}`,
 				{

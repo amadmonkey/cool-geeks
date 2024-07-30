@@ -35,7 +35,7 @@ export default function SubdsNav(props: any) {
 					code: "asc",
 				}),
 			});
-		fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
+		fetch(`/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",

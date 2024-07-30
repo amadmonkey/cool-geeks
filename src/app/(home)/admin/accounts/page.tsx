@@ -35,7 +35,7 @@ export default function Accounts(props: any) {
 			}),
 		});
 
-		return fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
+		return fetch(`/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",

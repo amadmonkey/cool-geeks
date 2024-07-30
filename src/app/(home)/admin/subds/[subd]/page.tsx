@@ -65,7 +65,7 @@ const Subd = (props: any) => {
 					code: "asc",
 				}),
 			});
-		fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
+		fetch(`/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -293,7 +293,7 @@ const Subd = (props: any) => {
 				code: "asc",
 			}),
 		});
-		fetch(`${process.env.NEXT_PUBLIC_MID}/api/plan?${searchOptions}`, {
+		fetch(`/api/plan?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -341,16 +341,13 @@ const Subd = (props: any) => {
 					code: "asc",
 				}),
 			});
-			const { code, data } = await fetch(
-				`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`,
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-				}
-			).then((res) => res.json());
+			const { code, data } = await fetch(`/api/user?${searchOptions}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}).then((res) => res.json());
 
 			switch (code) {
 				case 200:
