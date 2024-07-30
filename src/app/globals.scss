@@ -1,0 +1,524 @@
+@import "./variables.scss";
+@font-face {
+	font-family: "Raleway";
+	src: url("./ui/fonts/Raleway/Raleway-VariableFont_wght.ttf") format("truetype");
+}
+
+html,
+body {
+	height: 100%;
+	background-color: $bg;
+	color: #626262;
+	line-height: 1.5;
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+}
+
+/*
+    Josh's Custom CSS Reset
+    https://www.joshwcomeau.com/css/custom-css-reset/
+  */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+* {
+	margin: 0;
+	font-family: "Raleway", sans-serif;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+input,
+textarea,
+select {
+	/* font: inherit; */
+	color: #626262;
+
+	&:focus {
+		outline-style: solid;
+		outline-color: $info;
+		outline-width: 2px;
+		border-radius: 3px;
+	}
+	// &:focus {
+	// 	outline: none;
+	// 	border-color: $info;
+	// }
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	overflow-wrap: break-word;
+}
+#root,
+#__next {
+	isolation: isolate;
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(
+		1px 1px 1px 1px
+	); /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+	clip: rect(1px, 1px, 1px, 1px); /*maybe deprecated but we need to support legacy browsers */
+	clip-path: inset(50%); /*modern browsers, clip-path works inwards from each corner*/
+	white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	/* display: none; <- Crashes Chrome on hover */
+	-webkit-appearance: none;
+	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type="number"] {
+	-moz-appearance: textfield; /* Firefox */
+}
+
+input[type="date"] {
+	font-size: 14px;
+	height: 40px;
+	border: none;
+	border-radius: 5px;
+	box-shadow: $box-shadow_fade;
+	padding: 10px;
+	color: $dark;
+	font-weight: 800;
+	&:before {
+		content: attr(placeholder) !important;
+		color: #aaa;
+		margin-right: 0.5em;
+	}
+	// &:focus {
+	// 	&:before {
+	// 	content: "";
+	// 	}
+	// }
+	// &:valid:before {
+	// 	content: "";
+	// }
+}
+
+textarea {
+	// width: 100%;
+	// border: 2px solid $dark;
+	// border-radius: 5px;
+	resize: none;
+	height: 200px;
+	border: none;
+	width: 100%;
+	padding: 10px;
+	border-radius: 5px;
+	font-size: 13px;
+	box-shadow: $box-shadow_fade;
+	background-color: lighten($dark, 60%);
+}
+
+a,
+button {
+	font-weight: 800;
+	background: none;
+	&:not(:disabled) {
+		cursor: pointer;
+	}
+	// why tf did i name this invisible
+	&.invisible {
+		border: none;
+		background-color: transparent;
+	}
+	&.has-icon {
+		display: flex;
+		gap: 5px;
+		align-items: center;
+		padding: 5px 10px;
+		svg {
+			fill: $dark;
+		}
+	}
+	&.outline {
+		border: 2px solid lighten($dark, 10%);
+		border-radius: 10px;
+		color: lighten($dark, 10%);
+		font-size: 10px;
+		transition: 0.2s ease-in-out;
+		svg {
+			fill: lighten($dark, 10%);
+			transition: 0.2s ease-in-out;
+		}
+		&:hover {
+			border-color: $info;
+			color: $info;
+			background-color: lighten($info, 40%);
+			svg {
+				fill: $info;
+			}
+		}
+	}
+	&.link {
+		background-color: transparent;
+		font-size: 12px;
+		box-shadow: none;
+		border: none;
+		width: unset;
+		color: $info;
+		fill: $info;
+		letter-spacing: 3px;
+		justify-content: center;
+		display: inline-flex;
+		align-items: center;
+		gap: 10px;
+		> svg {
+			height: 15px;
+		}
+		&:hover {
+			text-decoration: underline;
+		}
+	}
+}
+
+a:not(.strip) {
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 800;
+}
+
+.strip {
+	display: flex;
+	color: unset;
+	gap: 10px;
+	text-decoration: none;
+}
+
+::-webkit-scrollbar-track {
+	background-color: $bg;
+}
+
+::-webkit-scrollbar {
+	width: 7px;
+	background-color: $dark;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 10px;
+	background-color: #555;
+	box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+ul {
+	padding: 0;
+	margin: 0;
+}
+
+.summary {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+	li {
+		list-style-type: none;
+	}
+	&__item {
+		gap: 10px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		> span {
+			width: 300px;
+			font-size: 10px;
+			text-align: right;
+			letter-spacing: 3px;
+		}
+		> p {
+			width: 100%;
+			font-size: 15px;
+			font-weight: 800;
+		}
+	}
+}
+
+.section-title {
+	font-size: 25px;
+	color: #e39d69;
+	font-weight: 800;
+	margin-bottom: 20px;
+	> svg {
+		height: 30px;
+		width: 30px;
+		margin-left: 10px;
+		fill: #e39d69;
+		stroke: #e39d69;
+	}
+}
+
+.badge {
+	font-size: 11px;
+	padding: 3px 5px;
+	color: #a1a1a1;
+	border-radius: 6px;
+	border: 1px solid #d1d1d1;
+	background-color: #e7e7e7;
+	&__accepted {
+		color: #2fb964;
+		border: 1px solid #82d4a2;
+		background-color: #a1ecbe;
+	}
+	&__denied {
+		color: #c07070;
+		border: 1px solid #e09e9e;
+		background-color: #fababa;
+	}
+}
+
+.page-title {
+	margin-bottom: 30px;
+	text-align: center;
+	letter-spacing: 10px;
+	font-weight: 800;
+}
+
+.cg-button {
+	left: 0;
+	z-index: 0;
+	width: 100%;
+	height: 40px;
+	border: none;
+	display: flex;
+	font-size: 15px;
+	transition: 0.1s;
+	font-weight: 600;
+	color: #979797;
+	border-radius: 5px;
+	align-items: center;
+	letter-spacing: 8px;
+	text-decoration: none;
+	justify-content: center;
+	background-color: #fff;
+	border: 1px solid #e4e4e4;
+	box-shadow: $box-shadow_fade;
+	&.lg {
+		height: 50px;
+		font-size: 20px;
+	}
+	&:hover {
+		&:not(:disabled) {
+			left: 3px;
+			position: relative;
+			background-color: darken(#fafafa, 5%);
+			box-shadow: -6px 6px 0px #8d8d8d99;
+		}
+	}
+	&.mini {
+		height: 30px;
+		padding: 5px;
+		font-size: 12px;
+		letter-spacing: 2px;
+		border-radius: 15px;
+		font-weight: 800;
+	}
+	&.info {
+		color: #ececec;
+		background-color: $info;
+		border-color: transparent;
+		> svg {
+			fill: #ececec;
+		}
+		&:not(:disabled) {
+			&:hover {
+				color: #e7be72;
+				background-color: darken($info, 10%);
+				> svg {
+					fill: #e7be72;
+				}
+			}
+		}
+	}
+	&.danger {
+		background-color: $danger;
+	}
+	&.__circle {
+		top: -15px;
+		left: unset;
+		width: 30px;
+		height: 30px;
+		right: -15px;
+		position: absolute;
+		border-radius: 50%;
+		background-color: $danger;
+		&::after,
+		&::before {
+			content: "";
+			height: 3px;
+			width: 15px;
+			position: absolute;
+			border-radius: 5px;
+			background-color: white;
+			box-shadow: -2px 2px 0 #00000099;
+		}
+		&::before {
+			transform: rotate(45deg);
+			box-shadow: 0px 2px 0 #00000099;
+		}
+		&::after {
+			transform: rotate(-45deg);
+			box-shadow: -2px 0px 0 #00000099;
+		}
+	}
+	&:disabled {
+		background-color: lighten($dark, 40%);
+	}
+}
+
+.ellipsis {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.page-header {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	margin-bottom: 30px;
+	justify-content: space-between;
+}
+
+pre {
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+	border: 1px solid $dark;
+	padding: 20px;
+	border-radius: 15px;
+	background-color: #f1f1f1;
+}
+
+.error-message {
+	color: #e46d6d !important;
+	font-weight: 600;
+	font-size: 12px;
+	padding-top: 4px;
+}
+
+.general-error {
+	font-weight: 800;
+	font-size: 14px;
+	margin-top: 20px;
+	color: $danger;
+	display: block;
+	text-align: center;
+	&.box {
+		color: #fff;
+		background-color: $danger;
+		box-shadow: $box-shadow_fade;
+		padding: 10px;
+		border-radius: 5px;
+	}
+}
+
+.instructions {
+	padding: 10px 15px;
+	border-radius: 10px;
+	box-shadow: $box-shadow_fade;
+	font-size: 13px;
+	color: $info;
+	font-weight: 800;
+	border: 2px solid $info;
+}
+
+section {
+	display: flex;
+	justify-content: center;
+	@include for-tablet-landscape-up {
+		justify-content: unset;
+	}
+}
+
+.hide {
+	display: none;
+}
+
+.skeleton {
+	animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.loading {
+	position: relative;
+	&::after {
+		content: "";
+		left: -5px;
+		width: 105%;
+		z-index: 1;
+		height: 50%;
+		bottom: -5px;
+		position: absolute;
+		background-color: black;
+		background: rgb(2, 0, 36);
+		background: linear-gradient(0deg, $bg, $bg 35%, transparent 100%);
+	}
+}
+
+.success {
+	fill: $success;
+}
+
+.danger {
+	fill: $danger;
+}
+
+.text-white {
+	color: #fff;
+}
+
+.text-info {
+	color: $info;
+}
+
+.text-success {
+	color: $success;
+}
+
+.text-danger {
+	color: $danger;
+}
+
+.fill-white {
+	fill: #fff;
+}
+
+.invalid {
+	fill: $dark;
+}
+
+.bg-info {
+	background-color: $info !important;
+}
+
+.bg-danger {
+	background-color: $danger;
+}
+
+.bg-success {
+	background-color: $success;
+}
+
+.pointer {
+	cursor: pointer;
+}

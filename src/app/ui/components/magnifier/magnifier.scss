@@ -1,0 +1,28 @@
+.magnifier-container {
+	display: flex;
+	position: relative;
+	justify-content: center;
+	.magnifier-glass {
+		cursor: none;
+		width: 150px;
+		height: 150px;
+		position: absolute;
+		border-radius: 50%;
+		border: 10px solid #000;
+		opacity: 0;
+		&.disabled {
+			cursor: unset;
+		}
+	}
+	.magnifier-glass::before {
+		content: "";
+		width: 50px;
+		height: 20px;
+		right: -20px;
+		bottom: -15px;
+		position: absolute;
+		border-radius: 30px;
+		transform: rotate(45deg);
+		background-color: black;
+	}
+}

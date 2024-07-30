@@ -1,0 +1,81 @@
+@import "../../variables.scss";
+
+.login-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		width: 300px;
+		.deactivated-container {
+			padding: 10px 20px;
+			border-radius: 7px;
+			margin: 20px 0;
+			font-size: 13px;
+			font-weight: 800;
+			// background-color: lighten($danger, 20%);
+			color: $danger;
+			text-align: center;
+			// box-shadow: $box-shadow_fade;
+		}
+		ul.password-instructions {
+			gap: 0px;
+			height: 0px;
+			display: inline-flex;
+			font-weight: 800;
+			list-style-type: none;
+			flex-direction: column;
+			transition: height 0.1s ease-in-out;
+			overflow: hidden;
+			&.shown {
+				height: 100px;
+			}
+			li {
+				font-size: 12px;
+				display: inline-flex;
+				align-items: center;
+				line-height: 20px;
+				gap: 5px;
+				&.checked {
+					color: $success;
+					> svg {
+						display: unset;
+					}
+				}
+				> svg {
+					display: none;
+					height: 13px;
+				}
+			}
+		}
+	}
+	> h1 {
+		margin-bottom: 50px;
+		font-size: 12px;
+		font-weight: 800;
+		letter-spacing: 12px;
+		right: -5px;
+		position: relative;
+		color: black;
+	}
+	> img {
+		width: auto;
+		z-index: 0;
+	}
+	&__head {
+		height: 100px;
+		margin-bottom: 10px;
+	}
+	&__text {
+		height: 37px;
+	}
+	.status-description {
+		font-size: 14px;
+		text-align: center;
+		font-weight: 800;
+	}
+}

@@ -1,0 +1,13 @@
+.empty-container {
+	min-height: 500px;
+	display: flex;
+	align-items: center;
+	flex-direction: column;
+	justify-content: center;
+	> span {
+		font-size: 15px;
+		color: #3588b8;
+		font-weight: 800;
+		margin-top: 10px;
+	}
+}

@@ -1,0 +1,63 @@
+@import "../../../variables.scss";
+
+$border-radius: 5px;
+
+.radio-toggle {
+	display: inline-flex;
+	overflow: hidden;
+	position: relative;
+
+	background-color: #fff;
+	border-radius: $border-radius;
+	box-shadow: $box-shadow_fade;
+	&:after {
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		content: "";
+		position: absolute;
+		pointer-events: none;
+		border-radius: $border-radius;
+	}
+	&__item {
+		display: flex;
+		&__input {
+			display: none;
+			&:checked + .radio-toggle__item__label {
+				fill: $bg;
+				color: $bg;
+				background-color: $primary;
+				box-shadow: $box-shadow_fade-selected-inset;
+			}
+		}
+		&__label {
+			fill: $dark;
+			display: flex;
+			color: $dark;
+			font-weight: 800;
+			cursor: pointer;
+			min-width: 50px;
+			min-height: 40px;
+			padding: 5px 10px;
+			position: relative;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.2s ease-out;
+		}
+		&:not(:last-of-type) {
+		}
+		&:first-of-type {
+			label {
+				border-top-left-radius: $border-radius;
+				border-bottom-left-radius: $border-radius;
+			}
+		}
+		&:last-of-type {
+			label {
+				border-top-right-radius: $border-radius;
+				border-bottom-right-radius: $border-radius;
+			}
+		}
+	}
+}

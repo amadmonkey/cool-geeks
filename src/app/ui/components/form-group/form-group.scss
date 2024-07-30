@@ -1,0 +1,40 @@
+@import "../../../variables.scss";
+
+.form-group {
+	gap: 5px;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	&.row {
+		gap: 10px;
+		align-items: center;
+		flex-direction: row;
+	}
+	label {
+		color: lighten($dark, 20%);
+		display: flex;
+		font-size: 12px;
+		font-weight: 700;
+		justify-content: space-between;
+		button {
+			border: none;
+			background: none;
+			svg {
+				width: auto;
+				fill: $dark;
+				stroke: $dark;
+				height: 20px;
+				transition: 0.2s;
+			}
+			&:hover {
+				svg {
+					fill: $info;
+					stroke: $info;
+				}
+			}
+		}
+	}
+	.input-info {
+		font-size: 12px;
+	}
+}

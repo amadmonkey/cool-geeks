@@ -1,0 +1,123 @@
+@import "../../../../variables.scss";
+
+form {
+	display: flex;
+	flex-direction: column;
+}
+
+.cutoff-container {
+	gap: 10px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	> label {
+		gap: 7px;
+		width: 50%;
+		display: flex;
+		padding: 20px;
+		cursor: pointer;
+		font-weight: 800;
+		position: relative;
+		border-radius: 10px;
+		align-items: center;
+		flex-direction: column;
+		box-shadow: $box-shadow_fade;
+		border: 1px solid lighten($dark, 50%);
+		transition: background-color 0.1s ease-in-out;
+		&::before {
+			content: "";
+			height: 25px;
+			width: 25px;
+			position: absolute;
+			left: 5px;
+			top: 5px;
+			border-radius: 50%;
+			border: 1px solid lighten($dark, 30%);
+		}
+		img,
+		svg {
+			height: auto;
+			width: 60px;
+			fill: $dark;
+		}
+		input {
+			display: none;
+		}
+		&.active {
+			border-color: #fff;
+			border-style: solid;
+			background-color: #fff;
+			color: darken($info, 10%);
+			> svg {
+				fill: darken($info, 10%);
+			}
+			&::before {
+				border-color: $success;
+			}
+			&::after {
+				content: url(../../../../../../public/done-colored.svg);
+				height: 19px;
+				width: 19px;
+				position: absolute;
+				left: 8px;
+				top: 8px;
+			}
+		}
+		&:not(.active):hover {
+			border-style: solid;
+			background-color: lighten($bg, 5%);
+		}
+		> span {
+			line-height: 10px;
+		}
+	}
+}
+
+.summary__item {
+	span {
+		width: 200px;
+	}
+}
+
+// .account-number-modal {
+// 	position: absolute;
+// 	top: 0;
+// 	left: 0;
+// 	height: 100%;
+// 	width: 100%;
+// 	backdrop-filter: blur(5px);
+// 	z-index: 9;
+// 	background-color: #00000036;
+// 	display: flex;
+// 	flex-direction: column;
+// 	justify-content: center;
+// 	align-items: center;
+// 	opacity: 0;
+// 	display: none;
+// 	transition: 0.2s;
+// 	&.show {
+// 		display: flex;
+// 		opacity: 1;
+// 	}
+// 	.card {
+// 		display: flex;
+// 		flex-direction: column;
+// 		justify-content: center;
+// 		align-items: center;
+// 		background-color: #fff;
+// 		border-radius: 10px;
+// 		height: 200px;
+// 		width: 400px;
+// 		box-shadow: -5px 5px 0 #00000050;
+// 		> span {
+// 			font-size: 14px;
+// 			justify-content: center;
+// 			gap: 20px;
+// 			align-items: center;
+// 		}
+// 		button {
+// 			margin-top: 20px;
+// 		}
+// 	}
+// }

@@ -1,0 +1,175 @@
+@import "../../../variables.scss";
+.dropdown {
+	list-style-type: none;
+	position: relative;
+	padding: 0;
+	margin: 0;
+	height: 40px;
+	border-radius: 5px;
+	box-shadow: $box-shadow_fade;
+	background-color: #fff;
+	&.error {
+		border-color: $danger;
+		background-color: #fae0e0;
+		.list-container {
+			&::before {
+				background-color: #fae0e0;
+			}
+		}
+		&__search {
+			color: $danger;
+			::-webkit-input-placeholder {
+				/* WebKit, Blink, Edge */
+				color: #909;
+			}
+			:-moz-placeholder {
+				/* Mozilla Firefox 4 to 18 */
+				color: #909;
+				opacity: 1;
+			}
+			::-moz-placeholder {
+				/* Mozilla Firefox 19+ */
+				color: #909;
+				opacity: 1;
+			}
+			:-ms-input-placeholder {
+				/* Internet Explorer 10-11 */
+				color: #909;
+			}
+			::-ms-input-placeholder {
+				/* Microsoft Edge */
+				color: #909;
+			}
+
+			::placeholder {
+				/* Most modern browsers support this now. */
+				color: #909;
+			}
+		}
+	}
+	&__search {
+		height: 40px;
+		padding: 10px;
+		font-weight: 800;
+		font-size: 14px;
+		color: $dark;
+		width: 100%;
+		border: none;
+		background-color: transparent;
+		&::placeholder {
+			color: rgb(182, 182, 182);
+		}
+	}
+	&__list {
+		position: relative;
+		overflow: auto;
+		height: 100%;
+		display: block;
+		max-height: 200px;
+		top: 6px;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+		box-sizing: border-box;
+		border-radius: 5px;
+		background-color: #fff;
+		box-shadow: $box-shadow_fade;
+		animation: listHide 0.05s ease-in forwards;
+		li {
+			display: flex;
+			height: 40px;
+			padding: 5px;
+			font-weight: bold;
+			font-size: 14px;
+			cursor: pointer;
+			align-items: center;
+			.option-wrapper {
+				padding: 10px;
+				border-radius: 5px;
+				line-height: 30px;
+				width: 100%;
+				// transition: 0.1s;
+				line-height: 14px;
+				&.active,
+				&:hover,
+				&:focus {
+					color: $dark;
+					background-color: lighten($dark, 60%);
+					box-shadow: $box-shadow_fade;
+				}
+			}
+			&.selected {
+				.option-wrapper {
+					color: #fff;
+					background-color: $primary;
+					box-shadow: $box-shadow_fade;
+				}
+			}
+		}
+		&.active {
+			padding: 10px 0;
+			animation: listShow 0.05s ease-in forwards;
+			// height: 100% !important;
+			// border-color: $dark;
+			// padding-top: 10px;
+			// z-index: 2;
+			// box-shadow: -3px 3px 0 #00000020;
+			// overflow-y: auto;
+		}
+	}
+	.list-container {
+		position: relative;
+	}
+	&::after {
+		content: "";
+		position: absolute;
+		height: 0;
+		width: 0;
+		right: 15px;
+		top: 17px;
+		border: 5px solid transparent;
+		border-top-color: $dark;
+	}
+	&.disabled {
+		background-color: #e6e6e6;
+		&::after {
+			border-top-color: #cccccc;
+		}
+		.list-container::before {
+			background-color: #e6e6e6;
+		}
+		.dropdown__list {
+			border-color: #cccccc;
+		}
+	}
+	&.inline {
+		position: absolute;
+		top: 0;
+	}
+}
+
+@keyframes listShow {
+	0% {
+		display: none;
+		max-height: 0;
+		z-index: 0;
+	}
+	100% {
+		display: block;
+		max-height: 200px;
+		z-index: 2;
+	}
+}
+
+@keyframes listHide {
+	0% {
+		display: block;
+		max-height: 200px;
+		z-index: 0;
+	}
+	100% {
+		display: none;
+		max-height: 0;
+		z-index: 0;
+	}
+}

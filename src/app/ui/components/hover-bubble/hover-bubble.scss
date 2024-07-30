@@ -1,0 +1,86 @@
+@import "../../../variables.scss";
+
+.hover-bubble {
+	cursor: pointer;
+	position: relative;
+	font-size: 13px;
+	font-weight: 800;
+	&.right {
+		.bubble {
+			left: unset;
+			transform: unset;
+			right: -20px;
+			&::before {
+				left: unset;
+				transform: unset;
+				right: 20px;
+			}
+		}
+	}
+	.bubble {
+		left: 50%;
+		opacity: 0;
+		z-index: 99;
+		margin-top: 20px;
+		max-width: 200px;
+		width: max-content;
+		padding: 10px 15px;
+		position: absolute;
+		border-radius: 5px;
+		pointer-events: none;
+		box-sizing: content-box;
+		background-color: #fff;
+		transform: translateX(-50%);
+		box-shadow: $box-shadow_fade;
+		transform-origin: center center;
+		transition: opacity 0.1s ease-in-out;
+		button > svg {
+			fill: lighten($dark, 30%);
+			stroke: lighten($dark, 30%);
+		}
+		&::before {
+			width: 0;
+			height: 0;
+			left: 50%;
+			top: -18px;
+			content: "";
+			position: absolute;
+			border: 10px solid transparent;
+			border-bottom-color: #fff;
+			transform: translateX(-50%);
+		}
+	}
+	&.info {
+		.bubble {
+			color: #fff;
+			background-color: $info;
+			&::before {
+				border-bottom-color: $info;
+			}
+		}
+	}
+	&.success {
+		.bubble {
+			color: #fff;
+			background-color: $success;
+			&::before {
+				border-bottom-color: $success;
+			}
+		}
+	}
+	&.danger {
+		.bubble {
+			color: #fff;
+			background-color: $danger;
+			&::before {
+				border-bottom-color: $danger;
+			}
+		}
+	}
+	&:hover {
+		.bubble {
+			opacity: 1;
+			display: block;
+		}
+	}
+}

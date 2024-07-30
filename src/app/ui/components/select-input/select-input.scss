@@ -1,0 +1,20 @@
+.select-input {
+	display: flex;
+	gap: 5px;
+	padding: 5px;
+	background-color: #fff;
+	border-radius: 5px;
+	padding-left: 100px;
+	position: relative;
+	.dropdown {
+		position: absolute;
+		width: 100px;
+		padding: 3px 10px;
+		height: 40px;
+		left: 0;
+	}
+	input {
+		height: unset;
+		padding: 0;
+	}
+}

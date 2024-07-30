@@ -1,0 +1,62 @@
+@import "../../../variables.scss";
+
+.file-upload {
+	position: relative;
+	width: 100%;
+	min-height: 200px;
+	padding: 20px;
+	border: 2px dashed $dark;
+	border-radius: 10px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	cursor: pointer;
+	input {
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	.label {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		p {
+			font-size: 12px;
+		}
+		img {
+			width: auto;
+			height: 100px;
+			&.has-image {
+				// height: 250px;
+				height: auto;
+			}
+		}
+	}
+	&.mini {
+		min-height: 50px;
+		padding: 0;
+		.label {
+			flex-direction: row;
+			img {
+				height: 60px;
+			}
+			p {
+				font-size: 9px;
+			}
+		}
+	}
+	&.danger {
+		border-color: $danger;
+	}
+	&.active,
+	&:hover,
+	&::before,
+	&:focus {
+		border-style: solid;
+		background-color: #00000010;
+	}
+}
