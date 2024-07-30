@@ -51,16 +51,13 @@ const AddSubd = () => {
 				code: "asc",
 			}),
 		};
-		return await fetch(
-			`${process.env.NEXT_PUBLIC_MID}/api/subd?${new URLSearchParams(searchOptions)}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-			}
-		)
+		return await fetch(`/api/subd?${new URLSearchParams(searchOptions)}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		})
 			.then((res) => res.json())
 			.then((res) => res.data[0]);
 	};

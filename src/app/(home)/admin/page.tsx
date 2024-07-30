@@ -25,7 +25,7 @@ const Admin = () => {
 	const [overdueAccounts, setOverdueAccounts] = useState<number | null>(null);
 
 	const getAddtl = async () => {
-		const { code, data } = await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user/dashboard`, {
+		const { code, data } = await fetch(`/api/user/dashboard`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",

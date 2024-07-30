@@ -111,7 +111,7 @@ export default function Receipts(props: any) {
 				signal.current = controller.current.signal;
 
 				const { code, data } = await fetch(
-					`${process.env.NEXT_PUBLIC_MID}/api/receipt?${new URLSearchParams(filters.valuesString)}`,
+					`/api/receipt?${new URLSearchParams(filters.valuesString)}`,
 					{
 						method: "GET",
 						headers: {

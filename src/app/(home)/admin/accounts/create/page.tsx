@@ -60,7 +60,7 @@ export default function AddAccount() {
 				code: "asc",
 			}),
 		});
-		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/subd?${searchOptions}`, {
+		return await fetch(`/api/subd?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -80,7 +80,7 @@ export default function AddAccount() {
 				code: "asc",
 			}),
 		});
-		return await fetch(`${process.env.NEXT_PUBLIC_MID}/api/plan?${searchOptions}`, {
+		return await fetch(`/api/plan?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
@@ -116,7 +116,7 @@ export default function AddAccount() {
 			}),
 		});
 
-		await fetch(`${process.env.NEXT_PUBLIC_MID}/api/user?${searchOptions}`, {
+		await fetch(`/api/user?${searchOptions}`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/json",
