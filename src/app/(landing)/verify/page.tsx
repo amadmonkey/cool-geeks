@@ -1,10 +1,18 @@
 "use client";
 import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { setCookie } from "cookies-next";
+import { getCookie, setCookie } from "cookies-next";
 import { Id, toast } from "react-toastify";
 
 const Verify = () => {
+	return (
+		<Suspense>
+			<Content />
+		</Suspense>
+	);
+};
+
+const Content = () => {
 	const { push } = useRouter();
 	const toastActivateId = useRef<Id>("");
 	const toastResetPassId = useRef<Id>("");
@@ -93,8 +101,4 @@ const Verify = () => {
 	return <></>;
 };
 
-export default (
-	<Suspense>
-		<Verify />
-	</Suspense>
-);
+export default Verify;
