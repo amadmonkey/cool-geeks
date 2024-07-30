@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { ACCOUNT_STATUS, REGEX } from "@/utility";
-import { toast, ToastItem } from "react-toastify";
+import { toast } from "react-toastify";
 import Image from "next/image";
 
 import Button from "../../ui/components/button/button";
@@ -431,7 +431,9 @@ export default function Login() {
 	return (
 		<>
 			<Particles />
-			<LoginForm />
+			<Suspense>
+				<LoginForm />
+			</Suspense>
 		</>
 	);
 }

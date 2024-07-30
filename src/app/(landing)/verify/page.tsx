@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { getCookie, setCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 import { Id, toast } from "react-toastify";
 
 const Verify = () => {
@@ -89,6 +89,12 @@ const Verify = () => {
 				break;
 		}
 	}, []);
+
+	return <></>;
 };
 
-export default Verify;
+export default (
+	<Suspense>
+		<Verify />
+	</Suspense>
+);
