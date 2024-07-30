@@ -17,7 +17,7 @@ import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
-import ReceiptCard from "@/app/ui/components/receipt-card/page";
+import ReceiptCard from "@/app/ui/components/receipt-card/receipt-card";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";

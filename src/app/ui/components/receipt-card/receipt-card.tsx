@@ -1,9 +1,7 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DateTime } from "luxon";
-import { CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
+import { ACCOUNT_STATUS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
 
 import Card from "@/app/ui/components/card/card";
 
@@ -20,7 +18,7 @@ interface Props {
 }
 
 const ReceiptCard = (props: Props) => {
-	// const [loading, setLoading] = useState(false);
+	const [loading, setLoading] = useState(false);
 	const [receipt, setReceipt] = useState(props.data);
 	const { days, hours } = getDaysLeft(DateTime.fromISO(props.data.receiptDate));
 
