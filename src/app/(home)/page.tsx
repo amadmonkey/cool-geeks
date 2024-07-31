@@ -9,6 +9,7 @@ import { DateTime } from "luxon";
 import Link from "next/link";
 import Image from "next/image";
 
+import Receipt from "@/app/ui/types/Receipt";
 import Card from "@/app/ui/components/card/card";
 import Button from "@/app/ui/components/button/button";
 import TextInput from "@/app/ui/components/text-input/text-input";
@@ -28,7 +29,6 @@ import {
 } from "@/utility";
 
 import "./page.scss";
-import Receipt from "../ui/types/Receipt";
 
 const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
@@ -266,168 +266,168 @@ export default function Home() {
 	}, []);
 
 	return (
-		<main>
-			<div className="content" style={{ maxWidth: "1400px", width: "100%" }}>
-				<section
-					style={{
-						maxWidth: "400px",
-						flexDirection: "column",
-						flexBasis: "40%",
-					}}
-				>
-					<h1 className="section-title">Submit Receipt</h1>
-					{formShown === null ? (
-						<Card
-							className="receipt-status-container skeleton loading"
-							style={{ minHeight: "300px" }}
-						/>
-					) : !formShown ? (
-						<Card className="receipt-status-container">
-							{RECEIPT_STATUS_ICON(latestReceipt?.status, {
-								height: "100px",
-								marginBottom: "20px",
-							})}
-							{latestReceipt!.status === "ACCEPTED" ? (
-								<Fragment>
-									<h1>Receipt accepted</h1>
-									<p>You&apos;re good! Next receipt range will be on [date here] to [date here]</p>
-								</Fragment>
-							) : (
-								<Fragment>
-									<h1>Receipt submitted</h1>
-									<p>Please wait while we take a look at your receipt</p>
-								</Fragment>
+		<div className="content">
+			<section
+				style={{
+					maxWidth: "400px",
+					flexDirection: "column",
+					flexBasis: "40%",
+					width: "100%",
+				}}
+			>
+				<h1 className="section-title">Submit Receipt</h1>
+				{formShown === null ? (
+					<Card
+						className="receipt-status-container skeleton loading"
+						style={{ minHeight: "300px" }}
+					/>
+				) : !formShown ? (
+					<Card className="receipt-status-container">
+						{RECEIPT_STATUS_ICON(latestReceipt?.status, {
+							height: "100px",
+							marginBottom: "20px",
+						})}
+						{latestReceipt!.status === "ACCEPTED" ? (
+							<Fragment>
+								<h1>Receipt accepted</h1>
+								<p>You&apos;re good! Next receipt range will be on [date here] to [date here]</p>
+							</Fragment>
+						) : (
+							<Fragment>
+								<h1>Receipt submitted</h1>
+								<p>Please wait while we take a look at your receipt</p>
+							</Fragment>
+						)}
+						<ul className="summary">
+							{latestReceipt && (
+								<>
+									<li className="summary__item">
+										<span>SUBMITTED</span>
+										<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM d y")}</p>
+									</li>
+									<li className="summary__item">
+										<span>FOR</span>
+										<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM y")}</p>
+									</li>
+								</>
 							)}
-							<ul className="summary">
-								{latestReceipt && (
-									<>
-										<li className="summary__item">
-											<span>SUBMITTED</span>
-											<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM d y")}</p>
-										</li>
-										<li className="summary__item">
-											<span>FOR</span>
-											<p>{DateTime.fromISO(latestReceipt.createdAt).toFormat("MMMM y")}</p>
-										</li>
-									</>
-								)}
-								<li className="summary__item">
-									<span>RATE</span>
-									<p>₱{user.planRef.price}</p>
-								</li>
-								<li className="summary__item">
-									<span>RECEIPT</span>
-									<p>
-										<Link href="">Show receipt</Link>
-									</p>
-								</li>
-							</ul>
-							<FormGroup style={{ marginTop: "40px", textAlign: "center" }}>
-								<p>Wanna pay/already paid in advance?</p>
-								<Button className="info" type="button" onClick={() => setFormShown(true)}>
-									Show Form
-								</Button>
-							</FormGroup>
-							{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
-						</Card>
-					) : (
-						<form
-							onSubmit={(e: Object) => validate(e) && handleSubmit(e)}
-							style={{ gap: "30px" }}
-							encType="multipart/form"
+							<li className="summary__item">
+								<span>RATE</span>
+								<p>₱{user.planRef.price}</p>
+							</li>
+							<li className="summary__item">
+								<span>RECEIPT</span>
+								<p>
+									<Link href="">Show receipt</Link>
+								</p>
+							</li>
+						</ul>
+						<FormGroup style={{ marginTop: "40px", textAlign: "center" }}>
+							<p>Wanna pay/already paid in advance?</p>
+							<Button className="info" type="button" onClick={() => setFormShown(true)}>
+								Show Form
+							</Button>
+						</FormGroup>
+						{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
+					</Card>
+				) : (
+					<form
+						onSubmit={(e: Object) => validate(e) && handleSubmit(e)}
+						style={{ gap: "30px" }}
+						encType="multipart/form"
+					>
+						<FormGroup
+							label="Receipt Receipt/Screenshot"
+							help={{ icon: <IconQR />, body: helpTemplate() }}
 						>
-							<FormGroup
-								label="Receipt Receipt/Screenshot"
-								help={{ icon: <IconQR />, body: helpTemplate() }}
-							>
-								<FileInput
-									name="receipt"
-									removeFile={removeFile}
-									value={form.receipt}
-									onChange={updateForm}
-									disabled={inputDisabled}
-								/>
-								{fileError && <span className="file-error">{fileError}</span>}
-							</FormGroup>
-							<FormGroup label="Receipt Transaction/Reference Number" required>
-								<TextInput
-									type="mini-dropdown"
-									name="referenceNumber"
-									minLength="15"
-									maxLength="15"
-									value={form.referenceNumber}
-									setValue={setForm}
-									onChange={updateForm}
-									miniDropdownList={[
-										{
-											id: 1,
-											name: "gcash",
-											icon: "", // blob
-										},
-										{
-											id: 2,
-											name: "bpi",
-											icon: "", // blob
-										},
-									]}
-									disabled={inputDisabled}
-									required
-								/>
-								<p className="input-info">{inputInfo}</p>
-							</FormGroup>
+							<FileInput
+								name="receipt"
+								removeFile={removeFile}
+								value={form.receipt}
+								onChange={updateForm}
+								disabled={inputDisabled}
+							/>
+							{fileError && <span className="file-error">{fileError}</span>}
+						</FormGroup>
+						<FormGroup label="Receipt Transaction/Reference Number" required>
+							<TextInput
+								type="mini-dropdown"
+								name="referenceNumber"
+								minLength="15"
+								maxLength="15"
+								value={form.referenceNumber}
+								setValue={setForm}
+								onChange={updateForm}
+								miniDropdownList={[
+									{
+										id: 1,
+										name: "gcash",
+										icon: "", // blob
+									},
+									{
+										id: 2,
+										name: "bpi",
+										icon: "", // blob
+									},
+								]}
+								disabled={inputDisabled}
+								required
+							/>
+							<p className="input-info">{inputInfo}</p>
+						</FormGroup>
 
-							<ul className="summary">
-								<li className="summary__item">
-									<span>PLAN</span>
-									<p>{user.planRef.name}</p>
-								</li>
-								<li className="summary__item">
-									<span>RATE</span>
-									<p>₱{user.planRef.price}</p>
-								</li>
-								<li className="summary__item">
-									<span>CUTOFF</span>
-									<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
-								</li>
-								<li className="summary__item">
-									<span>RECEIPT FOR</span>
-									<p>
-										{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now().toString())
-											.plus({ month: 1 })
-											.toFormat("MMMM")}
-									</p>
-								</li>
-								<li className="summary__item">
-									<span>DUE IN</span>
-									<p>{formatDaysLeft()}</p>
-								</li>
-							</ul>
-							<FormGroup>
-								<Button type="submit" className="info" disabled={inputDisabled}>
-									SEND RECEIPT
-								</Button>
-							</FormGroup>
-						</form>
-					)}
-					{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
-				</section>
-				<section
+						<ul className="summary">
+							<li className="summary__item">
+								<span>PLAN</span>
+								<p>{user.planRef.name}</p>
+							</li>
+							<li className="summary__item">
+								<span>RATE</span>
+								<p>₱{user.planRef.price}</p>
+							</li>
+							<li className="summary__item">
+								<span>CUTOFF</span>
+								<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
+							</li>
+							<li className="summary__item">
+								<span>RECEIPT FOR</span>
+								<p>
+									{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now().toString())
+										.plus({ month: 1 })
+										.toFormat("MMMM")}
+								</p>
+							</li>
+							<li className="summary__item">
+								<span>DUE IN</span>
+								<p>{formatDaysLeft()}</p>
+							</li>
+						</ul>
+						<FormGroup>
+							<Button type="submit" className="info" disabled={inputDisabled}>
+								SEND RECEIPT
+							</Button>
+						</FormGroup>
+					</form>
+				)}
+				{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
+			</section>
+			<section
+				style={{
+					flexDirection: "column",
+					flexBasis: "800px",
+					// padding: "0 20px",
+				}}
+			>
+				<div
 					style={{
-						flexDirection: "column",
-						flexBasis: "800px",
-						padding: "0 20px",
+						display: "flex",
+						justifyContent: "space-between",
+						alignItems: "center",
+						marginBottom: "30px",
 					}}
 				>
-					<div
-						style={{
-							display: "flex",
-							justifyContent: "space-between",
-							alignItems: "center",
-							marginBottom: "30px",
-						}}
-					>
-						<div style={{ display: "flex", width: "70%", gap: "10px" }}>
-							{/* <Dropdown
+					<div style={{ display: "flex", width: "70%", gap: "10px" }}>
+						{/* <Dropdown
 								list={[
 									{ id: 1, name: "2024" },
 									{ id: 2, name: "2023" },
@@ -458,15 +458,14 @@ export default function Home() {
 								style={{ width: "200px" }}
 								placeholder="MONTH"
 							/> */}
-						</div>
-						<Link href="">VIEW ALL</Link>
 					</div>
-					<div className="home-table">
-						<HistoryTable list={historyList} handleFileChange={handleFileChange} />
-					</div>
-					{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
-				</section>
-			</div>
-		</main>
+					<Link href="">VIEW ALL</Link>
+				</div>
+				<div className="home-table">
+					<HistoryTable list={historyList} handleFileChange={handleFileChange} />
+				</div>
+				{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
+			</section>
+		</div>
 	);
 }

@@ -1,17 +1,17 @@
 @import "../../variables.scss";
 .admin-layout {
+	gap: 20px;
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	padding: 10px;
+	main {
+		@include for-phone-only {
+			margin-top: 50px;
+		}
+	}
 	@include for-tablet-landscape-up {
 		flex-direction: row;
 		justify-content: center;
+		margin-top: 50px;
 	}
-}
-.main {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
 }
