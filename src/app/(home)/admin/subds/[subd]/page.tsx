@@ -188,7 +188,6 @@ const Subd = (props: any) => {
 
 	const handlePlanDelete = async (e: any, i: number) => {
 		e.preventDefault();
-		console.log({ ...planForm[i], ...{ deleted: true } });
 		const { code, data } = await fetch("/api/plan", {
 			method: "PUT",
 			headers: {
@@ -351,8 +350,8 @@ const Subd = (props: any) => {
 
 			switch (code) {
 				case 200:
-					console.log("users", data.list);
-					setUsers((prev: any) => ({ ...prev, ...{ [id]: data.list } }));
+					const { list } = data;
+					setUsers((prev: any) => ({ ...prev, ...{ [id]: list } }));
 					break;
 				case 401:
 					push("/login");

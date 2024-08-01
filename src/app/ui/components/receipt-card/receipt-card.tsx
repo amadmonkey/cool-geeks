@@ -33,6 +33,10 @@ const ReceiptCard = (props: Props) => {
 					alt="qr"
 					height={0}
 					width={0}
+					onErrorCapture={(e: any) => {
+						e.currentTarget.src = "/leaf.png";
+						e.currentTarget.className = "error";
+					}}
 					src={`${process.env.NEXT_PUBLIC_API}/uploads/receipts/${receipt.receiptName}`}
 					unoptimized
 				/>

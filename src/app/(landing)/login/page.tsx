@@ -113,7 +113,6 @@ const LoginForm = () => {
 				}
 			);
 			const { code, data } = await res.json();
-			console.log(data);
 			switch (code) {
 				case 200:
 					setLoading(false);

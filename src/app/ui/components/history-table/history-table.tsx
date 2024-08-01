@@ -99,6 +99,10 @@ const HistoryTable = (props: any) => {
 															style={{ height: "20px", width: "auto" }}
 															sizes="100vw"
 															alt="Picture of the author"
+															onErrorCapture={(e: any) => {
+																e.currentTarget.src = "/leaf.png";
+																e.currentTarget.className = "error";
+															}}
 														/>
 														{item.referenceNumber}
 													</span>
@@ -120,6 +124,10 @@ const HistoryTable = (props: any) => {
 																style={{ height: "20px", width: "auto" }}
 																sizes="100vw"
 																alt="Picture of the author"
+																onErrorCapture={(e: any) => {
+																	e.currentTarget.src = "/leaf.png";
+																	e.currentTarget.className = "error";
+																}}
 															/>
 														</button>
 													</td>
@@ -228,6 +236,10 @@ const HistoryTable = (props: any) => {
 							}
 							unoptimized
 							style={{ height: "90%", width: "auto", borderRadius: 10 }}
+							onErrorCapture={(e: any) => {
+								e.currentTarget.src = "/leaf.png";
+								e.currentTarget.className = "error";
+							}}
 						/>
 
 						<input
