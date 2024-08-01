@@ -92,7 +92,11 @@ $header-height: 80px;
 					width: 20px;
 					height: 20px;
 					stroke: $dark;
+					pointer-events: none;
 					transition: 0.2s ease-in-out;
+				}
+				span {
+					pointer-events: none;
 				}
 			}
 			&.active {
@@ -234,6 +238,77 @@ $header-height: 80px;
 				background-color: darken($danger, 5%);
 				svg {
 					animation: wiggle 1s ease-in;
+				}
+			}
+		}
+	}
+
+	@include for-phone-only {
+		width: 100%;
+		&__header {
+			align-items: center;
+		}
+		&__list {
+			flex-direction: row;
+			justify-content: center;
+		}
+		li {
+			a {
+				width: 40px;
+				padding: 5px;
+				height: auto;
+				display: flex;
+				text-align: center;
+				justify-content: center;
+				svg {
+					width: 20px;
+					height: 20px;
+				}
+				span {
+					border: 0;
+					margin: 0;
+					width: 1px;
+					padding: 0;
+					height: 1px;
+					overflow: hidden;
+					clip: rect(1px 1px 1px 1px);
+					position: absolute !important;
+					/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+					clip: rect(1px, 1px, 1px, 1px);
+					/*maybe deprecated but we need to support legacy browsers */
+					clip-path: inset(50%);
+					/*modern browsers, clip-path works inwards from each corner*/
+					white-space: nowrap;
+					/* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+				}
+			}
+			.__pages {
+				z-index: 2;
+				position: absolute;
+				display: flex;
+				flex-direction: column;
+				gap: 5px;
+				li {
+					a {
+						display: inline;
+						background-color: #fff;
+						border-radius: 5px;
+						line-height: 12px;
+						box-shadow: $box-shadow_fade;
+					}
+				}
+			}
+			&.active {
+				.__pages {
+					&__accounts {
+						height: 100px;
+					}
+					&__subds {
+						height: 100px;
+					}
+					&__settings {
+						height: 100px;
+					}
 				}
 			}
 		}

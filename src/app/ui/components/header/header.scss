@@ -116,4 +116,24 @@ header.main-header {
 			}
 		}
 	}
+	@include for-phone-only {
+		height: auto;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: 20px;
+		.logo {
+			margin: 0;
+		}
+
+		.user-details {
+			.user-button {
+				padding: 0;
+				text-align: center;
+				.caret {
+					right: -20px;
+				}
+			}
+		}
+	}
 }

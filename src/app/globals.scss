@@ -66,6 +66,16 @@ h6 {
 	isolation: isolate;
 }
 
+img.error {
+	top: 50%;
+	left: 50%;
+	position: relative;
+	width: 100px !important;
+	height: 100px !important;
+	min-height: unset !important;
+	transform: translate(-50%, -50%);
+}
+
 .sr-only {
 	border: 0;
 	padding: 0;

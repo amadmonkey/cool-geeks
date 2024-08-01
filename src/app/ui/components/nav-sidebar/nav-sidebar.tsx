@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { deleteCookie } from "cookies-next";
 import Link from "next/link";
-import moment from "moment-timezone";
+import { DateTime } from "luxon";
 
 import IconSubd from "../../../../../public/subd.svg";
 import IconClock from "../../../../../public/clock2.svg";
@@ -34,15 +34,13 @@ const NavSidebar = () => {
 
 	useEffect(() => {
 		const timeInterval = setInterval(() => {
-			const date = moment(new Date()).tz("Asia/Manila");
-			const hours = date.get("hours");
-			const r = hours % 12;
+			const date = DateTime.local().setZone("Asia/Manila");
 			setCurrentDate({
-				hours: `${r === 0 ? "" : r < 10 ? 0 : ""}${r === 0 ? 12 : r}`,
-				minutes: `${date.get("minutes") < 10 ? 0 : ""}${date.get("minutes")}`,
-				seconds: `${date.get("seconds") < 10 ? 0 : ""}${date.get("seconds")}`,
-				dateMonthYear: date.format("MMM Do, YYYY"),
-				timeOfDay: hours >= 12 ? "pm" : "am",
+				hours: date.toFormat("hh"),
+				minutes: date.minute,
+				seconds: date.second,
+				dateMonthYear: date.toFormat("LLLL dd, yyyy").toLowerCase(),
+				timeOfDay: date.toFormat("a").toLowerCase(),
 			});
 		}, 200);
 		return () => clearTimeout(timeInterval);
@@ -70,8 +68,6 @@ const NavSidebar = () => {
 			console.log(e);
 		}
 	};
-
-	useEffect(() => {}, []);
 
 	return (
 		<div className="nav-sidebar">
@@ -108,19 +104,19 @@ const NavSidebar = () => {
 					<li className={`${activePage === "/admin" ? "active" : ""}`}>
 						<Link href="/admin" className="strip" onClick={(e: any) => navigate(e, true)}>
 							<IconDashboard />
-							Dashboard
+							<span>Dashboard</span>
 						</Link>
 					</li>
 					<li className={`${activePage.includes("/admin/receipts") ? "active" : ""}`}>
 						<Link href="/admin/receipts" className="strip" onClick={(e: any) => navigate(e, true)}>
 							<IconReceipt />
-							Receipts
+							<span>Receipts</span>
 						</Link>
 					</li>
 					<li className={`${activePage.includes("/admin/accounts") ? "active" : ""}`}>
 						<Link href="/admin/accounts" className="strip" onClick={(e: any) => navigate(e, false)}>
 							<IconAccounts />
-							Accounts
+							<span>Accounts</span>
 						</Link>
 						<ul className="__pages __pages__accounts">
 							<li className={`${pathname === "/admin/accounts" ? "active" : ""}`}>
@@ -134,7 +130,7 @@ const NavSidebar = () => {
 					<li className={`${activePage.includes("/admin/subds") ? "active" : ""}`}>
 						<Link href="/admin/subds" className="strip" onClick={(e: any) => navigate(e, false)}>
 							<IconSubd />
-							Subdivisions
+							<span>Subdivisions</span>
 						</Link>
 						<ul className="__pages __pages__subds">
 							<li className={`${pathname === "/admin/subds" ? "active" : ""}`}>
@@ -148,7 +144,7 @@ const NavSidebar = () => {
 					<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
 						<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>
 							<IconSettings />
-							Settings
+							<span>Settings</span>
 						</Link>
 						<ul className="__pages __pages__settings">
 							<li>

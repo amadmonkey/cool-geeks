@@ -46,9 +46,9 @@ export default function Accounts(props: any) {
 			.then((res) => {
 				if (mounted) {
 					const { code, data } = res;
-					const { list } = data;
 					switch (code) {
 						case 200:
+							const { list } = data;
 							setList(list);
 							setFilteredList(list);
 							break;

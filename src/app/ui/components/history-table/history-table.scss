@@ -23,9 +23,11 @@
 				text-align: right;
 				position: relative;
 				padding-right: 40px;
+				white-space: nowrap;
 				justify-content: end;
 				&::after {
-					top: 10px;
+					// top: 10px;
+					top: 50%;
 					right: 5px;
 					content: "";
 					width: 20px;
@@ -33,6 +35,7 @@
 					position: absolute;
 					border-radius: 50%;
 					background-color: $info;
+					transform: translateY(-50%);
 				}
 			}
 			td:last-child {
@@ -77,6 +80,7 @@
 			.refNo {
 				align-items: center;
 				display: inline-flex;
+				gap: 10px;
 			}
 			&.failed {
 				grid-template-columns: 35% 10% 55%;
@@ -100,6 +104,51 @@
 						color: $danger;
 						font-size: 13px;
 						font-weight: 800;
+					}
+				}
+			}
+
+			@include for-phone-only {
+				font-size: 12px;
+				display: inline-flex;
+				td {
+					&:first-child {
+						flex-basis: 150px;
+					}
+					&:nth-child(2) {
+						flex-basis: 70px;
+					}
+					&:nth-child(3) {
+						flex-basis: 150px;
+						span {
+							display: inline-flex;
+							gap: 10px;
+						}
+					}
+					&:nth-child(4) {
+						flex-basis: 50px;
+					}
+					&:nth-child(5) {
+						flex-basis: 50px;
+					}
+					&:first-child {
+						padding-right: 25px;
+						span {
+							padding: 5px;
+						}
+						&::after {
+							// top: 7px;
+							height: 15px;
+							width: 15px;
+						}
+					}
+					&:not(:last-child) {
+						&:first-child {
+							&::before {
+								height: 51px;
+								right: 12px;
+							}
+						}
 					}
 				}
 			}

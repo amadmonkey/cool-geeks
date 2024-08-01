@@ -6,7 +6,7 @@ export default function HeaderLayout({ children }: { children: React.ReactNode }
 	return (
 		<>
 			<Header user={cookieStore.get("user")} />
-			<div style={{ padding: "20px", paddingTop: "50px" }}>{children}</div>
+			{children}
 		</>
 	);
 }

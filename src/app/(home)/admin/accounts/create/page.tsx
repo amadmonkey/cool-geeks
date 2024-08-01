@@ -126,9 +126,9 @@ export default function AddAccount() {
 			.then((res) => res.json())
 			.then((res) => {
 				const { code, data } = res;
-				const { list } = data;
 				switch (code) {
 					case 200:
+						const { list } = data;
 						setUserCount(list.length + 1);
 						break;
 					case 401:

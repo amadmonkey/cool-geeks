@@ -2,8 +2,14 @@
 
 .filters {
 	display: flex;
+	flex-wrap: wrap;
 	justify-content: space-between;
-
+	> div:first-child {
+		flex-wrap: wrap;
+		> div:last-child {
+			flex-wrap: wrap;
+		}
+	}
 	.date-range {
 		height: 0;
 		transition: 0.3s ease;
