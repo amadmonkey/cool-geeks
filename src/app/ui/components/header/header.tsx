@@ -34,23 +34,7 @@ const Header = (props: any) => {
 			})
 				.then((res) => res.json())
 				.then((res) => {
-					// currently deletes all cookies then redirects
-					// to login regardless if success or not
-					const { code } = res;
-					deleteCookie("user");
-					deleteCookie("plan");
-					deleteCookie("subd");
-					deleteCookie("accessToken");
-					deleteCookie("refreshToken");
 					push("/login");
-
-					// switch (code) {
-					// 	case 200:
-					// 		break;
-					// 	default:
-					// 		push("/login");
-					// 		break;
-					// }
 				});
 		} catch (e) {
 			console.log(e);
