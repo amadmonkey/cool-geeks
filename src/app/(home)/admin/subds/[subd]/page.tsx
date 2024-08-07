@@ -33,11 +33,17 @@ import IconTrash from "../../../../../../public/trash2.svg";
 
 import "./page.scss";
 
+// TODO: segregate plans and qr sections bitch
 const Subd = (props: any) => {
+	const loaderImg = "/loader-fixed.svg";
+	const errorImg = "/leaf.png";
 	const { push } = useRouter();
 	const mounted = useRef(false);
+	const signal = useRef<any>();
+	const controller = useRef<any>();
 	const inputRef = useRef<HTMLInputElement>(null);
 	const imageRef = useRef<HTMLImageElement>(null);
+	const [qrUrl, setQrUrl] = useState(loaderImg);
 	const [subd, setSubd] = useState<any>(null);
 	const [plans, setPlans] = useState<Plan[]>([]);
 	const [users, setUsers] = useState<any>({});
@@ -51,57 +57,63 @@ const Subd = (props: any) => {
 
 	const currentPathname = usePathname();
 
-	const getSubd = useCallback(() => {
-		const searchOptions =
-			props.searchOptions ||
-			new URLSearchParams({
-				filter: JSON.stringify({
-					name: STRING_UTILS.DASH_TO_SPACE(props.params.subd),
-				}),
-				page: "1",
-				limit: "1",
-				sort: JSON.stringify({
-					name: "asc",
-					code: "asc",
-				}),
-			});
-		fetch(`/api/subd?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		})
-			.then((res) => res.json())
-			.then(async (res) => {
-				if (mounted.current) {
-					const { code, data } = res;
-					switch (code) {
-						case 200:
-							if (data[0]) {
-								setSubd(data[0]);
-								setSubdForm({
-									name: data[0].name,
-									code: data[0].code,
-									number: data[0].gcash.number,
-								});
-								getImage(data[0]);
+	const getSubd = useCallback(
+		async (file?: any) => {
+			try {
+				const searchOptions =
+					props.searchOptions ||
+					new URLSearchParams({
+						filter: JSON.stringify({
+							name: STRING_UTILS.DASH_TO_SPACE(props.params.subd),
+						}),
+						page: "1",
+						limit: "1",
+						sort: JSON.stringify({
+							name: "asc",
+							code: "asc",
+						}),
+					});
+				const { code, data } = await fetch(`/api/subd?${searchOptions}`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}).then((res) => res.json());
+
+				const subd = data[0];
+				switch (code) {
+					case 200:
+						if (subd) {
+							setSubd(subd);
+							setSubdForm({
+								name: subd.name,
+								code: subd.code,
+								number: subd.gcash.number,
+							});
+							if (file) {
+								setQrUrl(fileToUrl(file));
 							} else {
-								push("/admin/subds");
+								getImage(subd);
 							}
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							console.log("get subds default", data);
-							push("/login");
-							break;
-					}
+						} else {
+							push("/admin/subds");
+						}
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						console.log("get subds default", data);
+						push("/login");
+						break;
 				}
-			})
-			.catch((err) => console.log("getSubds catch", err));
-	}, [push]);
+			} catch (e) {
+				console.log(e);
+			}
+		},
+		[push]
+	);
 
 	const addPlan = async () => {
 		try {
@@ -268,16 +280,51 @@ const Subd = (props: any) => {
 			number: subd.gcash.number,
 		});
 
+	// const getImage = async (subd: any) => {
+	// 	const url = `${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`;
+	// 	return await fetch(url, {
+	// 		method: "GET",
+	// 	})
+	// 		.then((res) => res.blob())
+	// 		.then((blob) => {
+	// 			setFile(new File([blob], subd.gcash.qr.filename, { type: subd.gcash.qr.contentType }));
+	// 		})
+	// 		.catch((error) => console.error(error));
+	// };
+
 	const getImage = async (subd: any) => {
-		const url = `${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`;
-		return await fetch(url, {
-			method: "GET",
-		})
-			.then((res) => res.blob())
-			.then((blob) => {
-				setFile(new File([blob], subd.gcash.qr.filename, { type: subd.gcash.qr.contentType }));
-			})
-			.catch((error) => console.error(error));
+		try {
+			console.log(subd);
+			// abort previous calls
+			if (controller.current) controller.current.abort();
+			controller.current = new AbortController();
+			signal.current = controller.current.signal;
+
+			const searchOptions = new URLSearchParams({
+				id: subd!.gdriveId,
+			});
+
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/image?${searchOptions}`, {
+				method: "GET",
+				headers: {},
+				credentials: "include",
+				signal: signal.current,
+			}).then((res) => res.blob());
+			console.log(res);
+
+			// const urlCreator = window.URL || window.webkitURL;
+			// const imgUrl = urlCreator.createObjectURL();
+
+			setQrUrl(fileToUrl(new Blob([res])));
+		} catch (e: any) {
+			if (e.name === "AbortError") return;
+			console.log(e);
+		}
+	};
+
+	const fileToUrl = (file: any) => {
+		const urlCreator = window.URL || window.webkitURL;
+		return urlCreator.createObjectURL(file);
 	};
 
 	const getPlans = () => {
@@ -367,12 +414,14 @@ const Subd = (props: any) => {
 
 	const handleFileChange = async (subd: any, file: File) => {
 		if (VALID_IMG_TYPES.includes(file.type)) {
+			imageRef.current?.classList.remove("error");
 			imageRef.current!.src = URL.createObjectURL(file);
 
 			setFile(file);
 
 			const formData = new FormData();
 			subd._id && formData.append("_id", subd._id);
+			subd.gdriveId && formData.append("gdriveId", subd.gdriveId);
 			formData.append("qr", file);
 			formData.append("name", subd.name);
 			formData.append("code", subd.code);
@@ -387,7 +436,7 @@ const Subd = (props: any) => {
 
 			switch (code) {
 				case 200:
-					getSubd();
+					getSubd(file);
 					toast.success("Subdivision updated successfully.");
 					break;
 				case 400:
@@ -862,26 +911,52 @@ const Subd = (props: any) => {
 				{/* <pre>{JSON.stringify(subd, undefined, 2)}</pre> */}
 			</div>
 			<div className="qr-container">
-				<Image
-					alt="qr"
-					ref={imageRef}
-					height={0}
-					width={0}
-					unoptimized
-					src={`${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`}
-					onClick={() => inputRef.current!.click()}
-				/>
-				<input
-					name={props.name}
-					ref={inputRef}
-					type="file"
-					accept=".png,.jpg,.jpeg,.pdf"
-					onChange={(e: any) => handleFileChange(subd, e.currentTarget.files[0])}
-					disabled={props.disabled}
-				/>
-				<button onClick={() => inputRef.current!.click()}>
-					<IconReplace /> CHANGE
-				</button>
+				{qrUrl === loaderImg ? (
+					<div
+						className="qr-container skeleton loading"
+						style={{ height: "500px", width: "100%", maxWidth: "unset", borderRadius: "10px" }}
+					></div>
+				) : (
+					<>
+						<div
+							className="image-container"
+							style={qrUrl === errorImg ? { height: "400px" } : {}}
+							onClick={() => inputRef.current!.click()}
+						>
+							<Image
+								alt="qr"
+								width={0}
+								height={0}
+								quality={100}
+								src={qrUrl}
+								ref={imageRef}
+								onErrorCapture={(e: any) => {
+									setQrUrl(errorImg);
+									e.currentTarget.className = "error";
+								}}
+								onChange={(e: any) => {
+									e.currentTarget.classList.remove("error");
+								}}
+								style={qrUrl === loaderImg ? { height: "100px", width: "100px" } : {}}
+								unoptimized
+							/>
+						</div>
+						<input
+							name={props.name}
+							ref={inputRef}
+							type="file"
+							accept=".png,.jpg,.jpeg,.pdf"
+							onChange={(e: any) => {
+								setQrUrl(loaderImg);
+								handleFileChange(subd, e.currentTarget.files[0]);
+							}}
+							disabled={props.disabled}
+						/>
+						<button onClick={() => inputRef.current!.click()}>
+							<IconReplace /> CHANGE
+						</button>
+					</>
+				)}
 			</div>
 		</div>
 	);

@@ -47,6 +47,8 @@ export default function Receipts(props: any) {
 			}
 		)
 	);
+	const signal = useRef<any>();
+	const controller = useRef<any>();
 	const listRef = useRef<any>(null);
 	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
@@ -85,8 +87,6 @@ export default function Receipts(props: any) {
 			console.error(e);
 		}
 	};
-	const controller = useRef<any>();
-	const signal = useRef<any>();
 
 	// let controller = new AbortController();
 	const getHistoryList = useCallback(

@@ -1,5 +1,6 @@
 import React from "react";
 
+import IconLoader from "../../../../../public/loader.svg";
 import "./button.scss";
 
 const Button = (props: any) => {
@@ -12,9 +13,9 @@ const Button = (props: any) => {
 			type={props.type || "button"}
 			style={props.style}
 			onClick={!props.disabled && props.onClick}
-			disabled={props.disabled ? true : false}
+			disabled={props.disabled || props.loading ? true : false}
 		>
-			{props.children}
+			{props.loading ? <IconLoader className="button-loader" /> : props.children}
 		</button>
 	);
 };

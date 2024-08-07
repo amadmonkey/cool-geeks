@@ -1,34 +1,46 @@
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, RECEIPT_STATUS, RECEIPT_STATUS_ICON, UI_TYPE } from "@/utility";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { RECEIPT_STATUS, RECEIPT_STATUS_ICON } from "@/utility";
+import Image from "next/image";
 
 import Modal from "../modal/modal";
 import Button from "../button/button";
+import Receipt from "../../types/Receipt";
 import ListEmpty from "../table/empty/list-empty";
+import HoverBubble from "../hover-bubble/hover-bubble";
+import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
+
+import IconLoader from "../../../../../public/loader.svg";
 import IconReplace from "../../../../../public/replace.svg";
 
 import "./history-table.scss";
-import Receipt from "../../types/Receipt";
-import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
-import HoverBubble from "../hover-bubble/hover-bubble";
-import { useRouter } from "next/navigation";
 
 const HistoryTable = (props: any) => {
 	// null = loading
 	// [] = empty
 	// [...] = show table
 	const { push } = useRouter();
-	// const [lastReason, setLastReason] = useState<string | null>(null);
+	const signal = useRef<any>();
+	const controller = useRef<any>();
+	const loadingToastId = useRef<any>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [filteredList, setFilteredList] = useState<any>(null);
+	const [isModalShown, setIsModalShown] = useState<boolean>(false);
 	const [receipt, setReceipt] = useState<Receipt | null>(null);
+	const [receiptUrl, setReceiptUrl] = useState<string>("");
 
-	useEffect(() => {
-		setFilteredList(props.list);
-	}, [props.list]);
+	const showReceipt = (newReceipt: Receipt) => {
+		if (receipt?._id === newReceipt._id) {
+			setReceiptUrl(newReceipt.receiptUrl || "");
+		} else {
+			setReceipt(newReceipt);
+		}
+		setIsModalShown(true);
+	};
 
-	const getRejectReason = async (receipt: Receipt, index: number) => {
+	const getRejectReason = async (receipt: Receipt) => {
 		if (!receipt.rejectReason) {
 			const searchOptions = new URLSearchParams({
 				filter: JSON.stringify({
@@ -45,11 +57,26 @@ const HistoryTable = (props: any) => {
 			}).then((res) => res.json());
 			switch (code) {
 				case 200:
-					console.log(data);
 					const newList = filteredList.map((item: Receipt) =>
-						item._id === data.receiptRef ? { ...item, ...{ rejectReason: data.content } } : item
+						item._id === receipt._id
+							? {
+									...item,
+									...{
+										rejectReason: data ? (
+											data.content
+										) : (
+											<>
+												No reason specified.
+												<br /> Please contact <strong className="text-info">
+													[name here]
+												</strong> at <strong className="text-info">[number here]</strong> for more
+												details
+											</>
+										),
+									},
+							  }
+							: item
 					);
-					// Re-render with the new array
 					setFilteredList(newList);
 					break;
 				case 401:
@@ -61,6 +88,61 @@ const HistoryTable = (props: any) => {
 			}
 		}
 	};
+
+	const closeModal = () => {
+		if (isModalShown) {
+			setReceiptUrl("");
+			setIsModalShown(false);
+			if (controller.current) controller.current.abort();
+		}
+	};
+
+	useEffect(() => {
+		const getImage = async () => {
+			try {
+				controller.current = new AbortController();
+				signal.current = controller.current.signal;
+
+				const searchOptions = new URLSearchParams({
+					id: receipt!.gdriveId,
+				});
+
+				const res = await fetch(`${process.env.NEXT_PUBLIC_API}/receipt/image?${searchOptions}`, {
+					method: "GET",
+					headers: {},
+					credentials: "include",
+					signal: signal.current,
+				}).then((res) => res.blob());
+				console.log(res);
+
+				const urlCreator = window.URL || window.webkitURL;
+				const imgUrl = urlCreator.createObjectURL(new Blob([res]));
+
+				const newList = filteredList.map((item: Receipt) =>
+					item._id === receipt!._id ? { ...item, ...{ receiptUrl: imgUrl } } : item
+				);
+
+				setFilteredList(newList);
+				setReceiptUrl(imgUrl);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+
+		if (receipt) {
+			if (receipt?.receiptUrl) {
+				setReceiptUrl(receipt?.receiptUrl);
+			} else {
+				getImage();
+			}
+		}
+	}, [receipt]);
+
+	useEffect(() => {
+		setReceiptUrl("");
+		setReceipt(null);
+		setFilteredList(props.list);
+	}, [props.list]);
 
 	return (
 		<>
@@ -115,7 +197,7 @@ const HistoryTable = (props: any) => {
 													<td>
 														<button
 															className="receipt-button invisible"
-															onClick={() => setReceipt(item)}
+															onClick={() => showReceipt(item)}
 														>
 															<Image
 																src={`/image.svg`}
@@ -141,8 +223,7 @@ const HistoryTable = (props: any) => {
 															<span
 																className="invisible"
 																onMouseEnter={() =>
-																	item.status === RECEIPT_STATUS.DENIED &&
-																	getRejectReason(item, index)
+																	item.status === RECEIPT_STATUS.DENIED && getRejectReason(item)
 																}
 															>
 																{RECEIPT_STATUS_ICON(item.status, null)}
@@ -212,8 +293,8 @@ const HistoryTable = (props: any) => {
 					</table>
 				)}
 			</div>
-			<Modal isShown={receipt}>
-				<DetectOutsideClick action={() => setReceipt(null)}>
+			<Modal isShown={isModalShown}>
+				<DetectOutsideClick action={closeModal}>
 					<div
 						style={{
 							width: "400px",
@@ -222,53 +303,73 @@ const HistoryTable = (props: any) => {
 							alignItems: "center",
 						}}
 					>
-						<Image
-							alt="qr"
-							height={0}
-							width={0}
-							src={`${process.env.NEXT_PUBLIC_API}/uploads/receipts/${
-								receipt && receipt.receiptName
-							}`}
-							onClick={() =>
-								(receipt?.status === RECEIPT_STATUS.PENDING ||
-									receipt?.status === RECEIPT_STATUS.DENIED) &&
-								inputRef.current!.click()
-							}
-							unoptimized
-							style={{ height: "90%", width: "auto", borderRadius: 10 }}
-							onErrorCapture={(e: any) => {
-								e.currentTarget.src = "/leaf.png";
-								e.currentTarget.className = "error";
-							}}
-						/>
+						{/* TODO: convert to button click bitch */}
+						{receiptUrl ? (
+							<>
+								<Image
+									alt="qr"
+									height={0}
+									width={0}
+									src={receiptUrl || "./loader.svg"}
+									onClick={() =>
+										(receipt?.status === RECEIPT_STATUS.PENDING ||
+											receipt?.status === RECEIPT_STATUS.DENIED) &&
+										inputRef.current!.click()
+									}
+									style={{ height: "90%", width: "auto", borderRadius: 10 }}
+								/>
 
-						<input
-							name={props.name}
-							ref={inputRef}
-							type="file"
-							accept=".png,.jpg,.jpeg,.pdf"
-							onChange={(e: any) =>
-								props
-									.handleFileChange(receipt, e.currentTarget.files[0])
-									.then(() => setReceipt(null))
-							}
-							style={{ display: "none" }}
-							disabled={props.disabled}
-						/>
-						{(receipt?.status === RECEIPT_STATUS.DENIED ||
-							receipt?.status === RECEIPT_STATUS.PENDING) && (
-							<button onClick={() => inputRef.current!.click()} className="replace-button">
-								<IconReplace /> CHANGE
-							</button>
+								<input
+									name={props.name}
+									ref={inputRef}
+									type="file"
+									accept=".png,.jpg,.jpeg,.pdf"
+									onChange={(e: any) => {
+										setReceiptUrl("");
+										setIsModalShown(false);
+
+										loadingToastId.current = toast("Updating receipt...", {
+											autoClose: false,
+											icon: <IconLoader style={{ height: "20px", stroke: "rgb(100, 100, 100)" }} />,
+										});
+										props
+											.handleFileChange(receipt, e.currentTarget.files[0])
+											.then(closeModal)
+											.then(() => {
+												toast.dismiss(loadingToastId.current);
+											});
+									}}
+									style={{ display: "none" }}
+									disabled={props.disabled}
+								/>
+								{(receipt?.status === RECEIPT_STATUS.DENIED ||
+									receipt?.status === RECEIPT_STATUS.PENDING) && (
+									<button onClick={() => inputRef.current!.click()} className="replace-button">
+										<IconReplace /> CHANGE
+									</button>
+								)}
+								<Button
+									onClick={closeModal}
+									style={{
+										marginTop: "20px",
+									}}
+								>
+									CLOSE
+								</Button>
+							</>
+						) : (
+							<div
+								style={{
+									display: "flex",
+									flexDirection: "column",
+									alignItems: "center",
+									gap: "20px",
+								}}
+							>
+								<IconLoader style={{ height: "50px", width: "50px", stroke: "#626262" }} />
+								<p style={{ fontWeight: 800 }}>Loading receipt. Please wait...</p>
+							</div>
 						)}
-						<Button
-							onClick={() => setReceipt(null)}
-							style={{
-								marginTop: "20px",
-							}}
-						>
-							CLOSE
-						</Button>
 					</div>
 				</DetectOutsideClick>
 			</Modal>

@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+	// enable this in the future thought it was enabled by default
 	// reactStrictMode: true,
 	webpack(config) {
 		config.module.rules.push({

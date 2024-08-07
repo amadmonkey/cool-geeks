@@ -308,12 +308,23 @@ $grid-template-columns: 35% 15% 30% 15%;
 			position: relative;
 			align-items: center;
 			flex-direction: column;
-			img {
+			.image-container {
 				width: 100%;
 				height: auto;
 				cursor: pointer;
 				border-radius: 5px;
+				background-color: #fff;
 				box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+
+				display: flex;
+				// justify-content: center;
+				// align-items: center;
+				border-radius: 10px;
+				overflow: hidden;
+			}
+			img {
+				width: 100%;
+				height: auto;
 			}
 			input {
 				top: 0;
