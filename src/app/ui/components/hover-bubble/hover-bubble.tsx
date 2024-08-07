@@ -17,7 +17,7 @@ const HoverBubble = (props: any) => {
 			{props.children}
 			<div className="bubble" style={{ top: bubbleRef?.current?.clientHeight }}>
 				{props.message === null ? (
-					<IconLoader style={{ height: "20px", width: "auto" }} />
+					<IconLoader style={{ height: "20px", width: "auto", stroke: "black" }} />
 				) : (
 					props.message
 				)}

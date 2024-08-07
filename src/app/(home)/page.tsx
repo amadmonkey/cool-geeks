@@ -61,6 +61,7 @@ export default function Home() {
 	const [form, setForm] = useState(defaultForm);
 	const [historyList, setHistoryList] = useState<any>(null);
 	const [formShown, setFormShown] = useState<Boolean | null>(null);
+	const [formLoading, setFormLoading] = useState<Boolean>(false);
 	const [latestReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
 	const [fileError, setFileError] = useState("");
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
@@ -111,6 +112,7 @@ export default function Home() {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
+		setFormLoading(true);
 		const formData = new FormData();
 		formData.append("referenceType", JSON.stringify(form.referenceType));
 		formData.append("referenceNumber", form.referenceNumber);
@@ -128,9 +130,11 @@ export default function Home() {
 		switch (code) {
 			case 200:
 				setHistoryList([data, ...historyList]);
-				setFormShown(false);
 				setCurrentReceipt(data);
 				setForm(defaultForm);
+				setFormShown(false);
+				setFormLoading(false);
+				toast.success("Receipt sent");
 				break;
 			case 400:
 				// handle errors
@@ -149,6 +153,7 @@ export default function Home() {
 
 				formData.append("_id", receipt._id);
 				formData.append("receipt", file);
+				formData.append("gdriveId", receipt.gdriveId);
 				formData.append("action", "update");
 
 				const { code } = await fetch("/api/receipt", {
@@ -160,6 +165,7 @@ export default function Home() {
 				switch (code) {
 					case 200:
 						getHistoryList();
+						// TODO: refresh list on response
 						toast.success("Receipt updated");
 						break;
 					case 400:
@@ -407,7 +413,7 @@ export default function Home() {
 							</li>
 						</ul>
 						<FormGroup>
-							<Button type="submit" className="info" disabled={inputDisabled}>
+							<Button type="submit" className="info" disabled={inputDisabled} loading={formLoading}>
 								SEND RECEIPT
 							</Button>
 						</FormGroup>

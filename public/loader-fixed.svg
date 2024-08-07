@@ -20,6 +20,7 @@
                 animation: 1.4s ease-in-out infinite both circle-animation;
                 display: block;
                 fill: transparent;
+                stroke: #b1b1b1;
                 stroke-linecap: round;
                 stroke-dasharray: 283;
                 stroke-dashoffset: 280;

@@ -1,15 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
+import { CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
 
 import Card from "@/app/ui/components/card/card";
 
 import Receipt from "../../types/Receipt";
 import IconAccept from "../../../../../public/done.svg";
+import IconMid from "../../../../../public/midmonth.svg";
 import IconInvalid from "../../../../../public/invalid.svg";
 import IconReplace from "../../../../../public/replace.svg";
-import IconMid from "../../../../../public/midmonth.svg";
 import IconEnd from "../../../../../public/end-of-month.svg";
 
 interface Props {
@@ -18,27 +18,65 @@ interface Props {
 }
 
 const ReceiptCard = (props: Props) => {
-	const [loading, setLoading] = useState(false);
+	const loaderImg = "/loader-fixed.svg";
+	const signal = useRef<any>();
+	const controller = useRef<any>();
 	const [receipt, setReceipt] = useState(props.data);
+	const [receiptUrl, setReceiptUrl] = useState(loaderImg);
 	const { days, hours } = getDaysLeft(DateTime.fromISO(props.data.receiptDate));
+
+	const getImage = async () => {
+		try {
+			// abort previous calls
+			if (controller.current) controller.current.abort();
+			controller.current = new AbortController();
+			signal.current = controller.current.signal;
+
+			const searchOptions = new URLSearchParams({
+				id: receipt!.gdriveId,
+			});
+
+			const res = await fetch(`${process.env.NEXT_PUBLIC_API}/receipt/image?${searchOptions}`, {
+				method: "GET",
+				headers: {},
+				credentials: "include",
+				signal: signal.current,
+			}).then((res) => res.blob());
+			console.log(res);
+
+			const urlCreator = window.URL || window.webkitURL;
+			const imgUrl = urlCreator.createObjectURL(new Blob([res]));
+
+			setReceiptUrl(imgUrl);
+		} catch (e: any) {
+			if (e.name === "AbortError") return;
+			console.log(e);
+		}
+	};
 
 	useEffect(() => {
 		setReceipt(props.data);
+		getImage();
 	}, [props.data]);
 
 	return (
 		<div key={props.data._id} className="receipt-card">
-			<div className="image-container">
+			<div
+				className={`image-container ${receiptUrl === loaderImg ? "loading" : ""}`}
+				style={receiptUrl === loaderImg ? { justifyContent: "center", alignItems: "center" } : {}}
+			>
 				<Image
 					alt="qr"
 					height={0}
 					width={0}
+					placeholder="blur"
+					blurDataURL={"/loader.svg"}
 					onErrorCapture={(e: any) => {
 						e.currentTarget.src = "/leaf.png";
 						e.currentTarget.className = "error";
 					}}
-					src={`${process.env.NEXT_PUBLIC_API}/uploads/receipts/${receipt.receiptName}`}
-					unoptimized
+					src={receiptUrl}
+					style={receiptUrl === loaderImg ? { height: "100px", width: "100px" } : {}}
 				/>
 			</div>
 			<Card className={`receipt-details ${receipt.status?.toLowerCase() || ""}`}>

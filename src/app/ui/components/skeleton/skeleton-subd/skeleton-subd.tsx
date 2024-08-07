@@ -68,18 +68,7 @@ const SkeletonSubd = (props: any) => {
 			<div
 				className="qr-container skeleton"
 				style={{ height: "500px", width: "100%", maxWidth: "unset", borderRadius: "10px" }}
-			>
-				{/* <div style={{ height: "500px", width: "100%" }} className="skeleton"></div> */}
-				{/* <Image
-						alt="qr"
-						ref={imageRef}
-						height={0}
-						width={0}
-						unoptimized
-						src={`${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`}
-						onClick={() => inputRef.current!.click()}
-					/> */}
-			</div>
+			></div>
 		</div>
 	);
 };
