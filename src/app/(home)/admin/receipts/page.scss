@@ -59,7 +59,7 @@
 			min-height: 600px;
 			max-height: 600px;
 			border-radius: 10px;
-			background-color: #fff;
+			background-color: lighten($dark, 50%);
 			box-shadow: $box-shadow_fade_dark;
 			img {
 				width: 100%;

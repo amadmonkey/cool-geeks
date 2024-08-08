@@ -280,18 +280,6 @@ const Subd = (props: any) => {
 			number: subd.gcash.number,
 		});
 
-	// const getImage = async (subd: any) => {
-	// 	const url = `${process.env.NEXT_PUBLIC_API}/uploads/qr/${subd.gcash.qr.filename}`;
-	// 	return await fetch(url, {
-	// 		method: "GET",
-	// 	})
-	// 		.then((res) => res.blob())
-	// 		.then((blob) => {
-	// 			setFile(new File([blob], subd.gcash.qr.filename, { type: subd.gcash.qr.contentType }));
-	// 		})
-	// 		.catch((error) => console.error(error));
-	// };
-
 	const getImage = async (subd: any) => {
 		try {
 			console.log(subd);
@@ -312,9 +300,6 @@ const Subd = (props: any) => {
 				signal: signal.current,
 			}).then((res) => res.blob());
 			console.log(res);
-
-			// const urlCreator = window.URL || window.webkitURL;
-			// const imgUrl = urlCreator.createObjectURL();
 
 			setQrUrl(fileToUrl(new Blob([res])));
 		} catch (e: any) {

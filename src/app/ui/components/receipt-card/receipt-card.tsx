@@ -18,7 +18,7 @@ interface Props {
 }
 
 const ReceiptCard = (props: Props) => {
-	const loaderImg = "/loader-fixed.svg";
+	const loaderImg = "/image-placeholder.png";
 	const signal = useRef<any>();
 	const controller = useRef<any>();
 	const [receipt, setReceipt] = useState(props.data);
@@ -34,9 +34,10 @@ const ReceiptCard = (props: Props) => {
 
 			const searchOptions = new URLSearchParams({
 				id: receipt!.gdriveId,
+				action: "/image",
 			});
 
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API}/receipt/image?${searchOptions}`, {
+			const res = await fetch(`/api/receipt?${searchOptions}`, {
 				method: "GET",
 				headers: {},
 				credentials: "include",
@@ -62,15 +63,15 @@ const ReceiptCard = (props: Props) => {
 	return (
 		<div key={props.data._id} className="receipt-card">
 			<div
-				className={`image-container ${receiptUrl === loaderImg ? "loading" : ""}`}
+				className={`image-container ${receiptUrl === loaderImg ? "loading skeleton" : ""}`}
 				style={receiptUrl === loaderImg ? { justifyContent: "center", alignItems: "center" } : {}}
 			>
 				<Image
-					alt="qr"
+					alt={receipt.receiptName}
 					height={0}
 					width={0}
 					placeholder="blur"
-					blurDataURL={"/loader.svg"}
+					blurDataURL={loaderImg}
 					onErrorCapture={(e: any) => {
 						e.currentTarget.src = "/leaf.png";
 						e.currentTarget.className = "error";
