@@ -108,7 +108,7 @@ const HistoryTable = (props: any) => {
 					action: "/image",
 				});
 
-				const res = await fetch(`/api/subd?${searchOptions}`, {
+				const res = await fetch(`/api/receipt?${searchOptions}`, {
 					method: "GET",
 					headers: {},
 					credentials: "include",
