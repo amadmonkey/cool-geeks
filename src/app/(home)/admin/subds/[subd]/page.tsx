@@ -302,9 +302,10 @@ const Subd = (props: any) => {
 
 			const searchOptions = new URLSearchParams({
 				id: subd!.gdriveId,
+				action: "/image",
 			});
 
-			const res = await fetch(`${process.env.NEXT_PUBLIC_API}/subd/image?${searchOptions}`, {
+			const res = await fetch(`/api/subd?${searchOptions}`, {
 				method: "GET",
 				headers: {},
 				credentials: "include",

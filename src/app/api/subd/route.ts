@@ -1,10 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { REQUEST } from "@/utility";
 
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		return await REQUEST.get(`${process.env.NEXT_PUBLIC_API}/subd?${searchParams.toString()}`, req);
+		const action = searchParams.get("action");
+
+		if (action === "/image") {
+			return await fetch(`${process.env.NEXT_PUBLIC_API}/subd/image?${searchParams.toString()}`, {
+				method: "GET",
+				headers: {},
+				credentials: "include",
+			});
+		} else {
+			return await REQUEST.get(
+				`${process.env.NEXT_PUBLIC_API}/subd?${searchParams.toString()}`,
+				req
+			);
+		}
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
