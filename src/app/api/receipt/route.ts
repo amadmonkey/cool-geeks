@@ -5,10 +5,22 @@ export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
 		const action = searchParams.get("action");
-		return await REQUEST.get(
-			`${process.env.NEXT_PUBLIC_API}/receipt${action || ""}?${searchParams.toString()}`,
-			req
-		);
+
+		if (action === "/image") {
+			return await fetch(
+				`${process.env.NEXT_PUBLIC_API}/receipt/image?${searchParams.toString()}`,
+				{
+					method: "GET",
+					headers: {},
+					credentials: "include",
+				}
+			);
+		} else {
+			return await REQUEST.get(
+				`${process.env.NEXT_PUBLIC_API}/receipt${action || ""}?${searchParams.toString()}`,
+				req
+			);
+		}
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });
