@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
+		console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
+		console.log("searchParams", searchParams);
 		const apiResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
 			{
@@ -13,6 +15,7 @@ export async function GET(req: NextRequest) {
 				credentials: "include",
 			}
 		);
+		console.log("apiResponse", apiResponse);
 		const data = await apiResponse.json();
 		const newResponse = NextResponse.json(data);
 		return newResponse;
@@ -25,8 +28,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
 	const body = await req.json();
 
-	console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
-	console.log("body.url", body.url);
 	const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/${body.url || "login"}`, {
 		method: "POST",
 		headers: {
@@ -35,7 +36,6 @@ export async function POST(req: NextRequest) {
 		credentials: "include",
 		body: JSON.stringify(body),
 	});
-	console.log("apiResponse", apiResponse);
 	const data = await apiResponse.json();
 	const newResponse = NextResponse.json(data);
 	newResponse.headers.set("Set-Cookie", apiResponse.headers.getSetCookie().toString());
