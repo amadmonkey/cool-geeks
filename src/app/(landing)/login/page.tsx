@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { ACCOUNT_STATUS, REGEX } from "@/utility";
@@ -314,6 +314,10 @@ const LoginForm = () => {
 				return;
 		}
 	};
+
+	useEffect(() => {
+		console.log(fetch(`${process.env.NEXT_PUBLIC_API}`));
+	}, []);
 
 	return (
 		<section className="login-container">
