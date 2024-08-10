@@ -3,16 +3,31 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		const apiResponse = await fetch(
-			`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				credentials: "include",
-			}
-		);
+		const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		})
+			.then((res) => res.json())
+			.then(async (res: NextResponse) => {
+				console.log(res);
+				console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
+				console.log("searchParams", searchParams);
+				return res;
+				// const { code, data } = res;
+				// const apiResponse = await fetch(
+				// 	`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
+				// 	{
+				// 		method: "GET",
+				// 		headers: {
+				// 			"Content-Type": "application/json",
+				// 		},
+				// 		credentials: "include",
+				// 	}
+				// );
+			});
+		console.log("apiResponse", apiResponse);
 		const data = await apiResponse.json();
 		const newResponse = NextResponse.json(data);
 		return newResponse;
@@ -33,7 +48,6 @@ export async function POST(req: NextRequest) {
 		credentials: "include",
 		body: JSON.stringify(body),
 	});
-
 	const data = await apiResponse.json();
 	const newResponse = NextResponse.json(data);
 	newResponse.headers.set("Set-Cookie", apiResponse.headers.getSetCookie().toString());
