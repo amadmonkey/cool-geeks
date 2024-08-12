@@ -3,30 +3,32 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
-		const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
-			.then((res) => res.json())
-			.then(async (res: NextResponse) => {
-				console.log(res);
-				console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
-				console.log("searchParams", searchParams);
-				return res;
-				// const { code, data } = res;
-				// const apiResponse = await fetch(
-				// 	`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
-				// 	{
-				// 		method: "GET",
-				// 		headers: {
-				// 			"Content-Type": "application/json",
-				// 		},
-				// 		credentials: "include",
-				// 	}
-				// );
-			});
+		// console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
+		// console.log("searchParams", searchParams);
+		// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}`, {
+		// 	method: "GET",
+		// 	headers: {
+		// 		"Content-Type": "application/json",
+		// 	},
+		// })
+		// 	.then((res) => res.json())
+		// 	.then(async (res: NextResponse) => {
+		// 		console.log(res);
+		// 		console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
+		// 		console.log("searchParams", searchParams);
+		// 		return res;
+		// 	});
+		console.log(`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`);
+		const apiResponse = await fetch(
+			`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		);
 		console.log("apiResponse", apiResponse);
 		const data = await apiResponse.json();
 		const newResponse = NextResponse.json(data);

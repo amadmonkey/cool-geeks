@@ -52,6 +52,7 @@ const defaultForm = {
 };
 
 export default function Home() {
+	const loader = "/loader-fixed.svg";
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [inputInfo, setInputInfo] = useState(
@@ -64,10 +65,12 @@ export default function Home() {
 	const [formLoading, setFormLoading] = useState<Boolean>(false);
 	const [latestReceipt, setCurrentReceipt] = useState<Receipt | null>(null);
 	const [fileError, setFileError] = useState("");
+	// TODO: move to server. peep header
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
+	const [qrUrl, setQrUrl] = useState(loader);
 
 	const recognize = async (file: any) => {
-		// add loading
+		// TODO: add loading
 		setInputDisabled(true);
 		const ret = await (await worker).recognize(file);
 		console.log("OCR TEXT", ret.data.text);
@@ -164,8 +167,8 @@ export default function Home() {
 				}).then((res) => res.json());
 				switch (code) {
 					case 200:
-						getHistoryList();
 						// TODO: refresh list on response
+						getHistoryList();
 						toast.success("Receipt updated");
 						break;
 					case 400:
@@ -179,8 +182,6 @@ export default function Home() {
 		}
 	};
 
-	const downloadQR = () => {};
-
 	const removeFile = () => setForm((prev) => ({ ...prev, ...{ receipt: "" } }));
 
 	const helpTemplate = () => (
@@ -193,26 +194,51 @@ export default function Home() {
 					e.currentTarget.src = "/leaf.png";
 					e.currentTarget.className = "error";
 				}}
-				src={
-					user
-						? `${process.env.NEXT_PUBLIC_API}/uploads/qr/${user.subdRef.gcash.qr.filename}`
-						: "/qr.png"
-				}
+				src={qrUrl}
 				unoptimized
-				style={{ height: "90%", width: "auto", borderRadius: 10 }}
+				style={
+					qrUrl === loader
+						? { height: "50px", width: "50px", margin: "100px auto" }
+						: { height: "90%", width: "auto", borderRadius: 10 }
+				}
 			/>
-			<Button
-				onClick={() => downloadQR()}
+			<a
+				className="cg-button info"
+				href={qrUrl}
+				download={`Cool Geeks - ${user.subdRef.name} GCash QR.${user.subdRef.gcash.qr.contentType
+					.split("/")
+					.pop()}`}
 				style={{
 					marginTop: "20px",
 				}}
-				className="info"
 			>
 				<IconDownload height="18" />
 				&nbsp;DOWNLOAD
-			</Button>
+			</a>
 		</div>
 	);
+
+	const getImageSignal = useRef<any>();
+	const getImageController = useRef<any>();
+	const getImage = async (id: string) => {
+		getImageController.current = new AbortController();
+		getImageSignal.current = getImageController.current.signal;
+		const searchOptions = new URLSearchParams({
+			id: id,
+			action: "/image",
+		});
+
+		const res = await fetch(`/api/receipt?${searchOptions}`, {
+			method: "GET",
+			headers: {},
+			credentials: "include",
+			signal: getImageSignal.current,
+		}).then((res) => res.blob());
+
+		const urlCreator = window.URL || window.webkitURL;
+		const imgUrl = urlCreator.createObjectURL(new Blob([res]));
+		return imgUrl;
+	};
 
 	const getHistoryList = async () => {
 		const searchOptions = new URLSearchParams({
@@ -272,6 +298,7 @@ export default function Home() {
 
 	useEffect(() => {
 		getHistoryList();
+		(async () => setQrUrl(await getImage(user.subdRef.gdriveId)))();
 		console.log("why am i firing twice");
 	}, []);
 
@@ -419,13 +446,11 @@ export default function Home() {
 						</FormGroup>
 					</form>
 				)}
-				{/* <pre>{JSON.stringify(latestReceipt, undefined, 2)}</pre> */}
 			</section>
 			<section
 				style={{
 					flexDirection: "column",
 					flexBasis: "800px",
-					// padding: "0 20px",
 				}}
 			>
 				<div
@@ -472,7 +497,11 @@ export default function Home() {
 					<Link href="">VIEW ALL</Link>
 				</div>
 				<div className="home-table">
-					<HistoryTable list={historyList} handleFileChange={handleFileChange} />
+					<HistoryTable
+						list={historyList}
+						handleFileChange={handleFileChange}
+						getImage={getImage}
+					/>
 				</div>
 				{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
 			</section>
