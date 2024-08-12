@@ -22,8 +22,8 @@ const HistoryTable = (props: any) => {
 	// [] = empty
 	// [...] = show table
 	const { push } = useRouter();
-	const signal = useRef<any>();
-	const controller = useRef<any>();
+	// const signal = useRef<any>();
+	// const controller = useRef<any>();
 	const loadingToastId = useRef<any>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [filteredList, setFilteredList] = useState<any>(null);
@@ -93,49 +93,31 @@ const HistoryTable = (props: any) => {
 		if (isModalShown) {
 			setReceiptUrl("");
 			setIsModalShown(false);
-			if (controller.current) controller.current.abort();
 		}
 	};
 
 	useEffect(() => {
-		const getImage = async () => {
-			try {
-				controller.current = new AbortController();
-				signal.current = controller.current.signal;
+		const getImage = async (id: string) => {
+			const imageUrl = await props.getImage(id);
 
-				const searchOptions = new URLSearchParams({
-					id: receipt!.gdriveId,
-					action: "/image",
-				});
+			const newList = filteredList.map((item: Receipt) =>
+				item._id === receipt!._id ? { ...item, ...{ receiptUrl: imageUrl } } : item
+			);
 
-				const res = await fetch(`/api/receipt?${searchOptions}`, {
-					method: "GET",
-					headers: {},
-					credentials: "include",
-					signal: signal.current,
-				}).then((res) => res.blob());
-				console.log(res);
-
-				const urlCreator = window.URL || window.webkitURL;
-				const imgUrl = urlCreator.createObjectURL(new Blob([res]));
-
-				const newList = filteredList.map((item: Receipt) =>
-					item._id === receipt!._id ? { ...item, ...{ receiptUrl: imgUrl } } : item
-				);
-
-				setFilteredList(newList);
-				setReceiptUrl(imgUrl);
-			} catch (e) {
-				console.log(e);
-			}
+			setFilteredList(newList);
+			setReceiptUrl(imageUrl);
 		};
 
-		if (receipt) {
-			if (receipt?.receiptUrl) {
-				setReceiptUrl(receipt?.receiptUrl);
-			} else {
-				getImage();
+		try {
+			if (receipt) {
+				if (receipt?.receiptUrl) {
+					setReceiptUrl(receipt?.receiptUrl);
+				} else {
+					getImage(receipt.gdriveId);
+				}
 			}
+		} catch (err) {
+			console.log(err);
 		}
 	}, [receipt]);
 

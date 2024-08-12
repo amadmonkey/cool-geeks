@@ -315,10 +315,6 @@ const LoginForm = () => {
 		}
 	};
 
-	useEffect(() => {
-		console.log(fetch(`${process.env.NEXT_PUBLIC_API}`));
-	}, []);
-
 	return (
 		<section className="login-container">
 			<Image
