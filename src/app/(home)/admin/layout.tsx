@@ -3,6 +3,7 @@ import NavSidebar from "@/app/ui/components/nav-sidebar/nav-sidebar";
 
 import "./layout.scss";
 
+// TODO: variable page titles
 export const metadata: Metadata = {
 	title: "Dashboard",
 	description: "Dashboard",

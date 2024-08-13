@@ -303,12 +303,6 @@ const TABLE_HEADERS = {
 				order: "asc",
 			},
 		},
-		// email: {
-		// 	sort: {
-		// 		by: ["email"],
-		// 		order: "asc",
-		// 	},
-		// },
 		plan: {
 			sort: {
 				by: ["planRef.name"],

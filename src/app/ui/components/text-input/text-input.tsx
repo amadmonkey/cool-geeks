@@ -173,7 +173,7 @@ const TextInput = (props: any) => {
 			}${props.hasIcon ? " has-icon" : ""}`}
 			style={props.style}
 		>
-			<div className="input-icon">{props.icon}</div>
+			{props.icon && <div className="input-icon">{props.icon}</div>}
 			{props.type === "mini-dropdown" && (
 				<div className={`mini-dropdown ${refNoActive ? "active" : ""}`}>
 					<button

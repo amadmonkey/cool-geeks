@@ -1,23 +1,6 @@
 @import "./variables.scss";
-@font-face {
-	font-family: "Raleway";
-	src: url("./ui/fonts/Raleway/Raleway-VariableFont_wght.ttf") format("truetype");
-}
 
-html,
-body {
-	height: 100%;
-	background-color: $bg;
-	color: #626262;
-	line-height: 1.5;
-	scroll-behavior: smooth;
-	-webkit-font-smoothing: antialiased;
-}
-
-/*
-    Josh's Custom CSS Reset
-    https://www.joshwcomeau.com/css/custom-css-reset/
-  */
+/* Josh's Custom CSS Reset - Edited https://www.joshwcomeau.com/css/custom-css-reset */
 *,
 *::before,
 *::after {
@@ -25,7 +8,10 @@ body {
 }
 * {
 	margin: 0;
-	font-family: "Raleway", sans-serif;
+}
+body {
+	line-height: 1.5;
+	-webkit-font-smoothing: antialiased;
 }
 img,
 picture,
@@ -38,19 +24,13 @@ svg {
 input,
 textarea,
 select {
-	/* font: inherit; */
 	color: #626262;
-
 	&:focus {
 		outline-style: solid;
 		outline-color: $info;
 		outline-width: 2px;
 		border-radius: 3px;
 	}
-	// &:focus {
-	// 	outline: none;
-	// 	border-color: $info;
-	// }
 }
 p,
 h1,
@@ -64,6 +44,15 @@ h6 {
 #root,
 #__next {
 	isolation: isolate;
+}
+/* Josh's Custom CSS Reset - Edited https://www.joshwcomeau.com/css/custom-css-reset */
+
+html,
+body {
+	height: 100%;
+	background-color: $bg;
+	color: #626262;
+	scroll-behavior: smooth;
 }
 
 img.error {
@@ -92,6 +81,10 @@ img.error {
 	white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
 }
 
+input {
+	font-family: inherit;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
 	/* display: none; <- Crashes Chrome on hover */
@@ -117,20 +110,9 @@ input[type="date"] {
 		color: #aaa;
 		margin-right: 0.5em;
 	}
-	// &:focus {
-	// 	&:before {
-	// 	content: "";
-	// 	}
-	// }
-	// &:valid:before {
-	// 	content: "";
-	// }
 }
 
 textarea {
-	// width: 100%;
-	// border: 2px solid $dark;
-	// border-radius: 5px;
 	resize: none;
 	height: 200px;
 	border: none;
@@ -146,10 +128,11 @@ a,
 button {
 	font-weight: 800;
 	background: none;
+	font-family: inherit;
 	&:not(:disabled) {
 		cursor: pointer;
 	}
-	// why tf did i name this invisible
+	// TODO: change. why tf did i name this invisible
 	&.invisible {
 		border: none;
 		background-color: transparent;

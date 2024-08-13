@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { ToastContainer, Bounce } from "react-toastify";
+import { raleway } from "./ui/fonts";
 
-import "react-toastify/dist/ReactToastify.css";
 import "./globals.scss";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata: Metadata = {
 	title: "Cool Geeks",
@@ -16,10 +17,7 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			{/* <Head>
-				<title>asdasd</title>
-			</Head> */}
-			<body className="antialiased">
+			<body className={raleway.className}>
 				{children}
 				<ToastContainer
 					position="bottom-center"
