@@ -32,13 +32,14 @@ const Header = (props: any) => {
 		try {
 			await fetch("/api/auth", {
 				method: "DELETE",
-				headers: {},
+				headers: {
+					"Context-Type": "application/json",
+				},
 				credentials: "include",
-			})
-				.then((res) => res.json())
-				.then((res) => {
-					push("/login");
-				});
+			}).then((res) => {
+				console.log(res);
+				push("/login");
+			});
 		} catch (e) {
 			console.log(e);
 		}
