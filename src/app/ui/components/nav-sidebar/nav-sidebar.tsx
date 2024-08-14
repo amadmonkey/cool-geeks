@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
-import { deleteCookie } from "cookies-next";
 import { useRouter, usePathname } from "next/navigation";
 
 // svgs
@@ -48,16 +47,17 @@ const NavSidebar = () => {
 		return () => clearTimeout(timeInterval);
 	}, []);
 
-	const logout = async () => {
+	const logout = async (e: any) => {
+		e.preventDefault();
 		try {
 			await fetch("/api/auth", {
 				method: "DELETE",
 				headers: {},
 				credentials: "include",
 			})
-				.then((res) => replace("/login"))
+				.then((res) => push("/login"))
 				.then((res) => {
-					replace("/login");
+					push("/login");
 				});
 		} catch (e) {
 			console.log(e);
