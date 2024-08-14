@@ -19,7 +19,7 @@ import IconSettings from "../../../../../public/settings.svg";
 import "./header.scss";
 
 const Header = (props: any) => {
-	const { push } = useRouter();
+	const { push, replace } = useRouter();
 	const user = useRef(JSON.parse(props.user.value));
 	const [userDropdownActive, setUserDropdownActive] = useState(false);
 
@@ -40,14 +40,7 @@ const Header = (props: any) => {
 			})
 				.then((res) => res.json())
 				.then((res) => {
-					deleteCookie("user");
-					deleteCookie("plan");
-					deleteCookie("subd");
-					deleteCookie("accessToken");
-					deleteCookie("refreshToken");
-				})
-				.then(() => {
-					push("/login");
+					replace("/login");
 				});
 		} catch (e) {
 			console.log(e);

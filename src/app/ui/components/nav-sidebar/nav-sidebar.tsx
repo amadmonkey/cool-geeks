@@ -19,7 +19,7 @@ import IconDashboard from "../../../../../public/dashboard.svg";
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {
-	const { push } = useRouter();
+	const { push, replace } = useRouter();
 	const pathname = usePathname();
 	const [activePage, setActivePage] = useState("dashboard");
 	const [currentDate, setCurrentDate]: any = useState(null);
@@ -57,16 +57,7 @@ const NavSidebar = () => {
 			})
 				.then((res) => res.json())
 				.then((res) => {
-					// currently deletes all cookies then redirects
-					// to login regardless if success or not
-					deleteCookie("user");
-					deleteCookie("plan");
-					deleteCookie("subd");
-					deleteCookie("accessToken");
-					deleteCookie("refreshToken");
-				})
-				.then(() => {
-					push("/login");
+					replace("/login");
 				});
 		} catch (e) {
 			console.log(e);
