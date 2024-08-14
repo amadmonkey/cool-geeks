@@ -18,7 +18,7 @@ import IconDashboard from "../../../../../public/dashboard.svg";
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {
-	const { push, replace } = useRouter();
+	const { push, refresh } = useRouter();
 	const pathname = usePathname();
 	const [activePage, setActivePage] = useState("dashboard");
 	const [currentDate, setCurrentDate]: any = useState(null);
@@ -60,6 +60,7 @@ const NavSidebar = () => {
 				.then((res) => res.json())
 				.then((res) => {
 					push("/login");
+					refresh();
 				});
 		} catch (e) {
 			console.log(e);
