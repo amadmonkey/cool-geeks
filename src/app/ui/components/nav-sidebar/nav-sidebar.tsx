@@ -64,6 +64,8 @@ const NavSidebar = () => {
 					deleteCookie("subd");
 					deleteCookie("accessToken");
 					deleteCookie("refreshToken");
+				})
+				.then(() => {
 					push("/login");
 				});
 		} catch (e) {

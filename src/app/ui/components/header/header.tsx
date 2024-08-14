@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { deleteCookie } from "cookies-next";
 
 // components
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -36,10 +37,18 @@ const Header = (props: any) => {
 					"Context-Type": "application/json",
 				},
 				credentials: "include",
-			}).then((res) => {
-				console.log("logout res", res);
-				push("/login");
-			});
+			})
+				.then((res) => res.json())
+				.then((res) => {
+					deleteCookie("user");
+					deleteCookie("plan");
+					deleteCookie("subd");
+					deleteCookie("accessToken");
+					deleteCookie("refreshToken");
+				})
+				.then(() => {
+					push("/login");
+				});
 		} catch (e) {
 			console.log(e);
 		}
