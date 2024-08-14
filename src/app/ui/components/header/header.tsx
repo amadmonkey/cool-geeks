@@ -37,7 +37,7 @@ const Header = (props: any) => {
 				},
 				credentials: "include",
 			}).then((res) => {
-				console.log(res);
+				console.log("logout res", res);
 				push("/login");
 			});
 		} catch (e) {

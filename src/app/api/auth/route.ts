@@ -93,5 +93,7 @@ export async function DELETE(req: NextRequest) {
 	newResponse.cookies.delete("accessToken");
 	newResponse.cookies.delete("refreshToken");
 
+	console.log("logout res", newResponse);
+
 	return newResponse;
 }
