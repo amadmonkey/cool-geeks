@@ -4,7 +4,6 @@ import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { deleteCookie } from "cookies-next";
 
 // components
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
@@ -19,7 +18,7 @@ import IconSettings from "../../../../../public/settings.svg";
 import "./header.scss";
 
 const Header = (props: any) => {
-	const { push, replace } = useRouter();
+	const { push, refresh } = useRouter();
 	const user = useRef(JSON.parse(props.user.value));
 	const [userDropdownActive, setUserDropdownActive] = useState(false);
 
@@ -40,7 +39,8 @@ const Header = (props: any) => {
 			})
 				.then((res) => res.json())
 				.then((res) => {
-					replace("/login");
+					push("/login");
+					refresh();
 				});
 		} catch (e) {
 			console.log(e);
