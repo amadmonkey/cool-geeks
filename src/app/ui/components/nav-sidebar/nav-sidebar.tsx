@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import { deleteCookie } from "cookies-next";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { DateTime } from "luxon";
+import { deleteCookie } from "cookies-next";
+import { useRouter, usePathname } from "next/navigation";
 
+// svgs
 import IconSubd from "../../../../../public/subd.svg";
 import IconClock from "../../../../../public/clock2.svg";
 import IconAccounts from "../../../../../public/users.svg";
@@ -14,6 +15,7 @@ import IconReceipt from "../../../../../public/receipt2.svg";
 import IconSettings from "../../../../../public/settings.svg";
 import IconDashboard from "../../../../../public/dashboard.svg";
 
+// styles
 import "./nav-sidebar.scss";
 
 const NavSidebar = () => {

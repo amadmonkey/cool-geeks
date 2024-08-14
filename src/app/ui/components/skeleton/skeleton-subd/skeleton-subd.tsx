@@ -6,7 +6,7 @@ import IconHelp from "../../../../../../public/help.svg";
 
 import "./skeleton-subd.scss";
 
-const SkeletonSubd = (props: any) => {
+const SkeletonSubd = () => {
 	return (
 		<div className="content__subd loading">
 			<div className="subd-container">

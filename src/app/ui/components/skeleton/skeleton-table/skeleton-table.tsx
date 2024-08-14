@@ -2,7 +2,6 @@ import React from "react";
 
 import "./skeleton-table.scss";
 import { SKELETON_TYPES } from "@/utility";
-import SubdCard from "../../subd-card/subd-card";
 
 const SkeletonTable = (props: any) => {
 	const getTemplate = (type: string) => {
@@ -185,14 +184,7 @@ const SkeletonTable = (props: any) => {
 						</tr>
 					);
 				});
-
-			case SKELETON_TYPES.SUBD:
-				return Array.from(Array(5).keys()).map((_: any, i: number) => {
-					return <SubdCard key={i} loading />;
-				});
-
 			case SKELETON_TYPES.PLAN:
-				// return Array.from(Array(1).keys()).map((_: any, i: number) => {
 				return (
 					<tr className="plan-item__row">
 						<td>
@@ -206,8 +198,6 @@ const SkeletonTable = (props: any) => {
 						</td>
 					</tr>
 				);
-				// });
-				break;
 		}
 	};
 

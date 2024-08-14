@@ -34,10 +34,31 @@ export async function POST(req: NextRequest) {
 	}
 }
 
+// for subd form details
 export async function PUT(req: NextRequest) {
 	try {
+		const body = await req.json();
+		try {
+			return await REQUEST.put(
+				`${process.env.NEXT_PUBLIC_API}/subd/update`,
+				req,
+				JSON.stringify(body)
+			);
+		} catch (error: any) {
+			console.log(error);
+			return Response.json({ message: error });
+		}
+	} catch (error: any) {
+		console.log(error);
+		return Response.json({ message: error });
+	}
+}
+
+// for subd qr
+export async function PATCH(req: NextRequest) {
+	try {
 		const formData = await req.formData();
-		return await REQUEST.put(`${process.env.NEXT_PUBLIC_API}/subd/update`, req, formData);
+		return await REQUEST.patch(`${process.env.NEXT_PUBLIC_API}/subd/update`, req, formData);
 	} catch (error: any) {
 		console.log(error);
 		return Response.json({ message: error });

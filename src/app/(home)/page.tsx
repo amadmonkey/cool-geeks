@@ -21,6 +21,7 @@ import IconQR from "../../../public/qr.svg";
 import IconDownload from "../../../public/download.svg";
 
 import {
+	CONSTANTS,
 	CUTOFF_TYPE,
 	RECEIPT_STATUS,
 	RECEIPT_STATUS_ICON,
@@ -52,7 +53,6 @@ const defaultForm = {
 };
 
 export default function Home() {
-	const loader = "/loader-fixed.svg";
 	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [inputInfo, setInputInfo] = useState(
@@ -67,7 +67,7 @@ export default function Home() {
 	const [fileError, setFileError] = useState("");
 	// TODO: move to server. peep header
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
-	const [qrUrl, setQrUrl] = useState(loader);
+	const [qrUrl, setQrUrl] = useState(CONSTANTS.loaderFixed);
 
 	const recognize = async (file: any) => {
 		// TODO: add loading
@@ -197,7 +197,7 @@ export default function Home() {
 				src={qrUrl}
 				unoptimized
 				style={
-					qrUrl === loader
+					qrUrl === CONSTANTS.loaderFixed
 						? { height: "50px", width: "50px", margin: "100px auto" }
 						: { height: "90%", width: "auto", borderRadius: 10 }
 				}

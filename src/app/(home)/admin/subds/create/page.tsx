@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { DEFAULT_VALUES, STRING_UTILS, VALID_IMG_TYPES } from "@/utility";
 
+// components
+import Button from "@/app/ui/components/button/button";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FileInput from "@/app/ui/components/file-input/file-input";
-import Button from "@/app/ui/components/button/button";
-
-import "./page.scss";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
+
+// styles
+import "./page.scss";
 
 const AddSubd = () => {
 	const { push } = useRouter();
@@ -93,7 +95,7 @@ const AddSubd = () => {
 				switch (code) {
 					case 200:
 						push(
-							`/admin/subds/${STRING_UTILS.SPACE_TO_DASH(formSubd.name.toLowerCase())}?new=true`
+							`/admin/subds/${STRING_UTILS.SPACE_TO_DASH(formSubd.name.toLowerCase())}?updated=true`
 						);
 						toast.success("Subdivision added successfully.");
 						break;

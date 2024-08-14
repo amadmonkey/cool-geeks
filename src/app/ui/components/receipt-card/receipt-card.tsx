@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { DateTime } from "luxon";
-import { CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
+import { CONSTANTS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
 
 import Card from "@/app/ui/components/card/card";
 
@@ -18,11 +18,10 @@ interface Props {
 }
 
 const ReceiptCard = (props: Props) => {
-	const loaderImg = "/image-placeholder.png";
 	const signal = useRef<any>();
 	const controller = useRef<any>();
 	const [receipt, setReceipt] = useState(props.data);
-	const [receiptUrl, setReceiptUrl] = useState(loaderImg);
+	const [receiptUrl, setReceiptUrl] = useState(CONSTANTS.imagePlaceholder);
 	const { days, hours } = getDaysLeft(DateTime.fromISO(props.data.receiptDate));
 
 	const getImage = async () => {
@@ -63,21 +62,29 @@ const ReceiptCard = (props: Props) => {
 	return (
 		<div key={props.data._id} className="receipt-card">
 			<div
-				className={`image-container ${receiptUrl === loaderImg ? "loading skeleton" : ""}`}
-				style={receiptUrl === loaderImg ? { justifyContent: "center", alignItems: "center" } : {}}
+				className={`image-container ${
+					receiptUrl === CONSTANTS.imagePlaceholder ? "loading skeleton" : ""
+				}`}
+				style={
+					receiptUrl === CONSTANTS.imagePlaceholder
+						? { justifyContent: "center", alignItems: "center" }
+						: {}
+				}
 			>
 				<Image
 					alt={receipt.receiptName}
 					height={0}
 					width={0}
 					placeholder="blur"
-					blurDataURL={loaderImg}
+					blurDataURL={CONSTANTS.imagePlaceholder}
 					onErrorCapture={(e: any) => {
 						e.currentTarget.src = "/leaf.png";
 						e.currentTarget.className = "error";
 					}}
 					src={receiptUrl}
-					style={receiptUrl === loaderImg ? { height: "100px", width: "100px" } : {}}
+					style={
+						receiptUrl === CONSTANTS.imagePlaceholder ? { height: "100px", width: "100px" } : {}
+					}
 				/>
 			</div>
 			<Card className={`receipt-details ${receipt.status?.toLowerCase() || ""}`}>

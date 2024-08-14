@@ -234,6 +234,7 @@ $grid-template-columns: 35% 15% 30% 15%;
 											}
 										}
 										&__users {
+											padding: 10px;
 											grid-area: users;
 											> table {
 												width: 100%;

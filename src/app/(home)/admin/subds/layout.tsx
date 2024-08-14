@@ -1,31 +1,37 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSearchParams, useParams, usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import { SKELETON_TYPES, STRING_UTILS } from "@/utility";
+import { useSearchParams, useParams, usePathname, useRouter } from "next/navigation";
 
+// components
 import Section from "@/app/ui/components/section/section";
 import Table from "@/app/ui/components/table/table";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
-import { SKELETON_TYPES, STRING_UTILS } from "@/utility";
 
+// svgs
 import IconSubd from "../../../../../public/subd.svg";
 import IconSubdAdd from "../../../../../public/subd-add.svg";
+
+// styles
 import "./layout.scss";
 
 export default function SubdsNav(props: any) {
 	const { push } = useRouter();
+	const getSubdsSignal = useRef<any>();
+	const getSubdsController = useRef<any>();
 	const mounted = useRef(false);
 	const [list, setList] = useState<any>(null);
-	const [filteredList, setFilteredList] = useState<any>(null);
 	const currentPathname = usePathname();
 	const params = useParams<{ subd: string }>();
-	const isNew = useSearchParams().get("new");
+	const updated = useSearchParams().get("updated") || "";
 
 	const getSubds = () => {
 		setList(null);
-		setFilteredList(null);
+		getSubdsController.current = new AbortController();
+		getSubdsSignal.current = getSubdsController.current.signal;
 		const searchOptions =
 			props.searchOptions ||
 			new URLSearchParams({
@@ -40,6 +46,7 @@ export default function SubdsNav(props: any) {
 			headers: {
 				"Content-Type": "application/json",
 			},
+			signal: getSubdsSignal.current,
 			credentials: "include",
 		})
 			.then((res) => res.json())
@@ -49,7 +56,6 @@ export default function SubdsNav(props: any) {
 					switch (code) {
 						case 200:
 							setList(data);
-							setFilteredList(data);
 							break;
 						case 401:
 							push("/login");
@@ -64,13 +70,21 @@ export default function SubdsNav(props: any) {
 			.catch((err) => console.log("getSubds catch", err));
 	};
 
+	// useEffect(() => {
+	// 	mounted.current = true;
+	// 	!updated && getSubds(1);
+	// 	return () => {
+	// 		mounted.current = false;
+	// 	};
+	// }, []);
+
 	useEffect(() => {
 		mounted.current = true;
 		getSubds();
 		return () => {
 			mounted.current = false;
 		};
-	}, [isNew]);
+	}, [updated]);
 
 	return (
 		<Section title={sectionTitle(props.title, currentPathname)} others={sectionExtras()}>
@@ -78,10 +92,10 @@ export default function SubdsNav(props: any) {
 				<div className="list-container">
 					<label>SELECT ONE</label>
 					<Table>
-						{filteredList === null ? (
+						{list === null ? (
 							<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
-						) : filteredList.length ? (
-							filteredList?.map((subd: any, index: number) => {
+						) : list.length ? (
+							list?.map((subd: any, index: number) => {
 								return (
 									<tr
 										key={index}
@@ -97,8 +111,6 @@ export default function SubdsNav(props: any) {
 														: `/admin/subds/${subd.name.toLowerCase().split(" ").join("-")}`
 												}
 											>
-												{/* {params.subd}
-												{STRING_UTILS.SPACE_TO_DASH(subd.name.toLowerCase())} */}
 												{subd.name} <span>({subd.code.toUpperCase()})</span>
 											</Link>
 										</td>

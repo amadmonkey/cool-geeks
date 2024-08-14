@@ -1,22 +1,27 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { ACCOUNT_STATUS, DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
 
+// components
 import Table from "@/app/ui/components/table/table";
 import Switch from "@/app/ui/components/switch/switch";
+import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 
-import { ACCOUNT_STATUS, DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+// types
+import { Filters } from "@/app/ui/classes/filters";
 
+// svgs
 import IconAccounts from "../../../../../public/users.svg";
 import IconAddUser from "../../../../../public/add-user.svg";
+
+// styles
 import "./page.scss";
-import { Filters } from "@/app/ui/classes/filters";
-import Section from "@/app/ui/components/section/section";
 
 export default function Accounts(props: any) {
 	const { push } = useRouter();
@@ -180,14 +185,26 @@ export default function Accounts(props: any) {
 											<span style={{ color: "red" }}>({user.subdRef.code})</span>&nbsp;
 											{`${user.subdRef.name}`}
 											<br />
-											{user.subdRef.gcash.number}
+											{user.subdRef.number}
 										</>
 									) : (
 										"N/A"
 									)}
 								</td>
-								<td>{DATE_READABLE(user.createdAt)}</td>
-								<td>{DATE_READABLE(user.updatedAt)}</td>
+								{user.createdAt ? (
+									<td>{DATE_READABLE(user.createdAt)}</td>
+								) : (
+									<td>
+										<div className="skeleton" style={{ height: "100%" }}></div>
+									</td>
+								)}
+								{user.updatedAt ? (
+									<td>{DATE_READABLE(user.updatedAt)}</td>
+								) : (
+									<td>
+										<div className="skeleton" style={{ height: "100%" }}></div>
+									</td>
+								)}
 								<td className={`account-options${user.status ? " ACTIVE" : ""}`}>{user.status}</td>
 								<td>
 									<Switch

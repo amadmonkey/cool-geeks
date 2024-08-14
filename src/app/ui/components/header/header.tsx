@@ -1,17 +1,20 @@
 "use client";
 
-import React, { Context, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getCookie, deleteCookie, getCookies } from "cookies-next";
 import Link from "next/link";
 import Image from "next/image";
+
+// components
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
 
+// svgs
 import IconHelp from "../../../../../public/help.svg";
 import IconContact from "../../../../../public/contact.svg";
 import IconSignout from "../../../../../public/signout.svg";
 import IconSettings from "../../../../../public/settings.svg";
 
+// styles
 import "./header.scss";
 
 const Header = (props: any) => {

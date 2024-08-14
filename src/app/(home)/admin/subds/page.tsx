@@ -6,7 +6,7 @@ import "./page.scss";
 const Subds = () => {
 	return (
 		<div style={{ height: "100%" }}>
-			<ListEmpty label="Select a subdivision" />;
+			<ListEmpty label="Select a subdivision" />
 		</div>
 	);
 };

@@ -21,12 +21,17 @@ const InlineEditInput = (props: any) => {
 		props.onSubmit(e);
 	};
 
+	const onOutsideClick = () => {
+		setIsActive(false);
+		props.onCancel && isActive && props.onCancel();
+	};
+
 	useEffect(() => {
 		props.action && isActive === false && props.action();
 	}, [isActive]);
 
 	return (
-		<DetectOutsideClick action={() => setIsActive(false)}>
+		<DetectOutsideClick action={onOutsideClick}>
 			<div
 				tabIndex={0}
 				className={`inline-edit-input-container${isActive ? " active" : ""} ${props.className}`}
@@ -46,6 +51,7 @@ const InlineEditInput = (props: any) => {
 						onChange={props.onChange}
 						placeholder={props.placeholder}
 						style={props.inputStyle}
+						autoFocus={true}
 						line
 					/>
 					<button type="submit" style={props.buttonStyle}>

@@ -1,9 +1,24 @@
+// TODO: refactor this whole thing tf is this
+/*
+{
+	CONSTANTS: 
+	HELPERS:
+	REQUEST:
+}
+*/
 import { NextRequest, NextResponse } from "next/server";
 import { DateTime } from "luxon";
 
 import IconAccepted from "../public/done.svg";
 import IconDenied from "../public/denied.svg";
 import IconPending from "../public/pending.svg";
+
+const CONSTANTS = {
+	empty: "/leaf.png",
+	loader: "/loader.svg",
+	loaderFixed: "/loader-fixed.svg",
+	imagePlaceholder: "/image-placeholder.png",
+};
 
 const CUTOFF_TYPE = {
 	ALL: "ALL",
@@ -78,21 +93,6 @@ const ENHANCE_FORMAT = (event: any, maxLength: number) => {
 
 const REMOVE_SPACES = (text: string): string => text.replace(/\D/g, "");
 
-const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
-	const contentType = req.headers.get("Content-Type")?.includes(";")
-		? req.headers.get("Content-Type")?.split(";")[0]
-		: req.headers.get("Content-Type");
-	switch (contentType) {
-		case "multipart/form-data":
-			return { Authorization: accessToken ? `bearer ${accessToken}` : "" };
-		default:
-			return {
-				"Content-Type": "application/json",
-				Authorization: accessToken ? `bearer ${accessToken}` : "",
-			};
-	}
-};
-
 const RECEIPT_STATUS_BADGE = (status: any) => {
 	switch (status) {
 		case RECEIPT_STATUS.ACCEPTED:
@@ -130,6 +130,8 @@ const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 
 const PARSE_TOKEN = (cookie: string) => cookie.split(";")[0].split("=")[1];
 
+const PRE = (data: unknown) => <pre>{JSON.stringify(data, undefined, 2)}</pre>;
+
 const tokenRefresh = async (token: string | undefined) => {
 	return await fetch(`${process.env.NEXT_PUBLIC_API}/token/refresh`, {
 		method: "POST",
@@ -159,6 +161,16 @@ const newResponse = async (res: any, refreshResponse: any) => {
 	const newResponse = NextResponse.json(res);
 	refreshResponse && newResponse.headers.set("Set-Cookie", refreshResponse.headers.getSetCookie());
 	return newResponse;
+};
+
+const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
+	const contentType = req.headers.get("Content-Type")?.includes(";")
+		? req.headers.get("Content-Type")?.split(";")[0]
+		: req.headers.get("Content-Type");
+	return {
+		...{ Authorization: accessToken ? `bearer ${accessToken}` : "" },
+		...(contentType !== "multipart/form-data" ? { "Content-Type": "application/json" } : {}),
+	};
 };
 
 const REQUEST = {
@@ -207,6 +219,21 @@ const REQUEST = {
 				credentials: "include",
 			}).then((res) => res.json());
 			console.log("PUT:", apiResponse);
+			return newResponse(apiResponse, refreshResponse);
+		} catch (e) {
+			return NextResponse.json(NextResponse.json(e));
+		}
+	},
+	patch: async (url: string, req: NextRequest, body?: any) => {
+		try {
+			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
+			const apiResponse = await fetch(url, {
+				method: "PATCH",
+				headers: HEADERS(req, accessToken),
+				body: body,
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log("PATCH:", apiResponse);
 			return newResponse(apiResponse, refreshResponse);
 		} catch (e) {
 			return NextResponse.json(NextResponse.json(e));
@@ -347,30 +374,27 @@ const DEFAULT_VALUES = {
 
 const VALID_IMG_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/pdf"];
 
+// TODO: update to luxon
 const DATE_READABLE = (dateString: any) => {
-	if (!dateString) return <div className="skeleton" style={{ height: "100%" }}></div>;
-	const date = new Date(dateString);
-	return `${date.toLocaleString("default", {
-		month: "long",
-	})} ${date.getDate()}, ${date.getFullYear()}`;
+	if (!dateString) return "";
+	// const date = new Date(dateString);
+	return DateTime.fromISO(dateString).toFormat("LLLL dd yyyy");
+	// return `${date.toLocaleString("default", {
+	// 	month: "long",
+	// })} ${date.getDate()}, ${date.getFullYear()}`;
 };
 
 const getDaysLeft = (d: DateTime) => {
-	// const date = d ? DateTime.fromISO(d) : DateTime.now();
-	// const dueInDate = cutoff === CUTOFF_TYPE.MID ? date.set({ day: 15 }) : date.endOf("month");
-
 	Object.assign(d, d.set({ hour: 23, minute: 59, second: 59, millisecond: 999 }));
-
 	return d.diff(DateTime.now(), ["days", "hours", "minute"]);
-
-	// return `${diff.days} days and ${diff.hours} hours`;
 };
 
 export {
+	PRE,
 	REGEX,
 	REQUEST,
-	HEADERS,
 	UI_TYPE,
+	CONSTANTS,
 	VIEW_MODES,
 	CUTOFF_TYPE,
 	MONTH_NAMES,
