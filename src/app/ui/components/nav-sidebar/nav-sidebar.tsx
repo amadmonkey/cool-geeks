@@ -55,7 +55,7 @@ const NavSidebar = () => {
 				headers: {},
 				credentials: "include",
 			})
-				.then((res) => res.json())
+				.then((res) => replace("/login"))
 				.then((res) => {
 					replace("/login");
 				});
