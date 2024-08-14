@@ -47,15 +47,17 @@ const NavSidebar = () => {
 		return () => clearTimeout(timeInterval);
 	}, []);
 
-	const logout = async (e: any) => {
+	const logout = (e: any) => {
 		e.preventDefault();
 		try {
-			await fetch("/api/auth", {
+			fetch("/api/auth", {
 				method: "DELETE",
-				headers: {},
+				headers: {
+					"Content-Type": "application/json",
+				},
 				credentials: "include",
 			})
-				.then((res) => push("/login"))
+				.then((res) => res.json())
 				.then((res) => {
 					push("/login");
 				});
