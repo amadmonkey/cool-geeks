@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
 	try {
-		console.log("2");
 		const formData = await req.formData();
 		return await REQUEST.post(`${process.env.NEXT_PUBLIC_API}/subd/create`, req, formData);
 	} catch (error: any) {

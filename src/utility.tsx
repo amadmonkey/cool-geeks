@@ -219,18 +219,11 @@ const REQUEST = {
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
 		try {
-			console.log("3");
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
-			console.log("4", req);
-
-			console.log("============");
-			console.log("url", url);
-			console.log("accessToken", accessToken);
-			console.log("============");
 
 			const apiResponse = await fetch(url, {
 				method: "POST",
-				headers: { Authorization: accessToken ? `bearer ${accessToken}` : "" },
+				headers: HEADERS(req, accessToken),
 				body: body,
 				credentials: "include",
 			}).then((res) => res.json());
