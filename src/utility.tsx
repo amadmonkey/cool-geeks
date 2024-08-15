@@ -230,7 +230,7 @@ const REQUEST = {
 			const apiResponse = await fetch(url, {
 				method: "POST",
 				headers: HEADERS(req, accessToken),
-				body: body,
+				body: formData,
 				credentials: "include",
 			}).then((res) => res.json());
 			console.log("POST:", apiResponse);
