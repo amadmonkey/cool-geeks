@@ -1,10 +1,8 @@
 import { NextRequest } from "next/server";
 import { REQUEST } from "@/utility";
 
-export const config = {
-	api: {
-		bodyParser: false,
-	},
+export const api = {
+	bodyParser: false,
 };
 
 export async function GET(req: NextRequest) {
