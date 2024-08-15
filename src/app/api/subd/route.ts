@@ -1,6 +1,12 @@
 import { NextRequest } from "next/server";
 import { REQUEST } from "@/utility";
 
+export const config = {
+	api: {
+		bodyParser: false,
+	},
+};
+
 export async function GET(req: NextRequest) {
 	try {
 		const { searchParams } = new URL(req.url);
