@@ -96,6 +96,7 @@ const AddSubd = () => {
 				formData.append("number", formSubd.number);
 				formData.append("plans", JSON.stringify(plans));
 
+				console.log("post");
 				const { code, data } = await fetch("/api/subd", {
 					method: "POST",
 					headers: {},

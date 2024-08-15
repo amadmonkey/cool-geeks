@@ -219,6 +219,7 @@ const REQUEST = {
 	},
 	post: async (url: string, req: NextRequest, body?: any) => {
 		try {
+			console.log("post");
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 
 			const formData = await req.formData();
