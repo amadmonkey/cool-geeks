@@ -200,8 +200,6 @@ const REQUEST = {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 
-			const formData = await req.formData();
-			console.log(formData);
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
 				newResponse.cookies.delete("user");
@@ -222,6 +220,13 @@ const REQUEST = {
 	post: async (url: string, req: NextRequest, body?: any) => {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
+
+			const formData = await req.formData();
+			console.log("============");
+			console.log("formData", formData);
+			console.log("body", body);
+			console.log("============");
+
 			const apiResponse = await fetch(url, {
 				method: "POST",
 				headers: HEADERS(req, accessToken),
