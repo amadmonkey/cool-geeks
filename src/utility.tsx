@@ -199,6 +199,9 @@ const REQUEST = {
 	get: async (url: string, req: NextRequest) => {
 		try {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
+
+			const formData = await req.formData();
+			console.log(formData);
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
 				newResponse.cookies.delete("user");
