@@ -98,7 +98,9 @@ const AddSubd = () => {
 
 				const { code, data } = await fetch("/api/subd", {
 					method: "POST",
-					headers: {},
+					headers: {
+						"Content-Type": "multipart/form-data",
+					},
 					body: formData,
 					credentials: "include",
 				}).then((res) => res.json());
