@@ -171,7 +171,7 @@ const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	console.log("headers", contentType);
 	return {
 		...{ Authorization: accessToken ? `bearer ${accessToken}` : "" },
-		...(contentType !== "multipart/form-data" ? {} : { "Content-Type": "application/json" }),
+		...(contentType === "multipart/form-data" ? {} : { "Content-Type": "application/json" }),
 	};
 };
 
