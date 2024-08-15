@@ -224,8 +224,8 @@ const REQUEST = {
 			console.log("4", req);
 
 			console.log("============");
-			console.log("formData", body);
-			console.log("body", body);
+			console.log("url", url);
+			console.log("accessToken", accessToken);
 			console.log("============");
 
 			const apiResponse = await fetch(url, {
