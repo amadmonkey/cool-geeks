@@ -128,9 +128,7 @@ export default function Home() {
 		);
 		const { code, data } = await fetch("/api/receipt", {
 			method: "POST",
-			headers: {
-				"Content-Type": "multipart/form-data",
-			},
+			headers: {},
 			body: formData,
 			credentials: "include",
 		}).then((res) => res.json());
@@ -165,9 +163,7 @@ export default function Home() {
 
 				const { code } = await fetch("/api/receipt", {
 					method: "POST",
-					headers: {
-						"Content-Type": "multipart/form-data",
-					},
+					headers: {},
 					body: formData,
 					credentials: "include",
 				}).then((res) => res.json());

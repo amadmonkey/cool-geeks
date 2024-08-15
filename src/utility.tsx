@@ -168,9 +168,10 @@ const HEADERS = (req: NextRequest, accessToken: string): HeadersInit => {
 	const contentType = req.headers.get("Content-Type")?.includes(";")
 		? req.headers.get("Content-Type")?.split(";")[0]
 		: req.headers.get("Content-Type");
+	console.log("headers", contentType);
 	return {
 		...{ Authorization: accessToken ? `bearer ${accessToken}` : "" },
-		...(contentType !== "multipart/form-data" ? { "Content-Type": "application/json" } : {}),
+		...(contentType !== "multipart/form-data" ? {} : { "Content-Type": "application/json" }),
 	};
 };
 
