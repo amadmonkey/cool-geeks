@@ -221,7 +221,8 @@ const REQUEST = {
 		try {
 			console.log("3");
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
-			console.log("4");
+			console.log("4", req);
+			console.log("5", body);
 
 			const formData = await req.formData();
 			console.log("============");
