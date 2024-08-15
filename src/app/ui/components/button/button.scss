@@ -15,6 +15,9 @@
 		background-color: $danger;
 		border: none;
 		color: #fff;
+		&:hover {
+			background-color: darken($danger, 10%);
+		}
 	}
 	&.hanging {
 		border-radius: 10px;

@@ -12,10 +12,10 @@ import ListEmpty from "../table/empty/list-empty";
 import HoverBubble from "../hover-bubble/hover-bubble";
 
 // types
-import Plan from "../../types/Plan";
+import Plan from "@/app/ui/types/Plan";
 
 // svgs
-import IconHelp from "../../../../../public/help.svg";
+import IconHelp from "@/public/help.svg";
 
 type SubdPlansProps = {
 	subdId: string;

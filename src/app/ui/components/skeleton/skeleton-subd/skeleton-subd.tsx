@@ -1,9 +1,14 @@
 import React from "react";
-import { SKELETON_TYPES, TABLE_HEADERS, UI_TYPE } from "@/utility";
+import { SKELETON_TYPES, UI_TYPE } from "@/utility";
+
+// components
 import Skeleton from "../skeleton";
 import HoverBubble from "../../hover-bubble/hover-bubble";
-import IconHelp from "../../../../../../public/help.svg";
 
+// svgs
+import IconHelp from "@/public/help.svg";
+
+// styles
 import "./skeleton-subd.scss";
 
 const SkeletonSubd = () => {

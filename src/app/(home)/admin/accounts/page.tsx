@@ -17,8 +17,8 @@ import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import { Filters } from "@/app/ui/classes/filters";
 
 // svgs
-import IconAccounts from "../../../../../public/users.svg";
-import IconAddUser from "../../../../../public/add-user.svg";
+import IconAccounts from "@/public/users.svg";
+import IconAddUser from "@/public/add-user.svg";
 
 // styles
 import "./page.scss";

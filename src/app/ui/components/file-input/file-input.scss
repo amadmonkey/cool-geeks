@@ -59,4 +59,7 @@
 		border-style: solid;
 		background-color: #00000010;
 	}
+	&:disabled {
+		cursor: not-allowed;
+	}
 }

@@ -75,6 +75,7 @@
 		background-color: #fff;
 		box-shadow: $box-shadow_fade;
 		&:disabled {
+			cursor: not-allowed;
 			border-color: lighten($dark, 40%);
 			background-color: lighten($dark, 50%);
 		}
@@ -171,6 +172,9 @@
 			box-shadow: none;
 			border-radius: unset;
 			border-bottom: 1px solid lighten($dark, 40%);
+			&:disabled {
+				cursor: not-allowed;
+			}
 		}
 	}
 }

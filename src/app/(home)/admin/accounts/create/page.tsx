@@ -4,16 +4,19 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
+// components
 import Button from "@/app/ui/components/button/button";
 import Section from "@/app/ui/components/section/section";
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
 
-import IconAddUser from "../../../../../../public/add-user.svg";
-import IconMidmonth from "../../../../../../public/midmonth.svg";
-import IconEndOfMonth from "../../../../../../public/end-of-month.svg";
+// svgs
+import IconAddUser from "@/public/add-user.svg";
+import IconMidmonth from "@/public/midmonth.svg";
+import IconEndOfMonth from "@/public/end-of-month.svg";
 
+// styles
 import "./page.scss";
 
 export default function AddAccount() {

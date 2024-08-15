@@ -83,6 +83,10 @@ img.error {
 
 input {
 	font-family: inherit;
+	&:disabled {
+		color: lighten($dark, 40%) !important;
+		cursor: not-allowed !important;
+	}
 }
 
 input::-webkit-outer-spin-button,
@@ -122,6 +126,10 @@ textarea {
 	font-size: 13px;
 	box-shadow: $box-shadow_fade;
 	background-color: lighten($dark, 60%);
+	&:disabled {
+		color: lighten($dark, 30%);
+		cursor: not-allowed;
+	}
 }
 
 a,
@@ -129,8 +137,9 @@ button {
 	font-weight: 800;
 	background: none;
 	font-family: inherit;
-	&:not(:disabled) {
-		cursor: pointer;
+	cursor: pointer;
+	&:disabled {
+		cursor: not-allowed;
 	}
 	// TODO: change. why tf did i name this invisible
 	&.invisible {
@@ -316,7 +325,7 @@ ul {
 			left: 3px;
 			position: relative;
 			background-color: darken(#fafafa, 5%);
-			box-shadow: -6px 6px 0px #8d8d8d99;
+			box-shadow: -3px 3px 0px #8d8d8d99;
 		}
 	}
 	&.mini {
@@ -382,7 +391,7 @@ ul {
 		}
 	}
 	&:disabled {
-		background-color: lighten($dark, 40%);
+		background-color: lighten($dark, 40%) !important;
 		.button-loader {
 			stroke: lighten($dark, 20%);
 		}

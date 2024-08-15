@@ -7,20 +7,23 @@ import { ACCOUNT_STATUS, REGEX } from "@/utility";
 import { toast } from "react-toastify";
 import Image from "next/image";
 
+// components
 import Button from "../../ui/components/button/button";
 import TextInput from "../../ui/components/text-input/text-input";
 import FormGroup from "../../ui/components/form-group/form-group";
 import TSParticles from "@/app/ui/components/particles/particles";
-
-// loading icons becoming convoluted fix
-import IconBack from "../../../../public/back.svg";
-import IconInfo from "../../../../public/info.svg";
-import IconLoader from "../../../../public/loader.svg";
-import IconLoading from "../../../../public/loading.svg";
-import IconCheck from "../../../../public/done-colored.svg";
-
-import "./page.scss";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
+
+// TODO: loading icons becoming convoluted fix
+// svgs
+import IconBack from "@/public/back.svg";
+import IconInfo from "@/public/info.svg";
+import IconLoader from "@/public/loader.svg";
+import IconLoading from "@/public/loading.svg";
+import IconCheck from "@/public/done-colored.svg";
+
+// styles
+import "./page.scss";
 
 const LoginForm = () => {
 	const passToastId = useRef<any>(null);

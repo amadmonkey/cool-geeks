@@ -1,21 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DateTime } from "luxon";
+import { CUTOFF_TYPE, RECEIPT_STATUS, SEARCH_TYPE } from "@/utility";
 
+// components
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
 import DetectOutsideClick from "@/app/ui/components/detect-outside-click/detect-outside-click";
 
-import IconCheck from "../../../../../../public/check.svg";
-import IconMid from "../../../../../../public/midmonth.svg";
-import IconAsc from "../../../../../../public/sort-asc.svg";
-import IconSearch from "../../../../../../public/search.svg";
-import IconDesc from "../../../../../../public/sort-desc.svg";
-import IconEnd from "../../../../../../public/end-of-month.svg";
+// svgs
+import IconCheck from "@/public/check.svg";
+import IconMid from "@/public/midmonth.svg";
+import IconAsc from "@/public/sort-asc.svg";
+import IconSearch from "@/public/search.svg";
+import IconDesc from "@/public/sort-desc.svg";
+import IconEnd from "@/public/end-of-month.svg";
 
-import { CUTOFF_TYPE, RECEIPT_STATUS, SEARCH_TYPE } from "@/utility";
-
+// styles
 import "./filters.scss";
 
 interface DateRange {

@@ -11,6 +11,7 @@ import {
 	RECEIPT_STATUS_BADGE,
 } from "@/utility";
 
+// components
 import Image from "next/image";
 import Receipt from "@/app/ui/types/Receipt";
 import Table from "@/app/ui/components/table/table";
@@ -24,15 +25,20 @@ import RadioGroup from "@/app/ui/components/radio-group/radio-group";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 import ReceiptsFilters from "./filters/filters";
 
-import IconGrid from "../../../../../public/grid.svg";
-import IconList from "../../../../../public/list.svg";
-import IconDeny from "../../../../../public/denied.svg";
-import IconAccept from "../../../../../public/done.svg";
-import IconReceipt from "../../../../../public/receipt2.svg";
+// svgs
+import IconGrid from "@/public/grid.svg";
+import IconList from "@/public/list.svg";
+import IconDeny from "@/public/denied.svg";
+import IconAccept from "@/public/done.svg";
+import IconReceipt from "@/public/receipt2.svg";
 
+// types
 import { Filters } from "@/app/ui/classes/filters";
+
+// styles
 import "./page.scss";
 
+// TODO: segregate
 export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);

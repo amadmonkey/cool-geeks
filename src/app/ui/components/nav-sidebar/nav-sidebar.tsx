@@ -6,13 +6,13 @@ import { DateTime } from "luxon";
 import { useRouter, usePathname } from "next/navigation";
 
 // svgs
-import IconSubd from "../../../../../public/subd.svg";
-import IconClock from "../../../../../public/clock2.svg";
-import IconAccounts from "../../../../../public/users.svg";
-import IconSignOut from "../../../../../public/signout.svg";
-import IconReceipt from "../../../../../public/receipt2.svg";
-import IconSettings from "../../../../../public/settings.svg";
-import IconDashboard from "../../../../../public/dashboard.svg";
+import IconSubd from "@/public/subd.svg";
+import IconClock from "@/public/clock2.svg";
+import IconAccounts from "@/public/users.svg";
+import IconSignOut from "@/public/signout.svg";
+import IconReceipt from "@/public/receipt2.svg";
+import IconSettings from "@/public/settings.svg";
+import IconDashboard from "@/public/dashboard.svg";
 
 // styles
 import "./nav-sidebar.scss";

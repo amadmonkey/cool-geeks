@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
-
 import { toast } from "react-toastify";
 import { CONSTANTS, VALID_IMG_TYPES } from "@/utility";
+import Image from "next/image";
 
-import Subd from "../../types/Subd";
+// svgs
+import IconReplace from "@/public/replace.svg";
 
-import IconReplace from "../../../../../public/replace.svg";
+// types
+import Subd from "@/app/ui/types/Subd";
 
 type SubdQrProps = {
 	subd: Subd;

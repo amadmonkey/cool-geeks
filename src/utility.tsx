@@ -9,9 +9,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DateTime } from "luxon";
 
-import IconAccepted from "../public/done.svg";
-import IconDenied from "../public/denied.svg";
-import IconPending from "../public/pending.svg";
+// svgs
+import IconDenied from "@/public/denied.svg";
+import IconAccepted from "@/public/done.svg";
+import IconPending from "@/public/pending.svg";
 
 const CONSTANTS = {
 	empty: "/leaf.png",

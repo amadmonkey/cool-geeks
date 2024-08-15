@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { DEFAULT_VALUES, STRING_UTILS, VALID_IMG_TYPES } from "@/utility";
@@ -11,17 +11,22 @@ import TextInput from "@/app/ui/components/text-input/text-input";
 import FileInput from "@/app/ui/components/file-input/file-input";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 
+// svgs
+import IconLoader from "@/public/loader.svg";
+
 // styles
 import "./page.scss";
 
 const AddSubd = () => {
 	const { push } = useRouter();
+	const subdToastId = useRef<any>(null);
 	const [plans, setPlans]: any = useState([]);
 	const [generalError, setGeneralError] = useState("");
 	const [qrError, setQrError] = useState("");
 	const [file, setFile] = useState<File | null>(null);
 	const [formSubd, setFormSubd] = useState(DEFAULT_VALUES.subdForm);
 	const [formPlan, setFormPlan] = useState(DEFAULT_VALUES.planForm);
+	const [loading, setLoading] = useState(false);
 
 	const updateForm = async (e: any, isPlan?: Boolean) => {
 		let { name, value } = e.target;
@@ -76,7 +81,13 @@ const AddSubd = () => {
 	};
 
 	const handleSubmit = async (e: any) => {
+		e && e.preventDefault();
 		try {
+			setLoading(true);
+			subdToastId.current = toast("Creating new subdivision...", {
+				autoClose: false,
+				icon: <IconLoader style={{ height: "20px", stroke: "rgb(100, 100, 100)" }} />,
+			});
 			if (VALID_IMG_TYPES.includes(file!.type)) {
 				const formData = new FormData();
 				formData.append("qr", file!);
@@ -92,16 +103,21 @@ const AddSubd = () => {
 					credentials: "include",
 				}).then((res) => res.json());
 
+				toast.dismiss(subdToastId.current);
+				setLoading(false);
+
 				switch (code) {
 					case 200:
 						push(
 							`/admin/subds/${STRING_UTILS.SPACE_TO_DASH(formSubd.name.toLowerCase())}?updated=true`
 						);
-						toast.success("Subdivision added successfully.");
+						toast.success("Subdivision created.");
 						break;
 					case 400:
+						toast.error(data.message);
 						break;
 					default:
+						toast.error("Something went wrong. Please try again.");
 						break;
 				}
 			}
@@ -168,6 +184,7 @@ const AddSubd = () => {
 											minLength="2"
 											onChange={updateForm}
 											placeholder="Name"
+											disabled={loading}
 											line
 											required
 										/>
@@ -179,6 +196,7 @@ const AddSubd = () => {
 											maxLength="3"
 											onChange={updateForm}
 											placeholder="Code"
+											disabled={loading}
 											line
 											required
 										/>
@@ -191,13 +209,13 @@ const AddSubd = () => {
 										maxLength="12"
 										onChange={updateForm}
 										placeholder="___ ___ ____"
+										disabled={loading}
 										line
 										required
 									/>
 									<div className="plans-container">
 										<header>
 											<h1>PLANS</h1>
-											{/* <TextInput mini /> */}
 										</header>
 										<table className="plan-table">
 											<thead>
@@ -210,7 +228,6 @@ const AddSubd = () => {
 											</thead>
 											{plans.length
 												? plans.map((plan: any, i: number) => {
-														console.log(plan);
 														return (
 															<tbody className="plan-item" key={i}>
 																<tr className="plan-item__row">
@@ -228,6 +245,7 @@ const AddSubd = () => {
 																				fontWeight: "800",
 																			}}
 																			className="danger"
+																			disabled={loading}
 																			danger
 																			onClick={() => removePlan(i)}
 																		>
@@ -253,6 +271,7 @@ const AddSubd = () => {
 															onChange={(e: any) => updateForm(e, true)}
 															placeholder="Name"
 															noValidate
+															disabled={loading}
 															line
 														/>
 													</td>
@@ -264,6 +283,7 @@ const AddSubd = () => {
 															maxLength={5}
 															onChange={(e: any) => updateForm(e, true)}
 															placeholder="Rate"
+															disabled={loading}
 															line
 														/>
 													</td>
@@ -276,6 +296,7 @@ const AddSubd = () => {
 															onChange={(e: any) => updateForm(e, true)}
 															placeholder="Notes"
 															noValidate
+															disabled={loading}
 															line
 														/>
 													</td>
@@ -290,6 +311,7 @@ const AddSubd = () => {
 																fontWeight: "800",
 															}}
 															onClick={addPlan}
+															disabled={loading}
 														>
 															<label htmlFor="addPlan" className="sr-only">
 																ADD PLAN
@@ -309,7 +331,7 @@ const AddSubd = () => {
 										value={formSubd.qr}
 										onChange={updateForm}
 										danger={qrError}
-										// disabled={inputDisabled}
+										disabled={loading}
 									/>
 									{qrError && <span className="general-error">{qrError}</span>}
 								</div>
@@ -317,6 +339,7 @@ const AddSubd = () => {
 							<Button
 								type="submit"
 								className="info"
+								loading={loading}
 								style={{ marginTop: "50px", float: "right", width: "300px" }}
 							>
 								SUBMIT
@@ -341,6 +364,9 @@ const confirmTemplate = () => {
 			}}
 		>
 			<h1 style={{ marginBottom: "10px" }}>CREATING NEW SUBDIVISION</h1>
+			<p>
+				<i>ADD DETAILS HERE</i>
+			</p>
 			<p style={{ margin: "20px 0" }}>Continue?</p>
 		</div>
 	);

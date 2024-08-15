@@ -12,8 +12,8 @@ import ListEmpty from "../table/empty/list-empty";
 import HoverBubble from "../hover-bubble/hover-bubble";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
 
-import IconLoader from "../../../../../public/loader.svg";
-import IconReplace from "../../../../../public/replace.svg";
+import IconLoader from "@/public/loader.svg";
+import IconReplace from "@/public/replace.svg";
 
 import "./history-table.scss";
 

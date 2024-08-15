@@ -16,10 +16,10 @@ import User from "@/app/ui/types/User";
 import Plan from "@/app/ui/types/Plan";
 
 // svgs
-import IconMore from "../../../../../../public/more.svg";
-import IconTrash from "../../../../../../public/trash2.svg";
-import IconAccepted from "../../../../../../public/done.svg";
-import IconInvalid from "../../../../../../public/invalid.svg";
+import IconMore from "@/public/more.svg";
+import IconTrash from "@/public/trash2.svg";
+import IconAccepted from "@/public/done.svg";
+import IconInvalid from "@/public/invalid.svg";
 
 const dashToSpace = (text: string) => STRING_UTILS.DASH_TO_SPACE(text).toLowerCase();
 const spaceToDash = (text: string) => STRING_UTILS.SPACE_TO_DASH(text).toLowerCase();

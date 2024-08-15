@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import TextInput from "../text-input/text-input";
 
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
-import IconCheck from "../../../../../public/check.svg";
-import IconEdit from "../../../../../public/edit2.svg";
+import IconCheck from "@/public/check.svg";
+import IconEdit from "@/public/edit2.svg";
 
 import "./inline-edit-input.scss";
 

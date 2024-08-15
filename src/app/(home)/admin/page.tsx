@@ -2,19 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { RECEIPT_STATUS, VIEW_MODES } from "@/utility";
+import Link from "next/link";
 
+// components
 import Card from "@/app/ui/components/card/card";
 
-import IconReceipt from "../../../../public/receipt.svg";
-import IconOverdue from "../../../../public/overdue.svg";
-import IconPending from "../../../../public/pending.svg";
-import IconAddUser from "../../../../public/add-user.svg";
+// svgs
+import IconReceipt from "@/public/receipt.svg";
+import IconOverdue from "@/public/overdue.svg";
+import IconPending from "@/public/pending.svg";
+import IconAddUser from "@/public/add-user.svg";
 
+// pages
 import Receipts from "./receipts/page";
 import Accounts from "./accounts/page";
 
+// styles
 import "./page.scss";
 
 const Admin = () => {

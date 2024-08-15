@@ -9,10 +9,10 @@ import Image from "next/image";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
 
 // svgs
-import IconHelp from "../../../../../public/help.svg";
-import IconContact from "../../../../../public/contact.svg";
-import IconSignout from "../../../../../public/signout.svg";
-import IconSettings from "../../../../../public/settings.svg";
+import IconHelp from "@/public/help.svg";
+import IconContact from "@/public/contact.svg";
+import IconSignout from "@/public/signout.svg";
+import IconSettings from "@/public/settings.svg";
 
 // styles
 import "./header.scss";

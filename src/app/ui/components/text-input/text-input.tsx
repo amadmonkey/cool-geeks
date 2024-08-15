@@ -1,8 +1,11 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import React, { useEffect, useRef, useState } from "react";
 import { ENHANCE_FORMAT, IS_MODIFIER_KEY, REMOVE_SPACES } from "@/utility";
-import IconLoading from "../../../../../public/loader.svg";
+import Image from "next/image";
 
+// svgs
+import IconLoading from "@/public/loader.svg";
+
+// styles
 import "./text-input.scss";
 
 type payMethod = {
@@ -87,7 +90,6 @@ const TextInput = (props: any) => {
 	}, [miniDropdownVal.name, props.minLength, props.maxLength, props.type]);
 
 	const delayValidate = (e: any) => {
-		// console.log(props.noValidate);
 		if (props.noValidate) return;
 		if (e.key === "Enter") {
 			// validate(e, null);
@@ -134,7 +136,6 @@ const TextInput = (props: any) => {
 						}
 					}
 					if (props.test) {
-						console.log(props.test.test(inputVal));
 						if (!props.test.test(inputVal)) {
 							newErrors.push("Invalid password");
 						}

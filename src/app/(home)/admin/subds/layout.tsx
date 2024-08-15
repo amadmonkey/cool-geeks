@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import Link from "next/link";
 import { SKELETON_TYPES, STRING_UTILS } from "@/utility";
 import { useSearchParams, useParams, usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
 
 // components
-import Section from "@/app/ui/components/section/section";
 import Table from "@/app/ui/components/table/table";
+import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 
 // svgs
-import IconSubd from "../../../../../public/subd.svg";
-import IconSubdAdd from "../../../../../public/subd-add.svg";
+import IconSubd from "@/public/subd.svg";
+import IconSubdAdd from "@/public/subd-add.svg";
 
 // styles
 import "./layout.scss";

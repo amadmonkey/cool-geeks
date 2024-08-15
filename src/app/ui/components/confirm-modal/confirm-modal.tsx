@@ -31,19 +31,19 @@ const ConfirmModal = (props: any) => {
 				<Modal isShown={modalIsShown} close={closeConfirmModal}>
 					<Card style={{ width: "500px" }}>
 						{props.template && props.template(passedProps.current)}
+						<footer className="confirm-modal__footer">
+							<FormGroup>
+								<Button type="button" className="" onClick={closeConfirmModal}>
+									CANCEL
+								</Button>
+							</FormGroup>
+							<FormGroup>
+								<Button type="button" className="info" onClick={confirm}>
+									CONTINUE
+								</Button>
+							</FormGroup>
+						</footer>
 					</Card>
-					<footer className="confirm-modal__footer">
-						<FormGroup>
-							<Button type="button" className="hanging" onClick={closeConfirmModal}>
-								CANCEL
-							</Button>
-						</FormGroup>
-						<FormGroup>
-							<Button type="button" className="info hanging" onClick={confirm}>
-								CONTINUE
-							</Button>
-						</FormGroup>
-					</footer>
 				</Modal>
 			</DetectOutsideClick>
 		</div>

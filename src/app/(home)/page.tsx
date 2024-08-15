@@ -9,6 +9,7 @@ import { DateTime } from "luxon";
 import Link from "next/link";
 import Image from "next/image";
 
+// components
 import Receipt from "@/app/ui/types/Receipt";
 import Card from "@/app/ui/components/card/card";
 import Button from "@/app/ui/components/button/button";
@@ -17,8 +18,9 @@ import FormGroup from "@/app/ui/components/form-group/form-group";
 import FileInput from "@/app/ui/components/file-input/file-input";
 import HistoryTable from "@/app/ui/components/history-table/history-table";
 
-import IconQR from "../../../public/qr.svg";
-import IconDownload from "../../../public/download.svg";
+// svgs
+import IconQR from "@/public/qr.svg";
+import IconDownload from "@/public/download.svg";
 
 import {
 	CONSTANTS,

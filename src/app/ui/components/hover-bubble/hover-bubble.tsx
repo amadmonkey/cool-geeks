@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 
-import IconLoader from "../../../../../public/loader.svg";
+import IconLoader from "@/public/loader.svg";
 import "./hover-bubble.scss";
 
 const HoverBubble = (props: any) => {

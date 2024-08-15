@@ -1,7 +1,8 @@
 "use client";
 import React from "react";
 
-import IconLoading from "../../../../public/loading.svg";
+// svgs
+import IconLoading from "@/public/loading.svg";
 
 const Loading = () => {
 	return (
