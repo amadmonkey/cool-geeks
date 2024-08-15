@@ -230,7 +230,7 @@ const REQUEST = {
 			const apiResponse = await fetch(url, {
 				method: "POST",
 				headers: HEADERS(req, accessToken),
-				body: formData,
+				body: body,
 				credentials: "include",
 			}).then((res) => res.json());
 			console.log("POST:", apiResponse);
@@ -244,7 +244,7 @@ const REQUEST = {
 			const { accessToken, refreshResponse } = await REFRESH_TOKEN(req);
 			const apiResponse = await fetch(url, {
 				method: "PUT",
-				headers: HEADERS(req, accessToken),
+				headers: { Authorization: accessToken ? `bearer ${accessToken}` : "" },
 				body: body,
 				credentials: "include",
 			}).then((res) => res.json());
