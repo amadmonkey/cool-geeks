@@ -207,7 +207,7 @@ export default function Home() {
 			<a
 				className="cg-button info"
 				href={qrUrl}
-				download={`Cool Geeks - ${user.subdRef.name} GCash QR.${user.subdRef.gcash.qr.contentType
+				download={`Cool Geeks - ${user.subdRef.name} GCash QR.${user.subdRef.qr.contentType
 					.split("/")
 					.pop()}`}
 				style={{
