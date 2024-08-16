@@ -9,7 +9,7 @@ export default function Settings() {
 		<>
 			<button
 				onClick={async () => {
-					const { code, data } = await fetch(`/auth/email-test`, {
+					const { code, data } = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/email-test`, {
 						method: "GET",
 						headers: {
 							"Content-Type": "application/json",
