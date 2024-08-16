@@ -357,7 +357,9 @@ export default function Home() {
 							<li className="summary__item">
 								<span>RECEIPT</span>
 								<p>
-									<Link href="">Show receipt</Link>
+									<Link href="" prefetch={false}>
+										Show receipt
+									</Link>
 								</p>
 							</li>
 						</ul>
@@ -496,7 +498,9 @@ export default function Home() {
 								placeholder="MONTH"
 							/> */}
 					</div>
-					<Link href="">VIEW ALL</Link>
+					<Link href="" prefetch={false}>
+						VIEW ALL
+					</Link>
 				</div>
 				<div className="home-table">
 					<HistoryTable
