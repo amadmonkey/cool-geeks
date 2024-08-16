@@ -117,37 +117,43 @@ export default function Home() {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		setFormLoading(true);
-		const formData = new FormData();
-		formData.append("referenceType", JSON.stringify(form.referenceType));
-		formData.append("referenceNumber", form.referenceNumber);
-		formData.append("receipt", form.receipt);
-		formData.append(
-			"receiptName",
-			`${user.accountNumber}.${form.referenceType.name}.${Date.now()}`
-		);
-		const { code, data } = await fetch("/api/receipt", {
-			method: "POST",
-			headers: {},
-			body: formData,
-			credentials: "include",
-		}).then((res) => res.json());
-		switch (code) {
-			case 200:
-				setHistoryList([data, ...historyList]);
-				setCurrentReceipt(data);
-				setForm(defaultForm);
-				setFormShown(false);
-				setFormLoading(false);
-				toast.success("Receipt sent");
-				break;
-			case 400:
-				// handle errors
-				console.log("receipt submit 400 handle errors", data);
-				break;
-			default:
-				push("/login");
-				break;
+		try {
+			setFormLoading(true);
+			const formData = new FormData();
+			formData.append("referenceType", JSON.stringify(form.referenceType));
+			formData.append("referenceNumber", form.referenceNumber);
+			formData.append("receipt", form.receipt);
+			formData.append(
+				"receiptName",
+				`${user.accountNumber}.${form.referenceType.name}.${Date.now()}`
+			);
+			const { code, data } = await fetch("/api/receipt", {
+				method: "POST",
+				headers: {},
+				body: formData,
+				credentials: "include",
+			}).then((res) => res.json());
+			console.log(code);
+			console.log(data);
+			switch (code) {
+				case 200:
+					setHistoryList([data, ...historyList]);
+					setCurrentReceipt(data);
+					setForm(defaultForm);
+					setFormShown(false);
+					setFormLoading(false);
+					toast.success("Receipt sent");
+					break;
+				case 400:
+					// handle errors
+					console.log("receipt submit 400 handle errors", data);
+					break;
+				default:
+					// push("/login");
+					break;
+			}
+		} catch (e) {
+			console.log(e);
 		}
 	};
 
