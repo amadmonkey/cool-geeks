@@ -138,7 +138,7 @@ const SubdPlans = (props: SubdPlansProps) => {
 						<th>
 							<HoverBubble
 								style={{ display: "flex", gap: "3px" }}
-								message="Plan status states whether the plan will be selectable during account creation."
+								message="Plan status declares whether plan is selectable during account creation."
 								type={UI_TYPE.info}
 							>
 								<IconHelp />

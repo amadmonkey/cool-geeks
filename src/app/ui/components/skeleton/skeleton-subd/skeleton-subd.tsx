@@ -42,7 +42,7 @@ const SkeletonSubd = () => {
 								<th>
 									<HoverBubble
 										style={{ display: "flex", gap: "3px" }}
-										message="Plan status states whether the plan will be selectable during account creation."
+										message="Plan status decalres whether the plan will be selectable during account creation."
 										type={UI_TYPE.info}
 									>
 										<IconHelp />
