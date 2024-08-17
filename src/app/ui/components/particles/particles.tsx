@@ -14,6 +14,7 @@ const TSParticles = () => {
 		});
 	}, []);
 
+	// TODO: loook into added loader before particles loaded
 	const particlesLoaded = async (container?: Container): Promise<void> => {
 		// console.log(container);
 	};

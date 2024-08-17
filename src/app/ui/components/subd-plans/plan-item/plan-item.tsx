@@ -74,11 +74,9 @@ const PlanItem = (props: PlanProps) => {
 				Object.assign(planInitial, { ...data, ...{ users: plan.users } });
 				toast.success("Plan updated successfully.");
 				break;
-			case 400:
+			default:
 				console.log(data);
 				toast.error("Something went wrong. Please try again.");
-				break;
-			default:
 				break;
 		}
 	};

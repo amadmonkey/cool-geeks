@@ -154,7 +154,6 @@ const SubdPage = (props: any) => {
 										}),
 									});
 								const exists = await fetchSubd(searchOptions);
-								console.log("exists", exists);
 								if (exists) {
 									toast.error("Subdivision name already exists.");
 								} else {

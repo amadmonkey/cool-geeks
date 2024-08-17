@@ -33,7 +33,6 @@ const Content = () => {
 					form: { accountNumber, token },
 				}),
 			}).then((res) => res.json());
-			console.log("verify", data);
 			switch (code) {
 				case 200:
 					const { user, subd, plan } = data;

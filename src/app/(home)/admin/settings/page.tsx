@@ -16,8 +16,6 @@ export default function Settings() {
 						},
 						credentials: "include",
 					}).then((res) => res.json());
-					console.log(code);
-					console.log(data);
 					setTest(data);
 				}}
 			>

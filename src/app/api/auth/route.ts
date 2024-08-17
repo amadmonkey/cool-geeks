@@ -2,23 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
 	try {
+		// TODO: change to REQUEST.get
 		const { searchParams } = new URL(req.url);
-		// console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
-		// console.log("searchParams", searchParams);
-		// const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}`, {
-		// 	method: "GET",
-		// 	headers: {
-		// 		"Content-Type": "application/json",
-		// 	},
-		// })
-		// 	.then((res) => res.json())
-		// 	.then(async (res: NextResponse) => {
-		// 		console.log(res);
-		// 		console.log("process.env.NEXT_PUBLIC_API", process.env.NEXT_PUBLIC_API);
-		// 		console.log("searchParams", searchParams);
-		// 		return res;
-		// 	});
-		console.log(`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`);
 		const apiResponse = await fetch(
 			`${process.env.NEXT_PUBLIC_API}/auth?${searchParams.toString()}`,
 			{
@@ -29,7 +14,6 @@ export async function GET(req: NextRequest) {
 				credentials: "include",
 			}
 		);
-		console.log("apiResponse", apiResponse);
 		const data = await apiResponse.json();
 		const newResponse = NextResponse.json(data);
 		return newResponse;
@@ -41,7 +25,6 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
 	const body = await req.json();
-
 	const apiResponse = await fetch(`${process.env.NEXT_PUBLIC_API}/auth/${body.url || "login"}`, {
 		method: "POST",
 		headers: {
@@ -68,7 +51,6 @@ export async function PUT(req: NextRequest) {
 		});
 
 		const data = await apiResponse.json();
-		console.log(data);
 		const newResponse = NextResponse.json(data);
 		newResponse.headers.set("Set-Cookie", apiResponse.headers.getSetCookie().toString());
 		return newResponse;
@@ -92,8 +74,6 @@ export async function DELETE(req: NextRequest) {
 	newResponse.cookies.delete("user");
 	newResponse.cookies.delete("accessToken");
 	newResponse.cookies.delete("refreshToken");
-
-	console.log("logout res", newResponse);
 
 	return newResponse;
 }

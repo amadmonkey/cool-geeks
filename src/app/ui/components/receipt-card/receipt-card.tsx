@@ -60,6 +60,7 @@ const ReceiptCard = (props: Props) => {
 
 	return (
 		<div key={props.data._id} className="receipt-card">
+			{/* receiptUrl === CONSTANTS.imagePlaceholder */}
 			<div
 				className={`image-container ${
 					receiptUrl === CONSTANTS.imagePlaceholder ? "loading skeleton" : ""

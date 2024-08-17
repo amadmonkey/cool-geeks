@@ -59,13 +59,10 @@ const LoginForm = () => {
 
 		if (validate(e)) {
 			if (form.confirmPassword) {
-				console.log("verify");
 				verify();
 			} else if (form.password) {
-				console.log("login");
 				login();
 			} else {
-				console.log("getAccountStatus");
 				getAccountStatus();
 			}
 			replace("/login", undefined);

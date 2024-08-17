@@ -35,7 +35,7 @@ import "./page.scss";
 
 const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
-		console.log(m);
+		// console.log(m);
 	},
 	errorHandler: (err) => {
 		console.log(err);
@@ -75,7 +75,7 @@ export default function Home() {
 		// TODO: add loading
 		setInputDisabled(true);
 		const ret = await (await worker).recognize(file);
-		console.log("OCR TEXT", ret.data.text);
+		// console.log("OCR TEXT", ret.data.text);
 
 		let hasReferenceNumber = false;
 		await Promise.all(
@@ -133,8 +133,6 @@ export default function Home() {
 				body: formData,
 				credentials: "include",
 			}).then((res) => res.json());
-			console.log(code);
-			console.log(data);
 			switch (code) {
 				case 200:
 					setHistoryList([data, ...historyList]);
@@ -150,6 +148,7 @@ export default function Home() {
 					break;
 				default:
 					// push("/login");
+					console.log("receipt submit default", data);
 					break;
 			}
 		} catch (e) {
@@ -307,7 +306,6 @@ export default function Home() {
 	useEffect(() => {
 		getHistoryList();
 		(async () => setQrUrl(await getImage(user.subdRef.gdriveId)))();
-		console.log("why am i firing twice");
 	}, []);
 
 	return (
