@@ -191,7 +191,7 @@ const PlanItem = (props: PlanProps) => {
 										label={
 											<span
 												style={{ fontSize: "14px" }}
-												className={plan.active ? "text-success" : "text-danger"}
+												className={plan.active ? "text-success" : ""}
 											>
 												{plan.active ? "ACTIVE" : "INACTIVE"}
 											</span>

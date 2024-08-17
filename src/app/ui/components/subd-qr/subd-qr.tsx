@@ -31,7 +31,7 @@ const SubdQr = (props: SubdQrProps) => {
 			const formData = new FormData();
 			formData.append("qr", file);
 			subd._id && formData.append("_id", subd._id);
-			subd.gdriveId && formData.append("gdriveId", subd.gdriveId);
+			subd.imageId && formData.append("imageId", subd.imageId);
 
 			const { code, data } = await fetch("/api/subd", {
 				method: "PATCH",
@@ -61,19 +61,22 @@ const SubdQr = (props: SubdQrProps) => {
 			signal.current = controller.current.signal;
 
 			const searchOptions = new URLSearchParams({
-				id: subd.current.gdriveId,
+				id: subd.current.imageId,
+				sort: JSON.stringify({ createdAt: "desc" }),
 				action: "/image",
 			});
 
 			const res = await fetch(`/api/subd?${searchOptions}`, {
 				method: "GET",
-				headers: {},
+				headers: {
+					"Content-Type": "application/json",
+				},
 				credentials: "include",
 				signal: signal.current,
-			}).then((res) => res.blob());
-
+			}).then((res) => res.json());
+			console.log(res);
 			props.handleFileUpdate(res);
-			setQrUrl(fileToUrl(new Blob([res])));
+			setQrUrl(res.data);
 		} catch (e: any) {
 			if (e.name === "AbortError") return;
 			console.log(e);

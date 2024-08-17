@@ -17,13 +17,12 @@ import IconReplace from "@/public/replace.svg";
 
 import "./history-table.scss";
 
+// TODO: code got complicated from gdrive. refactor.
 const HistoryTable = (props: any) => {
 	// null = loading
 	// [] = empty
 	// [...] = show table
 	const { push } = useRouter();
-	// const signal = useRef<any>();
-	// const controller = useRef<any>();
 	const loadingToastId = useRef<any>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const [filteredList, setFilteredList] = useState<any>(null);
@@ -113,7 +112,7 @@ const HistoryTable = (props: any) => {
 				if (receipt?.receiptUrl) {
 					setReceiptUrl(receipt?.receiptUrl);
 				} else {
-					getImage(receipt.gdriveId);
+					getImage(receipt.imageId);
 				}
 			}
 		} catch (err) {

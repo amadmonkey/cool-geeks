@@ -163,7 +163,7 @@ export default function Home() {
 
 				formData.append("_id", receipt._id);
 				formData.append("receipt", file);
-				formData.append("gdriveId", receipt.gdriveId);
+				formData.append("imageId", receipt.imageId);
 				formData.append("action", "update");
 
 				const { code } = await fetch("/api/receipt", {
@@ -237,14 +237,14 @@ export default function Home() {
 
 		const res = await fetch(`/api/receipt?${searchOptions}`, {
 			method: "GET",
-			headers: {},
+			headers: {
+				"Content-Type": "application/json",
+			},
 			credentials: "include",
 			signal: getImageSignal.current,
-		}).then((res) => res.blob());
+		}).then((res) => res.json());
 
-		const urlCreator = window.URL || window.webkitURL;
-		const imgUrl = urlCreator.createObjectURL(new Blob([res]));
-		return imgUrl;
+		return res.data;
 	};
 
 	const getHistoryList = async () => {
@@ -305,7 +305,7 @@ export default function Home() {
 
 	useEffect(() => {
 		getHistoryList();
-		(async () => setQrUrl(await getImage(user.subdRef.gdriveId)))();
+		(async () => setQrUrl(await getImage(user.subdRef.imageId)))();
 	}, []);
 
 	return (

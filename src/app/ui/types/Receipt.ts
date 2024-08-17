@@ -3,7 +3,7 @@ import User from "./User";
 
 export default interface Receipt {
 	_id: string;
-	gdriveId: string;
+	imageId: string;
 	userRef: User;
 	planRef: Plan;
 	label: string;

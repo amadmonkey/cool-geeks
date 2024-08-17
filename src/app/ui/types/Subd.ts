@@ -1,6 +1,6 @@
 export default interface Subd {
 	_id: string;
-	gdriveId: string;
+	imageId: string;
 	name: string;
 	code: string;
 	plans: {};

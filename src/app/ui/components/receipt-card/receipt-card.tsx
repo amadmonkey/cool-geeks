@@ -1,16 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { CONSTANTS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
 import Image from "next/image";
+import { CONSTANTS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
 
 // components
+import Card from "@/app/ui/components/card/card";
+
+// types
 import Receipt from "../../types/Receipt";
+
+// svgs
 import IconAccept from "@/public/done.svg";
 import IconMid from "@/public/midmonth.svg";
 import IconInvalid from "@/public/invalid.svg";
 import IconReplace from "@/public/replace.svg";
 import IconEnd from "@/public/end-of-month.svg";
-import Card from "@/app/ui/components/card/card";
 
 interface Props {
 	data: Receipt;
@@ -32,21 +36,20 @@ const ReceiptCard = (props: Props) => {
 			signal.current = controller.current.signal;
 
 			const searchOptions = new URLSearchParams({
-				id: receipt!.gdriveId,
+				id: receipt!.imageId,
 				action: "/image",
 			});
 
 			const res = await fetch(`/api/receipt?${searchOptions}`, {
 				method: "GET",
-				headers: {},
+				headers: {
+					"Content-Type": "application/json",
+				},
 				credentials: "include",
 				signal: signal.current,
-			}).then((res) => res.blob());
+			}).then((res) => res.json());
 
-			const urlCreator = window.URL || window.webkitURL;
-			const imgUrl = urlCreator.createObjectURL(new Blob([res]));
-
-			setReceiptUrl(imgUrl);
+			setReceiptUrl(res.data);
 		} catch (e: any) {
 			if (e.name === "AbortError") return;
 			console.log(e);
