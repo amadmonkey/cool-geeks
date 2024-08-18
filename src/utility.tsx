@@ -284,6 +284,7 @@ const SKELETON_TYPES = {
 	PLAN: "plan",
 	RECEIPTS: "receipts",
 	ACCOUNTS: "accounts",
+	SUBD_LIST: "subd-list",
 	RECEIPT_FORM: "receipt-form",
 	RECEIPT_CARD: "receipt-card",
 	HISTORY_TABLE: "history-table",

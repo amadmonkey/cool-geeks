@@ -9,16 +9,10 @@ const Skeleton = (props: any) => {
 		switch (type) {
 			case SKELETON_TYPES.SUBD:
 				return <SkeletonSubd />;
-			case SKELETON_TYPES.RECEIPTS:
-				return <SkeletonTable type={SKELETON_TYPES.RECEIPTS} />;
 			case SKELETON_TYPES.RECEIPT_CARD:
 				return <SkeletonReceiptCard />;
-			case SKELETON_TYPES.ACCOUNTS:
-				return <SkeletonTable type={SKELETON_TYPES.ACCOUNTS} />;
-			case SKELETON_TYPES.PLAN:
-				return <SkeletonTable type={SKELETON_TYPES.PLAN} />;
 			default:
-				return <SkeletonTable type={SKELETON_TYPES.RECEIPTS} />;
+				return <SkeletonTable type={type} />;
 		}
 	};
 	return <>{getTemplate(props.type)}</>;

@@ -70,14 +70,6 @@ export default function SubdsNav(props: any) {
 			.catch((err) => console.log("getSubds catch", err));
 	};
 
-	// useEffect(() => {
-	// 	mounted.current = true;
-	// 	!updated && getSubds(1);
-	// 	return () => {
-	// 		mounted.current = false;
-	// 	};
-	// }, []);
-
 	useEffect(() => {
 		mounted.current = true;
 		getSubds();
@@ -89,11 +81,11 @@ export default function SubdsNav(props: any) {
 	return (
 		<Section title={sectionTitle(props.title, currentPathname)} others={sectionExtras()}>
 			<div className="content__subds">
-				<div className="list-container">
+				<div className={`list-container${list === null ? " loading" : ""}`}>
 					<label>SELECT ONE</label>
 					<Table>
 						{list === null ? (
-							<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
+							<Skeleton type={SKELETON_TYPES.SUBD_LIST} />
 						) : list.length ? (
 							list?.map((subd: any, index: number) => {
 								return (
