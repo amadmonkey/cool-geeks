@@ -16,7 +16,10 @@ const ConfirmModal = (props: any) => {
 		setModalIsShown(true);
 	};
 
-	const closeConfirmModal = async () => setModalIsShown(false);
+	const closeConfirmModal = async () => {
+		props.cancel && props.cancel();
+		setModalIsShown(false);
+	};
 
 	const confirm = () => {
 		closeConfirmModal().then(() => {

@@ -129,7 +129,7 @@ const SubdPlans = (props: SubdPlansProps) => {
 			<header>
 				<h1>PLANS</h1>
 			</header>
-			<table className="plan-table">
+			<table className={`plan-table${!plans ? " loading" : ""}`}>
 				<thead>
 					<tr>
 						<th>NAME</th>
@@ -147,6 +147,7 @@ const SubdPlans = (props: SubdPlansProps) => {
 						</th>
 					</tr>
 				</thead>
+				{/* plans !== null */}
 				{plans !== null ? (
 					plans.length ? (
 						<>

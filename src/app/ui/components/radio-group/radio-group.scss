@@ -3,9 +3,9 @@
 $border-radius: 5px;
 
 .radio-toggle {
-	display: inline-flex;
 	overflow: hidden;
 	position: relative;
+	display: inline-flex;
 
 	background-color: #fff;
 	border-radius: $border-radius;
@@ -44,8 +44,6 @@ $border-radius: 5px;
 			align-items: center;
 			justify-content: center;
 			transition: all 0.2s ease-out;
-		}
-		&:not(:last-of-type) {
 		}
 		&:first-of-type {
 			label {

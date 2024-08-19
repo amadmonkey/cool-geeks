@@ -8,24 +8,25 @@
 		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 	}
 	.receipt-card {
-		position: relative;
 		display: flex;
-		flex-direction: column;
+		font-weight: 800;
+		position: relative;
 		align-items: center;
+		flex-direction: column;
 		justify-content: center;
 		&__due {
+			gap: 0px;
 			display: flex;
 			flex-direction: column;
-			gap: 0px;
 			label {
-				font-weight: 800;
 				font-size: 12px;
+				font-weight: 800;
 				color: lighten($dark, 30%);
 			}
 			span {
 				&:first-of-type {
 					font-size: 50px;
-					line-height: 50px;
+					line-height: 40px;
 				}
 			}
 		}
@@ -35,14 +36,13 @@
 			align-items: start;
 			flex-direction: column;
 			.form-group {
-				gap: 0;
+				gap: 1px;
 				display: flex;
 				flex-direction: column;
 				label {
 					font-size: 11px;
-					font-weight: 800;
 					line-height: 11px;
-					color: lighten($dark, 30%);
+					color: lighten($dark, 20%);
 				}
 				span {
 					font-size: 14px;
@@ -76,6 +76,7 @@
 			display: flex;
 			position: relative;
 			padding: 30px 10px;
+			background-color: #fff;
 			align-items: center;
 			flex-direction: column;
 			justify-content: center;
@@ -92,36 +93,36 @@
 				justify-content: space-between;
 				> span,
 				button {
-					color: darken($info, 10%);
+					gap: 5px;
+					display: flex;
+					font-size: 15px;
 					font-weight: 800;
 					padding: 5px 10px;
 					border-radius: 5px;
-					background-color: #fff;
-					box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-					font-size: 15px;
-					display: flex;
-					gap: 5px;
 					align-items: center;
+					background-color: #fff;
+					color: darken($info, 10%);
+					box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 					img {
-						height: 15px;
 						width: auto;
+						height: 15px;
 					}
 				}
 				svg {
-					height: 30px;
-					background-color: #fff;
-					padding: 5px;
 					fill: $dark;
+					height: 30px;
+					padding: 5px;
 					border-radius: 5px;
+					background-color: #fff;
 					box-shadow: $box-shadow_fade;
 				}
 				> span {
+					min-width: 50px;
 					overflow: hidden;
+					padding: 2px 7px;
 					white-space: nowrap;
 					text-overflow: ellipsis;
-					min-width: 50px;
 					display: inline-block;
-					padding: 2px 7px;
 				}
 				.cutoff-icon {
 					width: auto;
@@ -133,7 +134,7 @@
 				}
 			}
 			&.accepted {
-				background-color: lighten($success, 35%);
+				background-color: lighten($success, 40%);
 				background: linear-gradient(0deg, lighten($success, 20%) 0%, lighten($success, 40%) 50%);
 				.header {
 					> * {
@@ -145,7 +146,8 @@
 				}
 			}
 			&.denied {
-				color: black;
+				color: $dark;
+				background-color: lighten($danger, 30%);
 				background: linear-gradient(0deg, lighten($danger, 20%) 0%, lighten($danger, 30%) 50%);
 				.header {
 					> * {
@@ -191,7 +193,7 @@
 					}
 					&:hover {
 						color: #fff;
-						background-color: lighten($dark, 30%);
+						background-color: lighten($dark, 20%);
 					}
 				}
 				&.invalid {

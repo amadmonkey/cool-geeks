@@ -13,7 +13,7 @@ import "./skeleton-subd.scss";
 
 const SkeletonSubd = () => {
 	return (
-		<div className="content__subd loading">
+		<div className="content__subd">
 			<div className="subd-container">
 				<header>
 					<h1 className="skeleton"></h1>

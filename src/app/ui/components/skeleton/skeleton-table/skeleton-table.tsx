@@ -184,6 +184,20 @@ const SkeletonTable = (props: any) => {
 						</tr>
 					);
 				});
+			case SKELETON_TYPES.PLAN:
+				return (
+					<tr className="plan-item__row">
+						<td>
+							<span className="skeleton">&nbsp;</span>
+						</td>
+						<td>
+							<span className="skeleton">&nbsp;</span>
+						</td>
+						<td>
+							<span className="skeleton">&nbsp;</span>
+						</td>
+					</tr>
+				);
 			case SKELETON_TYPES.SUBD_LIST:
 				return Array.from(Array(15).keys()).map((_: any, x: number) => {
 					return (

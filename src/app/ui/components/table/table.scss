@@ -110,22 +110,28 @@
 				}
 				&[name="deny"] {
 					&::before {
-						content: "deny";
+						content: "Deny";
 					}
 				}
 				&[name="accept"] {
 					&::before {
-						content: "accept";
+						content: "Accept";
+					}
+				}
+				&[name="change-status"] {
+					&::before {
+						width: 110px;
+						content: "Change Status";
 					}
 				}
 				&[name="add"] {
 					&::before {
-						content: "add";
+						content: "Add";
 					}
 				}
 				&[name="remove"] {
 					&::before {
-						content: "remove";
+						content: "Remove";
 					}
 				}
 				&::before {

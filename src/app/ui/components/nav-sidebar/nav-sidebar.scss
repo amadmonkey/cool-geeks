@@ -18,8 +18,8 @@ $header-height: 80px;
 		svg {
 			height: auto;
 			width: 30px;
-			fill: $info;
-			stroke: $info;
+			fill: lighten($info, 10%);
+			stroke: lighten($info, 10%);
 		}
 		> span {
 			font-size: 10px;
@@ -29,7 +29,7 @@ $header-height: 80px;
 			letter-spacing: 3px;
 		}
 		h1 {
-			color: $info;
+			color: lighten($info, 10%);
 			font-size: 40px;
 			font-weight: 800;
 			line-height: 35px;

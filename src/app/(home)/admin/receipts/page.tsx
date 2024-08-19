@@ -3,33 +3,23 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import {
-	VIEW_MODES,
-	TABLE_HEADERS,
-	RECEIPT_STATUS,
-	SKELETON_TYPES,
-	RECEIPT_STATUS_BADGE,
-} from "@/utility";
+import { VIEW_MODES, TABLE_HEADERS, RECEIPT_STATUS, SKELETON_TYPES } from "@/utility";
 
 // components
-import Image from "next/image";
 import Receipt from "@/app/ui/types/Receipt";
+import ReceiptsFilters from "./filters/filters";
 import Table from "@/app/ui/components/table/table";
-import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
-import ReceiptCard from "@/app/ui/components/receipt-card/receipt-card";
 import FormGroup from "@/app/ui/components/form-group/form-group";
+import ReceiptTr from "@/app/ui/components/receipt-tr/receipt-tr";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
-import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
-import ReceiptsFilters from "./filters/filters";
+import ReceiptCard from "@/app/ui/components/receipt-card/receipt-card";
 
 // svgs
 import IconGrid from "@/public/grid.svg";
 import IconList from "@/public/list.svg";
-import IconDeny from "@/public/denied.svg";
-import IconAccept from "@/public/done.svg";
 import IconReceipt from "@/public/receipt2.svg";
 
 // types
@@ -58,21 +48,22 @@ export default function Receipts(props: any) {
 	const listRef = useRef<any>(null);
 	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
-	const [rejectReason, setRejectReason] = useState("");
 
 	const updateReceipt = async (props: any) => {
 		try {
-			setRejectReason("");
+			// setRejectReason("");
+			console.log(props);
 			const { code, data } = await fetch("/api/receipt", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify({
-					...props.data,
-					...{ rejectReason: rejectReason },
-					...{ status: props.action },
-				}),
+				// body: JSON.stringify({
+				// 	...props.data,
+				// 	...{ rejectReason: rejectReason },
+				// 	...{ status: props.action },
+				// }),
+				body: JSON.stringify(props),
 				credentials: "include",
 			}).then((res) => res.json());
 			switch (code) {
@@ -147,7 +138,8 @@ export default function Receipts(props: any) {
 						push("/login");
 						break;
 				}
-			} catch (e) {
+			} catch (e: any) {
+				if (e.name === "AbortError") return;
 				console.log(e);
 			}
 		},
@@ -169,165 +161,6 @@ export default function Receipts(props: any) {
 		}, 300);
 	}, [filters, getHistoryList]);
 
-	const getView = (showConfirmModal: Function) => {
-		switch (viewMode) {
-			case VIEW_MODES.GRID:
-				return (
-					<div
-						className={`receipt-cards-container ${viewMode.toLowerCase()}${
-							listRef.current === null ? " loading" : listRef.current.length === 0 ? " empty" : ""
-						}`}
-					>
-						{listRef.current === null ? (
-							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-						) : listRef.current.length ? (
-							listRef.current.slice(0, listRef.current.length).map((item: Receipt) => {
-								return (
-									<ReceiptCard key={item._id} data={item} showConfirmModal={showConfirmModal} />
-								);
-							})
-						) : (
-							<ListEmpty label="No entries found" />
-						)}
-						{!props.title && Number(filters.pagesCurrent) < Number(filters.pagesTotal) && (
-							<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
-						)}
-					</div>
-				);
-			case VIEW_MODES.LIST:
-				return (
-					<Table
-						type="receipts"
-						headers={TABLE_HEADERS.receipts}
-						className={listRef.current === null ? "loading" : ""}
-					>
-						{listRef.current === null ? (
-							<Skeleton type={SKELETON_TYPES.RECEIPTS} />
-						) : listRef.current.length ? (
-							listRef.current?.map((item: any) => {
-								const receiptDate = new Date(item.receiptDate);
-								return (
-									<tr
-										key={item._id}
-										className={`receipts ${item.status === "FAILED" ? "row-failed" : ""}`}
-									>
-										<td>
-											<span
-												style={{
-													color: item.status === "FAILED" ? "#e46d6d" : "#5576c7",
-													fontSize: "15px",
-													fontWeight: "800",
-												}}
-											>{`${item.userRef.firstName} ${item.userRef.lastName}`}</span>
-											<br />
-											<span style={{ fontSize: "13px" }}>{item.planRef.subdRef.name}</span>
-											<br />
-											{item.userRef.accountNumber}
-										</td>
-										<td>
-											<span>{item.planRef.name}</span>
-											<br />
-											<span style={{ fontSize: "20px", fontWeight: "bold" }}>
-												₱{item.planRef.price}
-											</span>
-										</td>
-										<td>
-											{item.cutoff === "MID" ? "Midmonth" : "End of Month"}
-											<br />
-											{`${receiptDate.toLocaleDateString("default", {
-												month: "long",
-											})} ${receiptDate.getFullYear()}`}
-										</td>
-										{item.status !== "FAILED" ? (
-											<>
-												<td>{new Date(item.createdAt).toDateString()}</td>
-												<td>{item.referenceNumber}</td>
-												<td>
-													<button className="invisible">
-														<Image
-															src={`/image.svg`}
-															height={0}
-															width={0}
-															style={{ height: "20px", width: "auto" }}
-															sizes="100vw"
-															alt="Image icon button"
-														/>
-													</button>
-												</td>
-												<td
-													style={{
-														display: "flex",
-														justifyContent: "center",
-														alignContent: "center",
-													}}
-												>
-													{RECEIPT_STATUS_BADGE(item.status)}
-												</td>
-												{item.status === RECEIPT_STATUS.PENDING ? (
-													<td>
-														<label htmlFor="deny" className="sr-only">
-															Deny
-														</label>
-														<button
-															name="deny"
-															className="invisible button__action"
-															onClick={() => showConfirmModal({ data: item, action: "DENIED" })}
-														>
-															<IconDeny className="invalid" />
-														</button>
-														<label htmlFor="deny" className="sr-only">
-															Deny
-														</label>
-														<button
-															name="accept"
-															className="invisible button__action"
-															onClick={() => showConfirmModal({ data: item, action: "ACCEPTED" })}
-														>
-															<span className="sr-only">Accept</span>
-															<IconAccept className="success" />
-														</button>
-													</td>
-												) : (
-													<td>&nbsp;</td>
-												)}
-											</>
-										) : (
-											<>
-												<td
-													style={{
-														fontSize: "20px",
-														fontWeight: "800",
-														letterSpacing: "10px",
-													}}
-												>
-													NO RECEIPT SUBMITTED
-												</td>
-												<td>
-													<Switch
-														name="edit"
-														id={item._id}
-														label={
-															<div style={{ display: "flex", alignItems: "center", gap: 5 }}>
-																User Status
-															</div>
-														}
-														onChange={() => console.log("change user status")}
-														mini
-													/>
-												</td>
-											</>
-										)}
-									</tr>
-								);
-							})
-						) : (
-							<ListEmpty label="No entries found" />
-						)}
-					</Table>
-				);
-		}
-	};
-
 	useEffect(() => {
 		mounted.current = true;
 		!props.title && window.addEventListener("scroll", onScroll);
@@ -347,14 +180,68 @@ export default function Receipts(props: any) {
 					style={{ marginBottom: "10px" }}
 				/>
 			)}
-			<ConfirmModal
-				template={(props: any) => updateConfirmTemplate(props, rejectReason, setRejectReason)}
-				continue={updateReceipt}
-			>
-				{(showConfirmModal: any) => {
-					return getView(showConfirmModal);
-				}}
-			</ConfirmModal>
+			{(() => {
+				switch (viewMode) {
+					case VIEW_MODES.GRID:
+						return (
+							<div
+								className={`receipt-cards-container ${viewMode.toLowerCase()}${
+									listRef.current === null
+										? " loading"
+										: listRef.current.length === 0
+										? " empty"
+										: ""
+								}`}
+							>
+								{listRef.current === null ? (
+									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+								) : listRef.current.length ? (
+									listRef.current
+										.slice(0, listRef.current.length)
+										.map((item: Receipt) => (
+											<ReceiptCard
+												key={item._id}
+												data={item}
+												updateReceipt={updateReceipt}
+												updateConfirmTemplate={updateConfirmTemplate}
+											/>
+										))
+								) : (
+									<ListEmpty label="No entries found" />
+								)}
+								{/* view more skeleton */}
+								{!props.title && Number(filters.pagesCurrent) < Number(filters.pagesTotal) && (
+									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+								)}
+							</div>
+						);
+					case VIEW_MODES.LIST:
+						return (
+							<Table
+								type="receipts"
+								headers={TABLE_HEADERS.receipts}
+								className={listRef.current === null ? "loading" : ""}
+							>
+								{listRef.current === null ? (
+									<Skeleton type={SKELETON_TYPES.RECEIPTS} />
+								) : listRef.current.length ? (
+									listRef.current?.map((item: any) => {
+										return (
+											<ReceiptTr
+												key={item._id}
+												data={item}
+												updateReceipt={updateReceipt}
+												updateConfirmTemplate={updateConfirmTemplate}
+											/>
+										);
+									})
+								) : (
+									<ListEmpty label="No entries found" />
+								)}
+							</Table>
+						);
+				}
+			})()}
 			{props.title && (
 				<Link
 					className="button"
@@ -406,7 +293,6 @@ const updateConfirmTemplate = (
 				) : (
 					<>
 						<h1 style={{ fontSize: "14px", marginBottom: "10px" }}>UPDATING RECEIPT STATUS</h1>
-
 						<p style={{ fontSize: "14px", textAlign: "center", margin: "10px" }}>
 							This will set the receipt`s status to{" "}
 							<strong

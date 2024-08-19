@@ -38,8 +38,8 @@ const NavSidebar = () => {
 			const date = DateTime.local().setZone("Asia/Manila");
 			setCurrentDate({
 				hours: date.toFormat("hh"),
-				minutes: date.minute,
-				seconds: date.second,
+				minutes: date.toFormat("mm"),
+				seconds: date.toFormat("ss"),
 				dateMonthYear: date.toFormat("LLLL dd, yyyy").toLowerCase(),
 				timeOfDay: date.toFormat("a").toLowerCase(),
 			});
