@@ -29,26 +29,30 @@ const Admin = () => {
 	const [overdueAccounts, setOverdueAccounts] = useState<number | null>(null);
 
 	const getAddtl = async () => {
-		const { code, data } = await fetch(`/api/user/dashboard`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		}).then((res) => res.json());
-		switch (code) {
-			case 200:
-				setPendingUsers(data.pendingUsers);
-				setPendingReceipts(data.pendingReceipts);
-				setOverdueAccounts(data.overdueAccounts);
-				break;
-			case 401:
-				push("/login");
-				break;
-			default:
-				console.log("getHistoryList default", data);
-				push("/login");
-				break;
+		try {
+			const { code, data } = await fetch(`/api/user/dashboard`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					setPendingUsers(data.pendingUsers);
+					setPendingReceipts(data.pendingReceipts);
+					setOverdueAccounts(data.overdueAccounts);
+					break;
+				case 401:
+					push("/login");
+					break;
+				default:
+					console.log("getHistoryList default", data);
+					push("/login");
+					break;
+			}
+		} catch (err) {
+			console.log(err);
 		}
 	};
 
