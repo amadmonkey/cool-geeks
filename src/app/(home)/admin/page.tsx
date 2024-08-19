@@ -37,6 +37,7 @@ const Admin = () => {
 				},
 				credentials: "include",
 			}).then((res) => res.json());
+			console.log(data);
 			switch (code) {
 				case 200:
 					setPendingUsers(data.pendingUsers);
@@ -52,7 +53,7 @@ const Admin = () => {
 					break;
 			}
 		} catch (err) {
-			console.log(err);
+			console.log("getAddtl catch", err);
 		}
 	};
 
@@ -67,7 +68,7 @@ const Admin = () => {
 					<Link href="/">
 						<IconReceipt />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+							<h1 className={`widget-header${pendingReceipts === null ? " skeleton" : ""}`}>
 								{pendingReceipts}
 							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Pending receipts</h3>
@@ -78,7 +79,7 @@ const Admin = () => {
 					<Link href="/">
 						<IconOverdue />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+							<h1 className={`widget-header${overdueAccounts === null ? " skeleton" : ""}`}>
 								{overdueAccounts}
 							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Overdue accounts</h3>
@@ -89,7 +90,7 @@ const Admin = () => {
 					<Link href="/">
 						<IconPending style={{ stroke: "unset" }} />
 						<div>
-							<h1 style={{ fontSize: "40px", lineHeight: "40px", fontWeight: "400" }}>
+							<h1 className={`widget-header${pendingUsers === null ? " skeleton" : ""}`}>
 								{pendingUsers}
 							</h1>
 							<h3 style={{ fontSize: "13px", fontWeight: "800" }}>Pending accounts</h3>
