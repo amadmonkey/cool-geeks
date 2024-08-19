@@ -30,7 +30,10 @@ const Admin = () => {
 
 	const getAddtl = async () => {
 		try {
-			const { code, data } = await fetch(`/api/user/dashboard`, {
+			const searchOptions = new URLSearchParams({
+				action: "/dashboard-info",
+			});
+			const { code, data } = await fetch(`/api/user?${searchOptions}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
