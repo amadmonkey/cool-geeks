@@ -190,19 +190,16 @@ export default function Receipts(props: any) {
 				/>
 			)}
 			{(() => {
+				const isLoading = listRef.current === null || loading;
 				switch (viewMode) {
 					case VIEW_MODES.GRID:
 						return (
 							<div
 								className={`receipt-cards-container ${viewMode.toLowerCase()}${
-									listRef.current === null
-										? " loading"
-										: listRef.current.length === 0
-										? " empty"
-										: ""
+									isLoading ? " loading" : listRef.current.length === 0 ? " empty" : ""
 								}`}
 							>
-								{listRef.current === null || loading ? (
+								{isLoading ? (
 									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 								) : listRef.current.length ? (
 									listRef.current
@@ -229,9 +226,9 @@ export default function Receipts(props: any) {
 							<Table
 								type="receipts"
 								headers={TABLE_HEADERS.receipts}
-								className={listRef.current === null ? "loading" : ""}
+								className={isLoading ? "loading" : ""}
 							>
-								{listRef.current === null || loading ? (
+								{isLoading ? (
 									<Skeleton type={SKELETON_TYPES.RECEIPTS} />
 								) : listRef.current.length ? (
 									listRef.current?.map((item: any) => {
