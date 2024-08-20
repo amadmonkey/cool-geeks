@@ -32,6 +32,7 @@ import "./page.scss";
 export default function Receipts(props: any) {
 	const { push } = useRouter();
 	const mounted = useRef(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {
@@ -46,13 +47,13 @@ export default function Receipts(props: any) {
 	const signal = useRef<any>();
 	const controller = useRef<any>();
 	const listRef = useRef<any>(null);
-	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
+	// const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
 	const updateReceipt = async (props: any) => {
 		try {
 			// setRejectReason("");
-			console.log(props);
+			setLoading(true);
 			const { code, data } = await fetch("/api/receipt", {
 				method: "PUT",
 				headers: {
@@ -72,15 +73,19 @@ export default function Receipts(props: any) {
 						item._id === data._id ? data : item
 					);
 					listRef.current = updatedList;
-					setFilteredList(updatedList);
+					// setFilteredList(updatedList);
+					setLoading(false);
 					break;
 				case 400:
 					// parse errors
+					setLoading(false);
 					break;
 				default:
+					setLoading(false);
 					break;
 			}
 		} catch (e) {
+			setLoading(false);
 			console.error(e);
 		}
 	};
@@ -89,6 +94,7 @@ export default function Receipts(props: any) {
 	const getHistoryList = useCallback(
 		async (fromFilter?: boolean, query?: any) => {
 			try {
+				setLoading(true);
 				// reset list when something in the filter changed
 				if (fromFilter) {
 					listRef.current = [];
@@ -127,13 +133,16 @@ export default function Receipts(props: any) {
 							filters.setItemsTotal(totalCount);
 
 							listRef.current = listRef.current ? [...listRef.current, ...list] : list;
-							setFilteredList(list);
+							setLoading(false);
+							// setFilteredList(list);
 						}
 						break;
 					case 401:
+						setLoading(false);
 						push("/login");
 						break;
 					default:
+						setLoading(false);
 						console.log("getHistoryList default", data);
 						push("/login");
 						break;
@@ -193,7 +202,7 @@ export default function Receipts(props: any) {
 										: ""
 								}`}
 							>
-								{listRef.current === null ? (
+								{listRef.current === null || loading ? (
 									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 								) : listRef.current.length ? (
 									listRef.current
@@ -222,7 +231,7 @@ export default function Receipts(props: any) {
 								headers={TABLE_HEADERS.receipts}
 								className={listRef.current === null ? "loading" : ""}
 							>
-								{listRef.current === null ? (
+								{listRef.current === null || loading ? (
 									<Skeleton type={SKELETON_TYPES.RECEIPTS} />
 								) : listRef.current.length ? (
 									listRef.current?.map((item: any) => {
