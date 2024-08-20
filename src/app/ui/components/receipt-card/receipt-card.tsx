@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import Image from "next/image";
 import { CONSTANTS, CUTOFF_TYPE, getDaysLeft, RECEIPT_STATUS } from "@/utility";
@@ -155,8 +155,12 @@ const ReceiptCard = (props: Props) => {
 								</div>
 							</div>
 						</Card>
-						<footer>
-							<Suspense fallback={<IconLoading style={{ height: "10px" }} />}>
+						{loading ? (
+							<footer>
+								<IconLoading style={{ height: "10px" }} />
+							</footer>
+						) : (
+							<footer>
 								{receipt.status === RECEIPT_STATUS.PENDING ? (
 									<>
 										<button
@@ -193,8 +197,8 @@ const ReceiptCard = (props: Props) => {
 										<label>CHANGE STATUS</label>
 									</button>
 								)}
-							</Suspense>
-						</footer>
+							</footer>
+						)}
 					</div>
 				);
 			}}
