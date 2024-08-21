@@ -26,8 +26,6 @@ const PlanUsers = (props: PlanUsersProps) => {
 					filter: JSON.stringify({
 						planRef: plan._id,
 					}),
-					page: "1",
-					limit: "10",
 					sort: JSON.stringify({
 						name: "asc",
 						code: "asc",
@@ -66,7 +64,7 @@ const PlanUsers = (props: PlanUsersProps) => {
 		return () => {
 			mounted.current = false;
 		};
-	}, []);
+	}, [props.plan]);
 
 	return (
 		<div className="plan-content__users">

@@ -10,17 +10,16 @@ import Card from "@/app/ui/components/card/card";
 import Receipt from "../../types/Receipt";
 
 // svgs
+import IconBack from "@/public/back.svg";
 import IconAccept from "@/public/done.svg";
 import IconMid from "@/public/midmonth.svg";
 import IconInvalid from "@/public/invalid.svg";
-import IconReplace from "@/public/replace.svg";
 import IconLoading from "@/public/loading.svg";
 import IconEnd from "@/public/end-of-month.svg";
 import ConfirmModal from "../confirm-modal/confirm-modal";
 
 interface Props {
 	data: Receipt;
-	updateReceipt: Function;
 	updateConfirmTemplate: any;
 }
 
@@ -61,9 +60,41 @@ const ReceiptCard = (props: Props) => {
 		}
 	};
 
+	const updateReceipt = async (props: any) => {
+		try {
+			setLoading(true);
+			const { code, data } = await fetch("/api/receipt", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(props),
+				credentials: "include",
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					// const updatedList = listRef.current.map((item: any) =>
+					// 	item._id === data._id ? data : item
+					// );
+					// listRef.current = updatedList;
+					setReceipt(data);
+					break;
+				case 400:
+					// parse errors
+					break;
+				default:
+					break;
+			}
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			console.error(e);
+		}
+	};
+
 	const handleUpdateStatus = (data: any) => {
 		// showConfirmModal(data);
-		props.updateReceipt(data);
+		updateReceipt(data);
 		setLoading(true);
 	};
 
@@ -187,14 +218,14 @@ const ReceiptCard = (props: Props) => {
 								) : (
 									<button
 										style={{ width: "170px" }}
-										className={`bg-info invisible text-white fill-white`}
+										className={`invisible`}
 										onClick={() => {
 											setLoading(true);
 											showConfirmModal({ data: receipt, action: RECEIPT_STATUS.PENDING });
 										}}
 									>
-										<IconReplace />
-										<label>CHANGE STATUS</label>
+										<IconBack />
+										<label>REVERT STATUS</label>
 									</button>
 								)}
 							</footer>

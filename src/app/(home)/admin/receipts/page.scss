@@ -1,5 +1,6 @@
 @import "../../../variables.scss";
 
+// TODO: move styles to the components
 .receipt-cards-container {
 	gap: 0 30px;
 	display: grid;
@@ -34,7 +35,7 @@
 		&__addtl {
 			gap: 10px;
 			display: flex;
-			align-items: start;
+			align-items: flex-start;
 			flex-direction: column;
 			.form-group {
 				gap: 1px;
@@ -171,16 +172,26 @@
 			button {
 				gap: 5px;
 				width: 50%;
+				fill: $dark;
 				height: 30px;
+				color: $dark;
 				display: flex;
 				position: relative;
 				align-items: center;
 				justify-content: center;
+				background-color: #fff;
 				transition: 0.05s ease-in-out;
 				border-bottom-left-radius: 10px;
 				border-bottom-right-radius: 10px;
 				box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+				&:hover {
+					background-color: lighten($dark, 60%);
+					svg {
+						animation: wiggle 1s ease-in;
+					}
+				}
 				label {
+					height: 17px;
 					pointer-events: none;
 				}
 				svg {
@@ -198,26 +209,30 @@
 					}
 				}
 				&.invalid {
-					color: #fff;
-					background-color: $danger;
+					color: $dark;
+					background-color: #fff;
 					svg {
 						fill: $danger;
 					}
 					&.active,
 					&:hover {
-						background-color: darken($danger, 5%);
+						background-color: lighten($dark, 60%);
 					}
 				}
 				&.success {
-					color: #fff;
+					color: $dark;
 					background-color: $success;
 					svg {
-						fill: $success;
+						fill: darken($success, 20%);
 					}
 					&.active,
 					&:hover {
 						color: #fff;
-						background-color: darken($success, 5%);
+						color: darken($success, 30%);
+						svg {
+							fill: darken($success, 25%);
+						}
+						background-color: darken($success, 10%);
 					}
 				}
 			}
@@ -260,6 +275,19 @@
 			width: 40px;
 			height: auto;
 			fill: $primary;
+		}
+	}
+}
+
+.receipts {
+	td {
+		.confirm-modal {
+			[name="change-status"] {
+				svg {
+					height: 20px;
+					fill: $dark;
+				}
+			}
 		}
 	}
 }

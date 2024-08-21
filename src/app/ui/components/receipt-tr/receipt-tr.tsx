@@ -3,16 +3,18 @@ import Receipt from "../../types/Receipt";
 import Image from "next/image";
 import { RECEIPT_STATUS, RECEIPT_STATUS_BADGE } from "@/utility";
 
+// components
 import Switch from "../switch/switch";
+import ConfirmModal from "../confirm-modal/confirm-modal";
+
+// svgs
+import IconBack from "@/public/back.svg";
 import IconDeny from "@/public/denied.svg";
 import IconAccept from "@/public/done.svg";
-import IconReplace from "@/public/replace.svg";
 import IconLoading from "@/public/loading.svg";
-import ConfirmModal from "../confirm-modal/confirm-modal";
 
 interface Props {
 	data: Receipt;
-	updateReceipt: Function;
 	updateConfirmTemplate: Function;
 }
 
@@ -22,9 +24,34 @@ const ReceiptTr = (props: Props) => {
 	const receiptDate = new Date(props.data.receiptDate);
 	const [loading, setLoading] = useState<boolean>(false);
 
+	const updateReceipt = async (props: any) => {
+		try {
+			setLoading(true);
+			const { code, data } = await fetch("/api/receipt", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(props),
+				credentials: "include",
+			}).then((res) => res.json());
+			switch (code) {
+				case 200:
+					setReceipt(data);
+					break;
+				default:
+					// parse errors
+					break;
+			}
+			setLoading(false);
+		} catch (e) {
+			setLoading(false);
+			console.error(e);
+		}
+	};
+
 	const handleUpdateStatus = (data: any) => {
-		// showConfirmModal(data);
-		props.updateReceipt(data);
+		updateReceipt(data);
 		setLoading(true);
 	};
 
@@ -140,7 +167,7 @@ const ReceiptTr = (props: Props) => {
 												onClick={() => showConfirmModal({ data: receipt, action: "PENDING" })}
 											>
 												<span className="sr-only">Change Status</span>
-												<IconReplace />
+												<IconBack />
 											</button>
 										</>
 									);

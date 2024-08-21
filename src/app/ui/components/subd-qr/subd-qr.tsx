@@ -74,7 +74,6 @@ const SubdQr = (props: SubdQrProps) => {
 				credentials: "include",
 				signal: signal.current,
 			}).then((res) => res.json());
-			console.log(res);
 			props.handleFileUpdate(res);
 			setQrUrl(res.data);
 		} catch (e: any) {

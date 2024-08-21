@@ -24,6 +24,7 @@ type SubdPlansProps = {
 const SubdPlans = (props: SubdPlansProps) => {
 	const { push } = useRouter();
 	const mounted = useRef(false);
+	const [loading, setLoading] = useState<boolean>(false);
 	const [planError, setPlanError] = useState<string>("");
 	const [plans, setPlans] = useState<Array<Plan> | null>(null);
 	const [newPlanForm, setNewPlanForm] = useState(DEFAULT_VALUES.planForm);
@@ -77,6 +78,7 @@ const SubdPlans = (props: SubdPlansProps) => {
 
 	const addPlan = async () => {
 		try {
+			setLoading(true);
 			const { code, data } = await fetch("/api/plan", {
 				method: "POST",
 				headers: {
@@ -99,7 +101,9 @@ const SubdPlans = (props: SubdPlansProps) => {
 					push("/login");
 					break;
 			}
+			setLoading(false);
 		} catch (err) {
+			setLoading(false);
 			console.error(err);
 		}
 	};
@@ -161,10 +165,11 @@ const SubdPlans = (props: SubdPlansProps) => {
 											<TextInput
 												type="text"
 												name="name"
-												value={newPlanForm.name}
 												minLength="2"
-												onChange={updateNewPlanForm}
 												placeholder="Name"
+												disabled={loading}
+												value={newPlanForm.name}
+												onChange={updateNewPlanForm}
 												noValidate
 												line
 											/>
@@ -173,10 +178,11 @@ const SubdPlans = (props: SubdPlansProps) => {
 											<TextInput
 												type="number"
 												name="price"
-												value={newPlanForm.price}
-												maxLength={5}
-												onChange={updateNewPlanForm}
+												maxLength="5"
 												placeholder="Rate"
+												disabled={loading}
+												value={newPlanForm.price}
+												onChange={updateNewPlanForm}
 												line
 											/>
 										</td>
@@ -184,24 +190,20 @@ const SubdPlans = (props: SubdPlansProps) => {
 											<TextInput
 												type="text"
 												name="description"
-												value={newPlanForm.description}
 												minLength="2"
-												onChange={updateNewPlanForm}
 												placeholder="Notes"
+												disabled={loading}
+												onChange={updateNewPlanForm}
+												value={newPlanForm.description}
 												noValidate
 												line
 											/>
 										</td>
 										<td>
 											<Button
-												name="addPlan"
+												name="add-plan"
 												type="button"
-												style={{
-													height: "30px",
-													fontSize: "12px",
-													letterSpacing: "0px",
-													fontWeight: "800",
-												}}
+												loading={loading}
 												onClick={() => planIsValid() && addPlan()}
 											>
 												<label htmlFor="addPlan" className="sr-only">

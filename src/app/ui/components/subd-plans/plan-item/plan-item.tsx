@@ -158,7 +158,7 @@ const PlanItem = (props: PlanProps) => {
 												value={plan?.description || ""}
 												onChange={(e: any) => updatePlanForm(e)}
 											/>
-											{plan.description !== plan?.description && (
+											{planInitial.description !== plan?.description && (
 												<div
 													style={{
 														display: "flex",

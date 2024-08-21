@@ -31,8 +31,13 @@ import "./page.scss";
 // TODO: segregate
 export default function Receipts(props: any) {
 	const { push } = useRouter();
+	const signal = useRef<any>();
 	const mounted = useRef(false);
+	const controller = useRef<any>();
+	const listRef = useRef<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
+	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {
@@ -44,57 +49,12 @@ export default function Receipts(props: any) {
 			}
 		)
 	);
-	const signal = useRef<any>();
-	const controller = useRef<any>();
-	const listRef = useRef<any>(null);
-	// const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
-	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
 
-	const updateReceipt = async (props: any) => {
-		try {
-			// setRejectReason("");
-			setLoading(true);
-			const { code, data } = await fetch("/api/receipt", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				// body: JSON.stringify({
-				// 	...props.data,
-				// 	...{ rejectReason: rejectReason },
-				// 	...{ status: props.action },
-				// }),
-				body: JSON.stringify(props),
-				credentials: "include",
-			}).then((res) => res.json());
-			switch (code) {
-				case 200:
-					const updatedList = listRef.current.map((item: any) =>
-						item._id === data._id ? data : item
-					);
-					listRef.current = updatedList;
-					// setFilteredList(updatedList);
-					setLoading(false);
-					break;
-				case 400:
-					// parse errors
-					setLoading(false);
-					break;
-				default:
-					setLoading(false);
-					break;
-			}
-		} catch (e) {
-			setLoading(false);
-			console.error(e);
-		}
-	};
-
-	// let controller = new AbortController();
 	const getHistoryList = useCallback(
 		async (fromFilter?: boolean, query?: any) => {
 			try {
 				setLoading(true);
+
 				// reset list when something in the filter changed
 				if (fromFilter) {
 					listRef.current = [];
@@ -124,35 +84,34 @@ export default function Receipts(props: any) {
 						credentials: "include",
 					}
 				).then((res) => res.json());
+
 				switch (code) {
 					case 200:
 						if (mounted.current) {
 							const { list, totalCount } = data;
-
 							filters.addItemsCurrent(list.length);
 							filters.setItemsTotal(totalCount);
-
 							listRef.current = listRef.current ? [...listRef.current, ...list] : list;
-							setLoading(false);
-							// setFilteredList(list);
+							setFilteredList(list);
 						}
 						break;
 					case 401:
-						setLoading(false);
 						push("/login");
 						break;
 					default:
-						setLoading(false);
 						console.log("getHistoryList default", data);
 						push("/login");
 						break;
 				}
-			} catch (e: any) {
-				if (e.name === "AbortError") return;
-				console.log(e);
+
+				setLoading(false);
+			} catch (err: any) {
+				setLoading(false);
+				if (err.name === "AbortError") return;
+				console.log(err);
 			}
 		},
-		[filters, push]
+		[filters]
 	);
 
 	let timeoutId = useRef<number>();
@@ -168,12 +127,11 @@ export default function Receipts(props: any) {
 				getHistoryList();
 			}
 		}, 300);
-	}, [filters, getHistoryList]);
+	}, [filters]);
 
 	useEffect(() => {
 		mounted.current = true;
-		!props.title && window.addEventListener("scroll", onScroll);
-		props.title && getHistoryList();
+		props.title ? getHistoryList() : window.addEventListener("scroll", onScroll);
 		return () => {
 			mounted.current = false;
 			!props.title && window.removeEventListener("scroll", onScroll);
@@ -208,7 +166,6 @@ export default function Receipts(props: any) {
 											<ReceiptCard
 												key={item._id}
 												data={item}
-												updateReceipt={updateReceipt}
 												updateConfirmTemplate={updateConfirmTemplate}
 											/>
 										))
@@ -229,20 +186,25 @@ export default function Receipts(props: any) {
 								className={isLoading ? "loading" : ""}
 							>
 								{isLoading ? (
-									<Skeleton type={SKELETON_TYPES.RECEIPTS} />
+									<tr>
+										<Skeleton type={SKELETON_TYPES.RECEIPTS} />
+									</tr>
 								) : listRef.current.length ? (
 									listRef.current?.map((item: any) => {
 										return (
 											<ReceiptTr
 												key={item._id}
 												data={item}
-												updateReceipt={updateReceipt}
 												updateConfirmTemplate={updateConfirmTemplate}
 											/>
 										);
 									})
 								) : (
-									<ListEmpty label="No entries found" />
+									<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
+										<td>
+											<ListEmpty label="No entries found" />
+										</td>
+									</tr>
 								)}
 							</Table>
 						);

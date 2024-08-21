@@ -40,7 +40,6 @@ const Admin = () => {
 				},
 				credentials: "include",
 			}).then((res) => res.json());
-			console.log(data);
 			switch (code) {
 				case 200:
 					setPendingUsers(data.pendingUsers);

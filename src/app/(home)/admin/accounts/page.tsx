@@ -12,6 +12,7 @@ import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import AccountsFilters from "./filters/filters";
 
 // types
 import { Filters } from "@/app/ui/classes/filters";
@@ -25,32 +26,57 @@ import "./page.scss";
 
 export default function Accounts(props: any) {
 	const { push } = useRouter();
+	const signal = useRef<any>();
 	const mounted = useRef(false);
-	const filter = new Filters();
+	const controller = useRef<any>();
 	const [list, setList] = useState<any>({});
+	const [loading, setLoading] = useState<boolean>(false);
 	const [filteredList, setFilteredList] = useState<any>(null);
+	const [filters] = useState(
+		new Filters(
+			props.searchOptions || {
+				page: "1",
+				limit: "9",
+				sort: {
+					createdAt: "desc",
+				},
+			}
+		)
+	);
 
-	const getAccounts = useCallback(() => {
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "10",
-			sort: JSON.stringify({
-				name: "asc",
-				code: "asc",
-			}),
-		});
+	const getAccounts = useCallback(
+		async (fromFilter?: boolean, query?: any) => {
+			try {
+				setLoading(true);
 
-		return fetch(`/api/user?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		})
-			.then((res) => res.json())
-			.then((res) => {
+				// reset list when something in the filter changed
+				if (fromFilter) {
+					filters.setPagesCurrent(1);
+					filters.setItemsCurrent(0);
+				}
+
+				// if has db query, set it
+				if (query) {
+					filters.setQuery(query);
+					filters.setSort({ createdAt: query.sortOrder });
+				}
+
+				// abort previous calls
+				if (controller.current) controller.current.abort();
+				controller.current = new AbortController();
+				signal.current = controller.current.signal;
+
+				const { code, data } = await fetch(
+					`/api/user?${new URLSearchParams(filters.valuesString)}`,
+					{
+						method: "GET",
+						headers: {
+							"Content-Type": "application/json",
+						},
+						credentials: "include",
+					}
+				).then((res) => res.json());
 				if (mounted) {
-					const { code, data } = res;
 					switch (code) {
 						case 200:
 							const { list } = data;
@@ -65,9 +91,12 @@ export default function Accounts(props: any) {
 							break;
 					}
 				}
-			})
-			.catch((err) => console.error(err));
-	}, [push]);
+			} catch (err) {
+				console.error(err);
+			}
+		},
+		[push]
+	);
 
 	const toggleUserStatus = async (e: any, user: any) => {
 		e && e.preventDefault();
@@ -138,6 +167,13 @@ export default function Accounts(props: any) {
 
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
+			{!props.title && (
+				<AccountsFilters
+					filters={filters}
+					handleFilter={getAccounts}
+					style={{ marginBottom: "10px" }}
+				/>
+			)}
 			<Table
 				type="accounts"
 				headers={TABLE_HEADERS.accounts}
@@ -219,7 +255,11 @@ export default function Accounts(props: any) {
 						);
 					})
 				) : (
-					<ListEmpty label="No entries found" />
+					<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
+						<td>
+							<ListEmpty label="No entries found" />
+						</td>
+					</tr>
 				)}
 			</Table>
 			{props.title && (

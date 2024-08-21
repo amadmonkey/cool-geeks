@@ -90,9 +90,11 @@
 				width: 100%;
 				// transition: 0.1s;
 				line-height: 14px;
-				&.active,
-				&:hover,
-				&:focus {
+			}
+			&.active,
+			&:hover,
+			&:focus {
+				.option-wrapper {
 					color: $dark;
 					background-color: lighten($dark, 60%);
 					box-shadow: $box-shadow_fade;

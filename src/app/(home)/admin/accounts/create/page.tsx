@@ -75,8 +75,8 @@ export default function AddAccount() {
 	const getPlans = async (id: string) => {
 		const searchOptions = new URLSearchParams({
 			filter: JSON.stringify({
-				subdRef: id,
 				active: true,
+				subdRef: id,
 			}),
 			sort: JSON.stringify({
 				name: "asc",
@@ -260,7 +260,7 @@ export default function AddAccount() {
 									type="text"
 									name="address"
 									value={form.address}
-									minLength="10"
+									minLength="1"
 									onChange={updateForm}
 									required
 								/>

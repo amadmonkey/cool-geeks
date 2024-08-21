@@ -53,6 +53,11 @@ const SEARCH_TYPE = {
 		USER: "User",
 		PLAN: "Plan",
 	},
+	ACCOUNT: {
+		USER: "User",
+		SUBD: "Subd",
+		PLAN: "Plan",
+	},
 };
 
 const REGEX = {

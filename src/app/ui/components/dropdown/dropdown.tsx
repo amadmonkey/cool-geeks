@@ -108,23 +108,37 @@ const Dropdown = (props: any) => {
 				</li>
 				<li className={`list-container${nameFocused ? " active" : ""}`}>
 					<ul className={`dropdown__list ${nameFocused ? "active" : ""}`} tabIndex={-1}>
-						{filteredList?.map((listItem: any, index: number) => {
-							return (
-								<li
-									role="button"
-									id={listItem._id}
-									key={`${listItem._id}-${index}`}
-									className={`dropdown__list-item ${activeIndex === index ? "active" : ""}  ${
-										value === listItem.name ? " selected" : " "
-									} `}
-									tabIndex={-1}
-									onSelect={() => onSelect(listItem)}
-									onClick={() => onSelect(listItem)}
-								>
-									<span className="option-wrapper">{listItem.name}</span>
-								</li>
-							);
-						})}
+						{filteredList.length ? (
+							filteredList?.map((listItem: any, index: number) => {
+								return (
+									<li
+										role="button"
+										id={listItem._id}
+										key={`${listItem._id}-${index}`}
+										className={`dropdown__list-item ${activeIndex === index ? "active" : ""}  ${
+											value === listItem.name ? " selected" : " "
+										} `}
+										tabIndex={-1}
+										onSelect={() => onSelect(listItem)}
+										onClick={() => onSelect(listItem)}
+									>
+										<span className="option-wrapper">{listItem.name}</span>
+									</li>
+								);
+							})
+						) : (
+							<span
+								style={{
+									display: "flex",
+									justifyContent: "center",
+									fontWeight: 800,
+									fontSize: "14px",
+									color: "#bbb",
+								}}
+							>
+								No results found
+							</span>
+						)}
 					</ul>
 				</li>
 			</ul>
