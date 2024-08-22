@@ -130,9 +130,13 @@ const AccountsFilters = (props: any) => {
 	}, [dateType]);
 
 	useEffect(() => {
+		let timer: any;
 		if (form.dateRange.start) {
-			props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+			timer = setTimeout(() => {
+				props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+			}, 1000);
 		}
+		return () => clearTimeout(timer);
 	}, [form]);
 
 	useEffect(() => {

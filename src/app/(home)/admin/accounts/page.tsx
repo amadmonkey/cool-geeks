@@ -4,7 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
-import { ACCOUNT_STATUS, DATE_READABLE, SKELETON_TYPES, TABLE_HEADERS } from "@/utility";
+import {
+	ACCOUNT_STATUS,
+	CUTOFF_TYPE,
+	DATE_READABLE,
+	SKELETON_TYPES,
+	TABLE_HEADERS,
+} from "@/utility";
 
 // components
 import Table from "@/app/ui/components/table/table";
@@ -20,6 +26,8 @@ import { Filters } from "@/app/ui/classes/filters";
 // svgs
 import IconAccounts from "@/public/users.svg";
 import IconAddUser from "@/public/add-user.svg";
+import IconMidmonth from "@/public/midmonth.svg";
+import IconEndOfMonth from "@/public/end-of-month.svg";
 
 // styles
 import "./page.scss";
@@ -165,6 +173,12 @@ export default function Accounts(props: any) {
 		};
 	}, []);
 
+	const cutoffTypeStyles = {
+		height: "30px",
+		fill: "rgb(85, 85, 85)",
+		margin: "0 auto",
+	};
+
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
 			{!props.title && (
@@ -202,6 +216,13 @@ export default function Accounts(props: any) {
 									<br />
 									{user.accountNumber}
 								</td>
+								<td>
+									{user.cutoff === CUTOFF_TYPE.MID ? (
+										<IconMidmonth style={cutoffTypeStyles} />
+									) : (
+										<IconEndOfMonth style={cutoffTypeStyles} />
+									)}
+								</td>
 								<td>{user.address}</td>
 								<td>{user.contactNo}</td>
 								<td>
@@ -215,25 +236,7 @@ export default function Accounts(props: any) {
 										"N/A"
 									)}
 								</td>
-								<td>
-									{user.subdRef ? (
-										<>
-											<span style={{ color: "red" }}>({user.subdRef.code})</span>&nbsp;
-											{`${user.subdRef.name}`}
-											<br />
-											{user.subdRef.number}
-										</>
-									) : (
-										"N/A"
-									)}
-								</td>
-								{user.createdAt ? (
-									<td>{DATE_READABLE(user.createdAt)}</td>
-								) : (
-									<td>
-										<div className="skeleton" style={{ height: "100%" }}></div>
-									</td>
-								)}
+								<td>{user.email}</td>
 								{user.updatedAt ? (
 									<td>{DATE_READABLE(user.updatedAt)}</td>
 								) : (
@@ -265,11 +268,30 @@ export default function Accounts(props: any) {
 			{props.title && (
 				<Link
 					href="/admin/accounts"
-					style={{ letterSpacing: 5, fontSize: 11, textAlign: "center", marginTop: "30px" }}
+					style={{ letterSpacing: 5, fontSize: 13, textAlign: "center", marginTop: "30px" }}
 				>
 					VIEW MORE
 				</Link>
 			)}
+			<p
+				style={{
+					letterSpacing: 5,
+					fontSize: 12,
+					textAlign: "center",
+					marginTop: "30px",
+				}}
+			>
+				NOT FINAL
+			</p>
+			<p
+				style={{
+					letterSpacing: 2,
+					fontSize: 11,
+					textAlign: "center",
+				}}
+			>
+				Add ability to see user`s submissions history akin to client view
+			</p>
 		</Section>
 	);
 }

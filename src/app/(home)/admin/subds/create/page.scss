@@ -1,57 +1,59 @@
 @import "../../../../variables.scss";
 @import "../[subd]/page.scss";
 
-.content__subd.content__subd__create {
-	width: 100%;
-	min-height: 500px;
-	.input-container {
-		font-size: 19px;
-		input {
-			height: 30px;
-			padding-left: 0;
-			font-weight: 800;
-			max-width: 400px;
-			background-color: transparent;
-		}
-		&:nth-of-type(2) {
-			&::before {
-				left: 0;
-				top: 5px;
-			}
-			input[name="number"] {
-				font-size: 16px;
+.subd-form {
+	.content__subd.content__subd__create {
+		width: 100%;
+		min-height: 500px;
+		.input-container {
+			font-size: 19px;
+			input {
+				height: 30px;
+				padding-left: 0;
 				font-weight: 800;
-				padding-left: 40px;
+				max-width: 400px;
+				background-color: transparent;
+			}
+			&:nth-of-type(2) {
+				&::before {
+					left: 0;
+					top: 5px;
+				}
+				input[name="number"] {
+					font-size: 16px;
+					font-weight: 800;
+					padding-left: 40px;
+				}
 			}
 		}
-	}
-	input[name="name"],
-	input[name="code"] {
-		font-size: 19px;
-	}
-	.qr-container {
-		img {
-			box-shadow: none;
+		input[name="name"],
+		input[name="code"] {
+			font-size: 19px;
 		}
-	}
-	.plan-table {
-		thead {
-			tr {
-				gap: 10px;
+		.qr-container {
+			img {
+				box-shadow: none;
 			}
 		}
-		tbody {
-			> tr:first-child {
-				gap: 10px;
-				td {
-					justify-content: flex-start;
+		.plan-table {
+			thead {
+				tr {
+					gap: 10px;
 				}
-				&:hover {
-					background-color: #fff !important;
-				}
-				input {
-					font-size: 15px;
-					text-align: center;
+			}
+			tbody {
+				> tr:first-child {
+					gap: 10px;
+					td {
+						justify-content: flex-start;
+					}
+					&:hover {
+						background-color: #fff !important;
+					}
+					input {
+						font-size: 15px;
+						text-align: center;
+					}
 				}
 			}
 		}

@@ -171,10 +171,10 @@
 			bottom: 50px;
 			button {
 				gap: 5px;
-				width: 50%;
 				fill: $dark;
 				height: 30px;
 				color: $dark;
+				padding: 10px;
 				display: flex;
 				position: relative;
 				align-items: center;
@@ -186,6 +186,8 @@
 				box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 				&:hover {
 					background-color: lighten($dark, 60%);
+					transform: scale(105%);
+					transform-origin: top;
 					svg {
 						animation: wiggle 1s ease-in;
 					}

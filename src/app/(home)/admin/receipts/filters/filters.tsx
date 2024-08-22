@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
 import { CUTOFF_TYPE, RECEIPT_STATUS, SEARCH_TYPE } from "@/utility";
 
@@ -129,12 +129,17 @@ const ReceiptsFilters = (props: any) => {
 	}, [dateType]);
 
 	useEffect(() => {
+		let timer: any;
 		if (form.dateRange.start) {
-			props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+			timer = setTimeout(() => {
+				props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+			}, 1000);
 		}
+		return () => clearTimeout(timer);
 	}, [form]);
 
 	useEffect(() => {
+		// set date after render for hydration issue
 		updateForm({
 			target: {
 				name: "dateRange",

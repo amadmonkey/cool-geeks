@@ -347,6 +347,12 @@ const TABLE_HEADERS = {
 				order: "asc",
 			},
 		},
+		cutoff: {
+			sort: {
+				by: ["cutoff"],
+				order: "asc",
+			},
+		},
 		address: {
 			sort: {
 				by: ["address"],
@@ -365,18 +371,24 @@ const TABLE_HEADERS = {
 				order: "asc",
 			},
 		},
-		subd: {
+		email: {
 			sort: {
-				by: ["subdRef.name"],
+				by: ["email"],
 				order: "asc",
 			},
 		},
-		created_at: {
-			sort: {
-				by: ["createdAt"],
-				order: "desc",
-			},
-		},
+		// subd: {
+		// 	sort: {
+		// 		by: ["subdRef.name"],
+		// 		order: "asc",
+		// 	},
+		// },
+		// created_at: {
+		// 	sort: {
+		// 		by: ["createdAt"],
+		// 		order: "desc",
+		// 	},
+		// },
 		updated_at: {
 			sort: {
 				by: ["updatedAt"],

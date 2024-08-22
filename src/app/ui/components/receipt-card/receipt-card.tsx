@@ -217,7 +217,6 @@ const ReceiptCard = (props: Props) => {
 									</>
 								) : (
 									<button
-										style={{ width: "170px" }}
 										className={`invisible`}
 										onClick={() => {
 											setLoading(true);
