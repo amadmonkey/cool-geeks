@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, CUTOFF_TYPE, RECEIPT_STATUS, SEARCH_TYPE } from "@/utility";
+import { ACCOUNT_STATUS, CUTOFF_TYPE, SEARCH_TYPE } from "@/utility";
 
 // components
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
@@ -85,7 +85,6 @@ const cutOffTypeList = [
 
 const AccountsFilters = (props: any) => {
 	const filters = props.filters;
-	const [loading, setLoading] = useState<boolean>(false);
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
 	const [searchType, setSearchType] = useState<SearchType>({ name: "" });
@@ -129,12 +128,18 @@ const AccountsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
+	const immediate = useRef(true);
 	useEffect(() => {
 		let timer: any;
 		if (form.dateRange.start) {
-			timer = setTimeout(() => {
-				props.handleFilter(true, { ...form, ...{ searchType: searchType } });
-			}, 1000);
+			timer = setTimeout(
+				() => {
+					props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+					immediate.current = true;
+				},
+				immediate.current ? 100 : 1000
+			);
+			immediate.current = false;
 		}
 		return () => clearTimeout(timer);
 	}, [form]);

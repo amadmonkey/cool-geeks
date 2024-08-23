@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { CUTOFF_TYPE, RECEIPT_STATUS, SEARCH_TYPE } from "@/utility";
+import { RECEIPT_STATUS, CUTOFF_TYPE, SEARCH_TYPE } from "@/utility";
 
 // components
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
@@ -128,12 +128,15 @@ const ReceiptsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
+	const immediate = useRef(true);
 	useEffect(() => {
 		let timer: any;
 		if (form.dateRange.start) {
 			timer = setTimeout(() => {
 				props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+				immediate.current = true;
 			}, 1000);
+			immediate.current ? 100 : 1000;
 		}
 		return () => clearTimeout(timer);
 	}, [form]);
