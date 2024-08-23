@@ -5,11 +5,12 @@ import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import {
-	ACCOUNT_STATUS,
 	CUTOFF_TYPE,
+	STRING_UTILS,
 	DATE_READABLE,
-	SKELETON_TYPES,
 	TABLE_HEADERS,
+	ACCOUNT_STATUS,
+	SKELETON_TYPES,
 } from "@/utility";
 
 // components
@@ -39,7 +40,6 @@ export default function Accounts(props: any) {
 	const controller = useRef<any>();
 	const [list, setList] = useState<any>({});
 	const [loading, setLoading] = useState<boolean>(false);
-	const [filteredList, setFilteredList] = useState<any>(null);
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {
@@ -55,6 +55,7 @@ export default function Accounts(props: any) {
 	const getAccounts = useCallback(
 		async (fromFilter?: boolean, query?: any) => {
 			try {
+				setList(null);
 				setLoading(true);
 
 				// reset list when something in the filter changed
@@ -89,7 +90,6 @@ export default function Accounts(props: any) {
 						case 200:
 							const { list } = data;
 							setList(list);
-							setFilteredList(list);
 							break;
 						case 401:
 							push("/login");
@@ -191,12 +191,12 @@ export default function Accounts(props: any) {
 			<Table
 				type="accounts"
 				headers={TABLE_HEADERS.accounts}
-				className={filteredList === null ? "loading" : ""}
+				className={list === null ? "loading" : ""}
 			>
-				{filteredList === null ? (
+				{list === null ? (
 					<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
-				) : filteredList.length ? (
-					filteredList?.map((user: any, index: number) => {
+				) : list.length ? (
+					list?.map((user: any, index: number) => {
 						return (
 							<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
 								<td>
@@ -230,7 +230,7 @@ export default function Accounts(props: any) {
 										<>
 											{user.planRef.name}
 											<br />
-											{user.planRef.price}
+											{STRING_UTILS.TO_PESO(user.planRef.price)}
 										</>
 									) : (
 										"N/A"

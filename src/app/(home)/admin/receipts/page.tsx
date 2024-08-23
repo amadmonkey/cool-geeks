@@ -53,6 +53,8 @@ export default function Receipts(props: any) {
 	const getHistoryList = useCallback(
 		async (fromFilter?: boolean, query?: any) => {
 			try {
+				listRef.current = null;
+				setFilteredList(null);
 				setLoading(true);
 
 				// reset list when something in the filter changed

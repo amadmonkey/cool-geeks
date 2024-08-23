@@ -316,6 +316,8 @@ const MONTH_NAMES = [
 ];
 
 const STRING_UTILS = {
+	TO_PESO: (text: string) => `₱${text}`,
+	ADD_CC: (text: string) => `(+63)${text}`,
 	SPACE_TO_DASH: (name: string) => name.split(" ").join("-"),
 	DASH_TO_SPACE: (name: string) => name.split("-").join(" "),
 };
