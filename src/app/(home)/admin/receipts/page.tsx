@@ -37,7 +37,7 @@ export default function Receipts(props: any) {
 	const listRef = useRef<any>(null);
 	const [loading, setLoading] = useState<boolean>(false);
 	const [viewMode, setViewMode] = useState(props.viewMode || VIEW_MODES.GRID);
-	const [, setFilteredList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
+	const [, setList] = useState<any>(null); // TODO: hacky shit. find another way. keep in mind
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {
@@ -54,7 +54,7 @@ export default function Receipts(props: any) {
 		async (fromFilter?: boolean, query?: any) => {
 			try {
 				listRef.current = null;
-				setFilteredList(null);
+				setList(null);
 				setLoading(true);
 
 				// reset list when something in the filter changed
@@ -91,10 +91,10 @@ export default function Receipts(props: any) {
 					case 200:
 						if (mounted.current) {
 							const { list, totalCount } = data;
-							filters.addItemsCurrent(list.length);
 							filters.setItemsTotal(totalCount);
+							filters.addItemsCurrent(list.length);
 							listRef.current = listRef.current ? [...listRef.current, ...list] : list;
-							setFilteredList(list);
+							setList(list);
 						}
 						break;
 					case 401:

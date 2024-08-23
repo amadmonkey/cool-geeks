@@ -88,7 +88,9 @@ export default function Accounts(props: any) {
 				if (mounted) {
 					switch (code) {
 						case 200:
-							const { list } = data;
+							const { list, totalCount } = data;
+							filters.setItemsTotal(totalCount);
+							filters.addItemsCurrent(list.length);
 							setList(list);
 							break;
 						case 401:
