@@ -25,10 +25,6 @@ interface DateRange {
 	end: string;
 }
 
-interface SearchType {
-	name: string;
-}
-
 interface ReceiptsFilter {
 	search: string;
 	sortOrder: string;
@@ -87,7 +83,6 @@ const ReceiptsFilters = (props: any) => {
 	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
-	const [searchType, setSearchType] = useState<SearchType>({ name: "" });
 	const [form, setForm] = useState<ReceiptsFilter>({
 		search: "",
 		sortOrder: sortOrderList[0].name,
@@ -133,7 +128,7 @@ const ReceiptsFilters = (props: any) => {
 		let timer: any;
 		if (form.dateRange.start) {
 			timer = setTimeout(() => {
-				props.handleFilter(true, { ...form, ...{ searchType: searchType } });
+				props.handleFilter(true, form);
 				immediate.current = true;
 			}, 1000);
 			immediate.current ? 100 : 1000;
@@ -200,27 +195,14 @@ const ReceiptsFilters = (props: any) => {
 					</div>
 				</div>
 				<FormGroup row>
-					<Dropdown
-						name=""
-						style={{ width: "200px" }}
-						list={Object.entries(SEARCH_TYPE.RECEIPT).map((item: any) => {
-							return { name: item[1], value: item[0] };
-						})}
-						value={searchType}
-						onChange={(v: any) => setSearchType(v)}
-						placeholder="Search By"
-						required
+					<TextInput
+						name="search"
+						placeholder="Search"
+						value={form.search}
+						icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
+						onChange={updateForm}
+						hasIcon
 					/>
-					{searchType.name && (
-						<TextInput
-							name="search"
-							placeholder="Search"
-							value={form.search}
-							icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
-							onChange={updateForm}
-							hasIcon
-						/>
-					)}
 				</FormGroup>
 			</div>
 			<div style={{ display: "flex", gap: "10px" }}>
