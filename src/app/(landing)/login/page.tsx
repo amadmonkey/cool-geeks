@@ -207,13 +207,14 @@ const LoginForm = () => {
 					<>
 						<FormGroup label="Password">
 							<TextInput
+								minLength="8"
 								type="password"
 								name="password"
-								minLength="8"
+								disabled={loading}
 								value={form.password}
 								onChange={updateForm}
-								autoFocus
 								test={REGEX.PASSWORD}
+								autoFocus
 								required
 							/>
 
@@ -222,8 +223,9 @@ const LoginForm = () => {
 									return (
 										<button
 											type="button"
-											onClick={showConfirmModal}
 											className="link"
+											disabled={loading}
+											onClick={showConfirmModal}
 											style={{ fontSize: "10px", display: "unset", textAlign: "right" }}
 										>
 											FORGOT PASSWORD
@@ -240,13 +242,14 @@ const LoginForm = () => {
 						<p className="instructions">Enter a password below to finalize your account.</p>
 						<FormGroup label="Password">
 							<TextInput
+								minLength="8"
 								type="password"
 								name="password"
-								minLength="8"
+								disabled={loading}
 								value={form.password}
 								onChange={updateForm}
-								autoFocus
 								test={REGEX.PASSWORD}
+								autoFocus
 								required
 							/>
 							<ul
@@ -278,12 +281,13 @@ const LoginForm = () => {
 						</FormGroup>
 						<FormGroup label="Confirm Password">
 							<TextInput
+								minLength="8"
 								type="password"
 								name="confirmPassword"
-								minLength="8"
+								disabled={loading}
+								onChange={updateForm}
 								value={form.confirmPassword}
 								otherPassword={form.password}
-								onChange={updateForm}
 								test={/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(\W|_)).{9,}$/}
 								required
 							/>
@@ -303,7 +307,12 @@ const LoginForm = () => {
 						<p className="instructions">{verificationMessage}</p>
 						<p style={{ fontSize: "13px", textAlign: "center" }}>
 							Didn`t get the email? Click{" "}
-							<button className="link" style={{ letterSpacing: 0, padding: 0 }} onClick={verify}>
+							<button
+								className="link"
+								disabled={loading}
+								style={{ letterSpacing: 0, padding: 0 }}
+								onClick={verify}
+							>
 								here
 							</button>{" "}
 							to resend
@@ -340,9 +349,10 @@ const LoginForm = () => {
 						<TextInput
 							type="text"
 							name="emailAccountNo"
-							value={form.emailAccountNo}
-							onChange={updateForm}
 							autoFocus={true}
+							disabled={loading}
+							onChange={updateForm}
+							value={form.emailAccountNo}
 							required
 						/>
 					) : (
@@ -360,8 +370,6 @@ const LoginForm = () => {
 						<IconLoading style={{ height: "auto", width: "100px" }} />
 					</div>
 				)}
-				{/* {loading.toString()} */}
-				{/* {("accountStatus" !== ACCOUNT_STATUS.DEACTIVATED).toString()} */}
 				{!loading &&
 					accountStatus !== ACCOUNT_STATUS.DEACTIVATED &&
 					accountStatus !== ACCOUNT_STATUS.VERIFY && (
@@ -371,9 +379,10 @@ const LoginForm = () => {
 							</Button>
 						</FormGroup>
 					)}
-				{accountStatus && (
+				{!loading && accountStatus && (
 					<button
 						className="link"
+						disabled={loading}
 						onClick={() => {
 							setForm((prev) => ({
 								...prev,
@@ -400,7 +409,6 @@ const LoginForm = () => {
 						Account is either already actived or does not exist.
 					</p>
 				)}
-				{/* <pre>{JSON.stringify(form, undefined, 2)}</pre> */}
 			</form>
 		</section>
 	);

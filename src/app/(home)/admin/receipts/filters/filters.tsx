@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { RECEIPT_STATUS, CUTOFF_TYPE, SEARCH_TYPE } from "@/utility";
+import { RECEIPT_STATUS, CUTOFF_TYPE } from "@/utility";
 
 // components
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
@@ -19,6 +19,7 @@ import IconEnd from "@/public/end-of-month.svg";
 
 // styles
 import "./filters.scss";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface DateRange {
 	start: string;
@@ -79,12 +80,15 @@ const cutOffTypeList = [
 	},
 ];
 
+// TODO: column sort
 const ReceiptsFilters = (props: any) => {
+	const { push } = useRouter();
 	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
+	const urlParams = useSearchParams();
 	const [form, setForm] = useState<ReceiptsFilter>({
-		search: "",
+		search: urlParams.get("search") || "",
 		sortOrder: sortOrderList[0].name,
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {

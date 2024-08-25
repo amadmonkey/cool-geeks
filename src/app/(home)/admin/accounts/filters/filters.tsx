@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, CUTOFF_TYPE, SEARCH_TYPE } from "@/utility";
+import { ACCOUNT_STATUS, CUTOFF_TYPE } from "@/utility";
 
 // components
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
@@ -79,6 +79,7 @@ const cutOffTypeList = [
 	},
 ];
 
+// TODO: column sort
 const AccountsFilters = (props: any) => {
 	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
@@ -127,16 +128,19 @@ const AccountsFilters = (props: any) => {
 	useEffect(() => {
 		let timer: any;
 		if (form.dateRange.start) {
+			immediate.current = true;
 			timer = setTimeout(
 				() => {
+					console.log("asdasd");
 					props.handleFilter(true, form);
-					immediate.current = true;
 				},
-				immediate.current ? 100 : 1000
+				immediate.current ? 200 : 1000
 			);
-			immediate.current = false;
 		}
-		return () => clearTimeout(timer);
+		return () => {
+			immediate.current = false;
+			clearTimeout(timer);
+		};
 	}, [form]);
 
 	useEffect(() => {

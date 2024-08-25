@@ -277,22 +277,13 @@ export default function Accounts(props: any) {
 			)}
 			<p
 				style={{
-					letterSpacing: 5,
-					fontSize: 12,
-					textAlign: "center",
-					marginTop: "30px",
-				}}
-			>
-				NOT FINAL
-			</p>
-			<p
-				style={{
 					letterSpacing: 2,
 					fontSize: 11,
+					marginTop: "30px",
 					textAlign: "center",
 				}}
 			>
-				Add ability to see user`s submissions history akin to client view
+				TODO: Add ability to see user`s submissions history akin to client view
 			</p>
 		</Section>
 	);

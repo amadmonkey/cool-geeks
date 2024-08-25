@@ -47,19 +47,6 @@ const RECEIPT_STATUS = {
 	FAILED: "FAILED",
 };
 
-const SEARCH_TYPE = {
-	RECEIPT: {
-		REFNO: "Reference Number",
-		USER: "User",
-		PLAN: "Plan",
-	},
-	ACCOUNT: {
-		USER: "User",
-		SUBD: "Subd",
-		PLAN: "Plan",
-	},
-};
-
 const REGEX = {
 	PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(\W|_)).{9,}$/,
 };
@@ -441,7 +428,6 @@ export {
 	VIEW_MODES,
 	CUTOFF_TYPE,
 	MONTH_NAMES,
-	SEARCH_TYPE,
 	STRING_UTILS,
 	TABLE_HEADERS,
 	REMOVE_SPACES,
