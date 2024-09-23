@@ -12,9 +12,7 @@ import DetectOutsideClick from "@/app/ui/components/detect-outside-click/detect-
 // svgs
 import IconCheck from "@/public/check.svg";
 import IconMid from "@/public/midmonth.svg";
-import IconAsc from "@/public/sort-asc.svg";
 import IconSearch from "@/public/search.svg";
-import IconDesc from "@/public/sort-desc.svg";
 import IconEnd from "@/public/end-of-month.svg";
 
 // styles
@@ -27,22 +25,11 @@ interface DateRange {
 
 interface AccountsFilter {
 	search: string;
-	sortOrder: string;
+	sort: Object;
 	dateRange: DateRange;
 	cutOffType: string;
 	status: Object;
 }
-
-const sortOrderList = [
-	{
-		name: "desc",
-		label: <IconDesc />,
-	},
-	{
-		name: "asc",
-		label: <IconAsc />,
-	},
-];
 
 const dateTypeList = [
 	{
@@ -86,7 +73,7 @@ const AccountsFilters = (props: any) => {
 	const [dateRangeActive, setDateRangeActive] = useState(false);
 	const [form, setForm] = useState<AccountsFilter>({
 		search: "",
-		sortOrder: sortOrderList[0].name,
+		sort: { firstName: "asc" },
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
 			start: "",
@@ -127,6 +114,10 @@ const AccountsFilters = (props: any) => {
 	const immediate = useRef(true);
 	useEffect(() => {
 		let timer: any;
+		form.dateRange = {
+			start: DateTime.now().minus({ days: 30 }).toString(),
+			end: DateTime.now().toString(),
+		};
 		if (form.dateRange.start) {
 			immediate.current = true;
 			timer = setTimeout(
@@ -159,23 +150,30 @@ const AccountsFilters = (props: any) => {
 		>
 			<div style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}>
 				<div style={{ display: "flex", gap: "10px" }}>
-					<FormGroup row>
+					{/* <FormGroup row>
 						<RadioGroup
 							list={sortOrderList}
-							selected={form.sortOrder}
+							selected={Object.valuesform.sort}
 							onChange={(v: any) => updateForm({ target: { name: "sortOrder", value: v } })}
 						/>
-					</FormGroup>
+					</FormGroup> */}
 					<div style={{ position: "relative" }}>
-						<Dropdown
-							name=""
-							style={{ width: "140px" }}
-							list={dateTypeList}
-							value={dateType}
-							onChange={(v: any) => setDateType(v)}
-							placeholder="Date"
-							required
-						/>
+						<FormGroup row>
+							<Dropdown
+								name=""
+								style={{ width: "140px" }}
+								list={dateTypeList}
+								value={dateType}
+								onChange={(v: any) => setDateType(v)}
+								placeholder="Date"
+								required
+							/>
+							<RadioGroup
+								list={cutOffTypeList}
+								selected={form.cutOffType}
+								onChange={(v: any) => updateForm({ target: { name: "cutOffType", value: v } })}
+							/>
+						</FormGroup>
 						<DetectOutsideClick action={() => setDateRangeActive(false)} isShown={true}>
 							<div className={`date-range${dateRangeActive ? " active" : ""}`}>
 								<div className="content-wrapper">
@@ -213,11 +211,6 @@ const AccountsFilters = (props: any) => {
 				</FormGroup>
 			</div>
 			<div style={{ display: "flex", gap: "10px" }}>
-				<RadioGroup
-					list={cutOffTypeList}
-					selected={form.cutOffType}
-					onChange={(v: any) => updateForm({ target: { name: "cutOffType", value: v } })}
-				/>
 				<RadioGroup
 					style={{ fontSize: "12px" }}
 					list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {

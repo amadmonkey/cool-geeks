@@ -17,6 +17,16 @@
 			}
 		}
 	}
+	&.left {
+		.bubble {
+			left: 0;
+			transform: unset;
+			&::before {
+				left: unset;
+				transform: unset;
+			}
+		}
+	}
 	.bubble {
 		left: 50%;
 		opacity: 0;
@@ -74,6 +84,15 @@
 			background-color: $danger;
 			&::before {
 				border-bottom-color: $danger;
+			}
+		}
+	}
+	&.warning {
+		.bubble {
+			color: #fff;
+			background-color: $warning;
+			&::before {
+				border-bottom-color: $warning;
 			}
 		}
 	}

@@ -12,6 +12,49 @@
 		gap: 20px;
 		display: flex;
 		flex-direction: column;
+		.receipt-accuracy {
+			gap: 20px;
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+			> * {
+				display: flex;
+				flex-direction: column;
+				background-color: #fff;
+				border-radius: 5px;
+				> span {
+					font-size: 12px;
+					font-weight: 800;
+					padding: 2px 5px;
+					display: flex;
+					align-items: center;
+				}
+			}
+			&__success {
+				border: 2px solid $success;
+				> span {
+					color: #fff;
+					border-bottom: 2px solid $success;
+					background-color: $success;
+				}
+				svg {
+					margin: 5px;
+					fill: $success;
+				}
+			}
+			&__danger {
+				border: 2px solid $danger;
+				> span {
+					color: #fff;
+					border-bottom: 2px solid $danger;
+					background-color: $danger;
+				}
+				svg {
+					margin: 5px;
+					fill: $danger;
+				}
+			}
+		}
 	}
 	section:first-child {
 		align-self: center;

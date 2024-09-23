@@ -15,7 +15,7 @@ const Button = (props: any) => {
 			}${props.success ? " bg-success" : ""}${props.info ? " bg-info" : ""}`}
 			type={props.type || "button"}
 			style={props.style}
-			onClick={!props.disabled && props.onClick}
+			onClick={!props.disabled ? props.onClick : null}
 			disabled={props.disabled || props.loading ? true : false}
 		>
 			{props.loading ? <IconLoader className="button-loader" /> : props.children}

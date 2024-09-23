@@ -140,11 +140,11 @@ const NavSidebar = () => {
 						</ul>
 					</li>
 					<li className={`${activePage.includes("/admin/settings") ? "active" : ""}`}>
-						<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, false)}>
+						<Link href="/admin/settings" className="strip" onClick={(e: any) => navigate(e, true)}>
 							<IconSettings />
 							<span>Settings</span>
 						</Link>
-						<ul className="__pages __pages__settings">
+						{/* <ul className="__pages __pages__settings">
 							<li>
 								<Link href="/admin/settings">Account Settings</Link>
 							</li>
@@ -154,7 +154,7 @@ const NavSidebar = () => {
 							<li>
 								<Link href="/admin/settings">Notification Settings</Link>
 							</li>
-						</ul>
+						</ul> */}
 					</li>
 					<li>
 						<button

@@ -130,6 +130,10 @@ const ReceiptsFilters = (props: any) => {
 	const immediate = useRef(true);
 	useEffect(() => {
 		let timer: any;
+		form.dateRange = {
+			start: DateTime.now().minus({ days: 30 }).toString(),
+			end: DateTime.now().toString(),
+		};
 		if (form.dateRange.start) {
 			timer = setTimeout(() => {
 				props.handleFilter(true, form);

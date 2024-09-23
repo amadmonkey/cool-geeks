@@ -215,6 +215,12 @@ a:not(.strip) {
 	text-decoration: none;
 }
 
+.flex-center {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}
+
 ::-webkit-scrollbar-track {
 	background-color: $bg;
 }
@@ -514,10 +520,17 @@ section {
 
 .text-success {
 	color: $success;
+	fill: $success;
 }
 
 .text-danger {
 	color: $danger;
+	fill: $danger;
+}
+
+.text-warning {
+	color: $warning;
+	fill: $warning;
 }
 
 .fill-white {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 
 import "./file-input.scss";
-import Magnifier from "../magnifier/magnifier";
+// import Magnifier from "../magnifier/magnifier";
 import { VALID_IMG_TYPES } from "@/utility";
 
 const FileInput = (props: any) => {
@@ -56,17 +56,18 @@ const FileInput = (props: any) => {
 				disabled={props.disabled}
 			/>
 			<div className="label" style={{ gap: "5px" }}>
-				<Magnifier imageRef={imageRef} disabled={props.mini ? true : false}>
-					<Image
-						className={file ? "has-image" : ""}
-						ref={imageRef}
-						src={file ? URL.createObjectURL(file) : "/file-upload.svg"}
-						height={0}
-						width={0}
-						sizes="100vw"
-						alt=""
-					/>
-				</Magnifier>
+				{/* TODO: Magnifier got effed up. check */}
+				{/* <Magnifier imageRef={imageRef} disabled={props.mini ? true : false}> */}
+				<Image
+					className={file ? "has-image" : ""}
+					ref={imageRef}
+					src={file ? URL.createObjectURL(file) : "/file-upload.svg"}
+					height={0}
+					width={0}
+					sizes="100vw"
+					alt=""
+				/>
+				{/* </Magnifier> */}
 				{!props.mini && (
 					<p className={`${file ? "hide" : ""}`}>
 						{props.label || "DROP IMAGE HERE OR CLICK TO BROWSE"}

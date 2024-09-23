@@ -303,6 +303,7 @@ const MONTH_NAMES = [
 ];
 
 const STRING_UTILS = {
+	TO_AMOUNT: (text: string) => Number(text.replace(/,/g, "")),
 	TO_PESO: (text: string) => `₱${text}`,
 	ADD_CC: (text: string) => `(+63)${text}`,
 	SPACE_TO_DASH: (name: string) => name.split(" ").join("-"),

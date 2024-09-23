@@ -46,7 +46,7 @@ export default function Accounts(props: any) {
 				page: "1",
 				limit: "9",
 				sort: {
-					createdAt: "desc",
+					firstName: "asc",
 				},
 			}
 		)
@@ -67,7 +67,7 @@ export default function Accounts(props: any) {
 				// if has db query, set it
 				if (query) {
 					filters.setQuery(query);
-					filters.setSort({ createdAt: query.sortOrder });
+					filters.setSort(query.sort);
 				}
 
 				// abort previous calls
@@ -186,7 +186,7 @@ export default function Accounts(props: any) {
 			{!props.title && (
 				<AccountsFilters
 					filters={filters}
-					handleFilter={getAccounts}
+					handleFilter={() => getAccounts()}
 					style={{ marginBottom: "10px" }}
 				/>
 			)}

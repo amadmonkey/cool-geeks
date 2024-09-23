@@ -20,22 +20,26 @@ import HistoryTable from "@/app/ui/components/history-table/history-table";
 
 // svgs
 import IconQR from "@/public/qr.svg";
+import IconEx from "@/public/exclamation.svg";
 import IconDownload from "@/public/download.svg";
 
 import {
 	CONSTANTS,
 	CUTOFF_TYPE,
+	PRE,
 	RECEIPT_STATUS,
 	RECEIPT_STATUS_ICON,
+	STRING_UTILS,
 	VALID_IMG_TYPES,
 	getDaysLeft,
 } from "@/utility";
 
 import "./page.scss";
+import HoverBubble from "../ui/components/hover-bubble/hover-bubble";
 
 const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
-		// console.log(m);
+		console.log(m);
 	},
 	errorHandler: (err) => {
 		console.log(err);
@@ -46,6 +50,12 @@ const worker = createWorker("eng", 1, {
 const defaultForm = {
 	receipt: "",
 	receiptName: "",
+	accuracy: {
+		date: "",
+		refNo: "",
+		amount: "",
+		amountIsEnough: true,
+	},
 	referenceType: {
 		id: 1,
 		name: "gcash",
@@ -78,19 +88,41 @@ export default function Home() {
 		// console.log("OCR TEXT", ret.data.text);
 
 		let hasReferenceNumber = false;
+		let accuracy = {
+			date: "",
+			refNo: "",
+			amount: "",
+			amountIsEnough: true,
+		};
 		await Promise.all(
 			ret.data.text.split("\n").map(async (item) => {
+				const itemArray = item.split(" ");
 				if (item.includes("Ref No.")) {
-					updateForm({
-						target: {
-							name: "referenceNumber",
-							value: item.split(" ").slice(2, 5).join(" "),
-						},
-					});
+					const refNo = itemArray.slice(2, 5).join(" ");
+					const date = itemArray.slice(5, item.split(" ").length - 2).join(" ");
+					accuracy.refNo = refNo;
+					accuracy.date = date;
 					hasReferenceNumber = true;
+				}
+				if (item.includes("Amount") && itemArray.length === 2) {
+					const amount = STRING_UTILS.TO_AMOUNT(item.split(" ")[1]);
+					accuracy.amount = amount.toString();
+					console.log(amount);
+					console.log(STRING_UTILS.TO_AMOUNT(user.planRef.price.toString()));
+					accuracy.amountIsEnough = amount >= STRING_UTILS.TO_AMOUNT(user.planRef.price.toString());
 				}
 			})
 		);
+		if (accuracy.refNo) {
+			setForm((prev: any) => ({
+				...prev,
+				accuracy: accuracy,
+			}));
+			setForm((prev: any) => ({
+				...prev,
+				referenceNumber: accuracy.refNo,
+			}));
+		}
 		if (hasReferenceNumber) {
 			setInputInfo(
 				"Reference number found! Please check if we got it right and update accordingly."
@@ -110,6 +142,7 @@ export default function Home() {
 	};
 
 	const updateForm = (e: any) => {
+		console.log(e.target);
 		e.target.type === "file" && e.target.value && recognize(e.target.value);
 		const { name, value } = e.target;
 		setForm((prev) => ({ ...prev, [name]: value }));
@@ -382,6 +415,7 @@ export default function Home() {
 						encType="multipart/form"
 					>
 						<FormGroup
+							className="file-input"
 							label="Receipt Receipt/Screenshot"
 							help={{ icon: <IconQR />, body: helpTemplate() }}
 						>
@@ -420,7 +454,45 @@ export default function Home() {
 							/>
 							<p className="input-info">{inputInfo}</p>
 						</FormGroup>
-
+						{/* {form.accuracy.refNo ? (
+							<>
+								<div className="receipt-accuracy">
+									{(() => {
+										const success = form.accuracy.refNo === form.referenceNumber;
+										return (
+											<div className={`receipt-accuracy${success ? "__success" : "__danger"}`}>
+												<span>Ref No</span>
+												{success ? (
+													<IconCheck style={{ height: "20px" }} />
+												) : (
+													<IconCross style={{ height: "20px" }} />
+												)}
+											</div>
+										);
+									})()}
+									{form.accuracy.amount && (
+										<div
+											className={`receipt-accuracy${
+												Number(form.accuracy.amount) >= user.planRef.price
+													? "__success"
+													: "__danger"
+											}`}
+										>
+											<span>Amount</span>
+											<IconCross style={{ height: "20px" }} />
+										</div>
+									)}
+									{form.accuracy.date && (
+										<div className="receipt-accuracy__success">
+											<span>Cutoff</span>
+											<IconCross style={{ height: "20px" }} />
+										</div>
+									)}
+								</div>
+							</>
+						) : (
+							<IconLoader style={{ height: "30px", fill: "grey", stroke: "grey" }} />
+						)} */}
 						<ul className="summary">
 							<li className="summary__item">
 								<span>PLAN</span>
@@ -428,18 +500,58 @@ export default function Home() {
 							</li>
 							<li className="summary__item">
 								<span>RATE</span>
-								<p>₱{user.planRef.price}</p>
+								<p>
+									<span style={{ width: "70px", display: "inline-block" }}>
+										<HoverBubble
+											message={
+												<span>
+													Rate found from the receipt does not match or is lower than your current
+													plan`s rate. If you think it`s correct, please disregard this warning.
+													<br />
+													<br />
+													Found rate:{" "}
+													<span className="text-danger">
+														{STRING_UTILS.TO_PESO(form.accuracy.amount)}
+													</span>
+												</span>
+											}
+											left
+											type="warning"
+											disabled={!form.receipt}
+										>
+											<span
+												className={
+													form.receipt && !form.accuracy.amountIsEnough ? "text-warning" : ""
+												}
+												style={{ display: "flex", alignItems: "center", gap: "3px" }}
+											>
+												₱{user.planRef.price}{" "}
+												{form.receipt && !form.accuracy.amountIsEnough && (
+													<IconEx style={{ height: "15px" }} />
+												)}
+											</span>
+										</HoverBubble>
+										{/* {STRING_UTILS.TO_AMOUNT(user.planRef.price.toString())}
+										<br />
+										{STRING_UTILS.TO_AMOUNT(form.accuracy.amount)} */}
+									</span>
+									{/* <p
+										className={
+											Number(form.accuracy.amount) >= user.planRef.price
+												? "text-success"
+												: "text-danger"
+										}
+									>
+										₱{form.accuracy.amount}
+									</p> */}
+								</p>
 							</li>
 							<li className="summary__item">
 								<span>CUTOFF</span>
-								<p>{user.cutoff === CUTOFF_TYPE.MID ? "15th" : "30th"}</p>
-							</li>
-							<li className="summary__item">
-								<span>RECEIPT FOR</span>
 								<p>
 									{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now().toString())
 										.plus({ month: 1 })
-										.toFormat("MMMM")}
+										.toFormat(`MMMM ${user.cutoff === CUTOFF_TYPE.MID ? "15" : "30"}`)}
 								</p>
 							</li>
 							<li className="summary__item">
@@ -513,7 +625,7 @@ export default function Home() {
 						getImage={getImage}
 					/>
 				</div>
-				{/* <pre>{JSON.stringify(historyList, null, 2)}</pre> */}
+				{/* <pre>{JSON.stringify(form, null, 2)}</pre> */}
 			</section>
 		</div>
 	);

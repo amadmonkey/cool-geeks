@@ -18,7 +18,11 @@ const RadioGroup = (props: any) => {
 								value={item.name}
 								onChange={() => props.onChange(item.name)}
 							/>
-							<label htmlFor={`item-${item.name}-${i}`} className="radio-toggle__item__label">
+							<label
+								htmlFor={`item-${item.name}-${i}`}
+								className="radio-toggle__item__label"
+								style={{ justifyContent: "center" }}
+							>
 								{item.label}
 							</label>
 						</div>
