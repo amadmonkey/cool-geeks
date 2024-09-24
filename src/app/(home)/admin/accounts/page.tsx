@@ -85,21 +85,20 @@ export default function Accounts(props: any) {
 						credentials: "include",
 					}
 				).then((res) => res.json());
-				if (mounted) {
-					switch (code) {
-						case 200:
-							const { list, totalCount } = data;
-							totalCount && filters.setItemsTotal(totalCount);
-							filters.addItemsCurrent(list.length);
-							setList(list);
-							break;
-						case 401:
-							push("/login");
-							break;
-						default:
-							push("/login");
-							break;
-					}
+
+				switch (code) {
+					case 200:
+						const { list, totalCount } = data;
+						filters.setItemsTotal(totalCount);
+						filters.addItemsCurrent(list.length);
+						setList(list);
+						break;
+					case 401:
+						push("/login");
+						break;
+					default:
+						push("/login");
+						break;
 				}
 			} catch (err) {
 				console.error(err);
@@ -167,13 +166,13 @@ export default function Accounts(props: any) {
 		);
 	};
 
-	useEffect(() => {
-		mounted.current = true;
-		getAccounts();
-		return () => {
-			mounted.current = false;
-		};
-	}, []);
+	// useEffect(() => {
+	// 	mounted.current = true;
+	// 	getAccounts();
+	// 	return () => {
+	// 		mounted.current = false;
+	// 	};
+	// }, []);
 
 	const cutoffTypeStyles = {
 		height: "30px",
@@ -186,7 +185,7 @@ export default function Accounts(props: any) {
 			{!props.title && (
 				<AccountsFilters
 					filters={filters}
-					handleFilter={() => getAccounts()}
+					handleFilter={getAccounts}
 					style={{ marginBottom: "10px" }}
 				/>
 			)}
