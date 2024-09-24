@@ -82,7 +82,6 @@ const cutOffTypeList = [
 
 // TODO: column sort
 const ReceiptsFilters = (props: any) => {
-	const { push } = useRouter();
 	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);

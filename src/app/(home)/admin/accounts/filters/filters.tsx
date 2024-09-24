@@ -122,7 +122,6 @@ const AccountsFilters = (props: any) => {
 			immediate.current = true;
 			timer = setTimeout(
 				() => {
-					console.log("asdasd");
 					props.handleFilter(true, form);
 				},
 				immediate.current ? 200 : 1000

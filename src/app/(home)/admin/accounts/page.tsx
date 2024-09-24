@@ -89,7 +89,7 @@ export default function Accounts(props: any) {
 					switch (code) {
 						case 200:
 							const { list, totalCount } = data;
-							filters.setItemsTotal(totalCount);
+							totalCount && filters.setItemsTotal(totalCount);
 							filters.addItemsCurrent(list.length);
 							setList(list);
 							break;
