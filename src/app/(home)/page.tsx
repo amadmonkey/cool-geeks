@@ -79,6 +79,9 @@ export default function Home() {
 	const [fileError, setFileError] = useState("");
 	// TODO: move to server. peep header
 	const user = getCookie("user") && JSON.parse(getCookie("user")!);
+	const settings = getCookie("settings") && JSON.parse(getCookie("settings")!);
+	const gracePeriod = settings.filter((item: any) => item._id === "66f05edc10a64439d3807f83")[0]
+		.value;
 	const [qrUrl, setQrUrl] = useState(CONSTANTS.loaderFixed);
 
 	const recognize = async (file: any) => {
@@ -550,8 +553,11 @@ export default function Home() {
 								<span>CUTOFF</span>
 								<p>
 									{DateTime.fromISO(latestReceipt?.receiptDate || DateTime.now().toString())
+										.endOf("month")
 										.plus({ month: 1 })
-										.toFormat(`MMMM ${user.cutoff === CUTOFF_TYPE.MID ? "15" : "30"}`)}
+										.endOf("month")
+										.plus({ days: gracePeriod })
+										.toFormat(`MMMM dd`)}
 								</p>
 							</li>
 							<li className="summary__item">

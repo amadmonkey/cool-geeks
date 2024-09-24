@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { setCookie } from "cookies-next";
 import { ACCOUNT_STATUS, REGEX } from "@/utility";
@@ -86,6 +86,8 @@ const LoginForm = () => {
 				case 200:
 					setError(null);
 					setCookie("user", data.user);
+					setCookie("settings", data.settings);
+					console.log("login", data);
 					push(data.user.admin ? "/admin" : "/");
 					break;
 				default:

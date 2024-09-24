@@ -72,6 +72,7 @@ export async function DELETE(req: NextRequest) {
 	const newResponse = NextResponse.json(data);
 
 	newResponse.cookies.delete("user");
+	newResponse.cookies.delete("settings");
 	newResponse.cookies.delete("accessToken");
 	newResponse.cookies.delete("refreshToken");
 

@@ -232,10 +232,10 @@ const SubdPlans = (props: SubdPlansProps) => {
 												type="button"
 												className="primary"
 												onClick={() => setNewPlanFormShow(!newPlanFormShow)}
-												style={{ width: "100px", letterSpacing: "0", alignSelf: "end" }}
+												style={{ width: "150px", letterSpacing: "0", alignSelf: "end" }}
 												mini
 											>
-												ADD PLAN
+												CREATE NEW PLAN
 											</Button>
 										</td>
 									</tr>

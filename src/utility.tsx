@@ -194,6 +194,7 @@ const REQUEST = {
 			if (!accessToken) {
 				const newResponse = NextResponse.json(NextResponse.json(refreshResponse));
 				newResponse.cookies.delete("user");
+				newResponse.cookies.delete("settings");
 				newResponse.cookies.delete("accessToken");
 				newResponse.cookies.delete("refreshToken");
 				return newResponse;
