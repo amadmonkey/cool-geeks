@@ -221,21 +221,33 @@ const AccountsFilters = (props: any) => {
 			</div>
 			<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
 				Showing{" "}
-				<span className="text-info" style={{ fontWeight: 800 }}>
-					{filters.itemsCurrent}
+				<span
+					className={`text-info ${props.loading ? "skeleton" : ""}`}
+					style={{ fontWeight: 800 }}
+				>
+					{props.loading ? "" : filters.itemsCurrent}
 				</span>{" "}
 				out of{" "}
-				<span className="text-info" style={{ fontWeight: 800 }}>
-					{filters.itemsTotal}
+				<span
+					className={`text-info ${props.loading ? "skeleton" : ""}`}
+					style={{ fontWeight: 800 }}
+				>
+					{props.loading ? "" : filters.itemsTotal}
 				</span>{" "}
 				result
 				{filters.itemsCurrent > 1 ? "s" : ""} from{" "}
-				<span className="text-info" style={{ fontWeight: 800 }}>
-					{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
+				<span
+					className={`text-info ${props.loading ? "skeleton" : ""}`}
+					style={{ fontWeight: 800, width: "100px" }}
+				>
+					{props.loading ? "" : DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
 				</span>{" "}
 				to{" "}
-				<span className="text-info" style={{ fontWeight: 800 }}>
-					{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
+				<span
+					className={`text-info ${props.loading ? "skeleton" : ""}`}
+					style={{ fontWeight: 800, width: "100px" }}
+				>
+					{props.loading ? "" : DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
 				</span>
 			</span>
 		</div>

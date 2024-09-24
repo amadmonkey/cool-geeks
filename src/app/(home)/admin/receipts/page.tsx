@@ -144,6 +144,7 @@ export default function Receipts(props: any) {
 		<Section title={sectionTitle(props.title)} others={sectionOthers(viewMode, setViewMode)}>
 			{!props.title && (
 				<ReceiptsFilters
+					loading={loading}
 					filters={filters}
 					handleFilter={getHistoryList}
 					style={{ marginBottom: "10px" }}

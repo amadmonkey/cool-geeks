@@ -100,7 +100,9 @@ export default function Accounts(props: any) {
 						push("/login");
 						break;
 				}
+				setLoading(false);
 			} catch (err) {
+				setLoading(false);
 				console.error(err);
 			}
 		},
@@ -184,6 +186,7 @@ export default function Accounts(props: any) {
 		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
 			{!props.title && (
 				<AccountsFilters
+					loading={loading}
 					filters={filters}
 					handleFilter={getAccounts}
 					style={{ marginBottom: "10px" }}
