@@ -22,7 +22,8 @@
 				border: 1px solid lighten($dark, 70%);
 			}
 			&.accounts {
-				grid-template-columns: 20% 5% 20% 10% 10% 15% 15% 5%;
+				// grid-template-columns: 20% 5% 20% 10% 10% 15% 15% 5%;
+				grid-template-columns: 20% 5% 15% 10% 10% 15% 15% 5% 5%;
 			}
 			&.receipts {
 				grid-template-columns: 20% 10% 10% 15% 15% 10% 10% 10%;

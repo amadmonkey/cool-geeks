@@ -29,3 +29,13 @@ export async function PUT(req: NextRequest) {
 		return Response.json({ message: error });
 	}
 }
+
+export async function DELETE(req: NextRequest) {
+	try {
+		const body = await req.json();
+		return await REQUEST.delete(`${process.env.NEXT_PUBLIC_API}/user`, req, JSON.stringify(body));
+	} catch (error: any) {
+		console.log(error);
+		return Response.json({ message: error });
+	}
+}

@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import {
+	UI_TYPE,
 	CUTOFF_TYPE,
 	STRING_UTILS,
 	DATE_READABLE,
@@ -19,12 +20,15 @@ import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
+import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 import AccountsFilters from "./filters/filters";
 
 // types
 import { Filters } from "@/app/ui/classes/filters";
 
 // svgs
+import IconTrash from "@/public/trash2.svg";
 import IconAccounts from "@/public/users.svg";
 import IconAddUser from "@/public/add-user.svg";
 import IconMidmonth from "@/public/midmonth.svg";
@@ -36,7 +40,6 @@ import "./page.scss";
 export default function Accounts(props: any) {
 	const { push } = useRouter();
 	const signal = useRef<any>();
-	const mounted = useRef(false);
 	const controller = useRef<any>();
 	const [list, setList] = useState<any>({});
 	const [loading, setLoading] = useState<boolean>(false);
@@ -109,6 +112,31 @@ export default function Accounts(props: any) {
 		[push]
 	);
 
+	const handleAccountDelete = async (e: any, accountNumber: any) => {
+		e && e.preventDefault();
+		const { code, data } = await fetch("/api/user", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(accountNumber),
+			credentials: "include",
+		}).then((res) => res.json());
+		debugger;
+		switch (code) {
+			case 200:
+				// setPlan({ ...data, ...{ users: plan.users } });
+				// Object.assign(planInitial, { ...data, ...{ users: plan.users } });
+				getAccounts();
+				toast.success("User deleted");
+				break;
+			default:
+				// console.log(data);
+				// toast.error("Something went wrong. Please try again.");
+				break;
+		}
+	};
+
 	const toggleUserStatus = async (e: any, user: any) => {
 		e && e.preventDefault();
 		try {
@@ -168,14 +196,6 @@ export default function Accounts(props: any) {
 		);
 	};
 
-	// useEffect(() => {
-	// 	mounted.current = true;
-	// 	getAccounts();
-	// 	return () => {
-	// 		mounted.current = false;
-	// 	};
-	// }, []);
-
 	const cutoffTypeStyles = {
 		height: "30px",
 		fill: "rgb(85, 85, 85)",
@@ -192,83 +212,115 @@ export default function Accounts(props: any) {
 					style={{ marginBottom: "10px" }}
 				/>
 			)}
-			<Table
-				type="accounts"
-				headers={TABLE_HEADERS.accounts}
-				className={list === null ? "loading" : ""}
-			>
-				{list === null ? (
-					<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
-				) : list.length ? (
-					list?.map((user: any, index: number) => {
-						return (
-							<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
-								<td>
-									<span
-										style={{
-											color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
-											fontSize: "15px",
-											fontWeight: "800",
-										}}
-									>{`${user.firstName} ${user.lastName}`}</span>
-									{user.subdRef && (
-										<>
-											<br />
-											<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
-										</>
-									)}
-									<br />
-									{user.accountNumber}
-								</td>
-								<td>
-									{user.cutoff === CUTOFF_TYPE.MID ? (
-										<IconMidmonth style={cutoffTypeStyles} />
-									) : (
-										<IconEndOfMonth style={cutoffTypeStyles} />
-									)}
-								</td>
-								<td>{user.address}</td>
-								<td>{user.contactNo}</td>
-								<td>
-									{user.planRef ? (
-										<>
-											{user.planRef.name}
-											<br />
-											{STRING_UTILS.TO_PESO(user.planRef.price)}
-										</>
-									) : (
-										"N/A"
-									)}
-								</td>
-								<td>{user.email}</td>
-								{user.updatedAt ? (
-									<td>{DATE_READABLE(user.updatedAt)}</td>
-								) : (
+			<div>
+				<Table
+					type="accounts"
+					headers={TABLE_HEADERS.accounts}
+					className={list === null ? "loading" : ""}
+				>
+					{list === null ? (
+						<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
+					) : list.length ? (
+						list?.map((user: any, index: number) => {
+							return (
+								<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
 									<td>
-										<div className="skeleton" style={{ height: "100%" }}></div>
+										<span
+											style={{
+												color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
+												fontSize: "15px",
+												fontWeight: "800",
+											}}
+										>{`${user.firstName} ${user.lastName}`}</span>
+										{user.subdRef && (
+											<>
+												<br />
+												<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
+											</>
+										)}
+										<br />
+										{user.accountNumber}
 									</td>
-								)}
-								<td className={`account-options${user.status ? " ACTIVE" : ""}`}>{user.status}</td>
-								<td>
-									<Switch
-										name="active"
-										id={user._id}
-										checked={user.status === ACCOUNT_STATUS.STANDARD}
-										onChange={(e: any) => toggleUserStatus(e, user)}
-										confirmTemplate={() => toggleUserStatusTemplate(user)}
-									/>
-								</td>
-							</tr>
-						);
-					})
-				) : (
-					<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
-						<td>
-							<ListEmpty label="No entries found" />
-						</td>
-					</tr>
-				)}
-			</Table>
+									<td>
+										{user.cutoff === CUTOFF_TYPE.MID ? (
+											<IconMidmonth style={cutoffTypeStyles} />
+										) : (
+											<IconEndOfMonth style={cutoffTypeStyles} />
+										)}
+									</td>
+									<td>{user.address}</td>
+									<td>{user.contactNo}</td>
+									<td>
+										{user.planRef ? (
+											<>
+												{user.planRef.name}
+												<br />
+												{STRING_UTILS.TO_PESO(user.planRef.price)}
+											</>
+										) : (
+											"N/A"
+										)}
+									</td>
+									<td>{user.email}</td>
+									{user.updatedAt ? (
+										<td>{DATE_READABLE(user.updatedAt)}</td>
+									) : (
+										<td>
+											<div className="skeleton" style={{ height: "100%" }}></div>
+										</td>
+									)}
+									<td className={`account-options${user.status ? " ACTIVE" : ""}`}>
+										{user.status}
+									</td>
+									<td>
+										<Switch
+											name="active"
+											id={user._id}
+											checked={user.status === ACCOUNT_STATUS.STANDARD}
+											onChange={(e: any) => toggleUserStatus(e, user)}
+											confirmTemplate={() => toggleUserStatusTemplate(user)}
+										/>
+									</td>
+									<td>
+										{/* <button onClick={() => console.log("")} style={{ border: "none" }}>
+											<IconTrash
+												className="danger-dark"
+												style={{ height: "20px", width: "auto" }}
+											/>
+										</button> */}
+
+										<ConfirmModal
+											template={() => deleteConfirmTemplate(user)}
+											continue={(e: any) => {
+												handleAccountDelete(e, { accountNumber: user.accountNumber });
+											}}
+										>
+											{(showConfirmModal: any) => {
+												return (
+													<HoverBubble message="Delete user" type={UI_TYPE.danger}>
+														<button onClick={showConfirmModal} style={{ border: "none" }}>
+															<IconTrash
+																className="danger-dark"
+																style={{ height: "20px", width: "auto" }}
+															/>
+														</button>
+													</HoverBubble>
+												);
+											}}
+										</ConfirmModal>
+									</td>
+								</tr>
+							);
+						})
+					) : (
+						<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
+							<td>
+								<ListEmpty label="No entries found" />
+							</td>
+						</tr>
+					)}
+				</Table>
+			</div>
 			{props.title && (
 				<Link
 					href="/admin/accounts"
@@ -305,3 +357,27 @@ const sectionOthers = () => (
 		</Link>
 	</div>
 );
+
+const deleteConfirmTemplate = (user: any) => {
+	return (
+		<div
+			style={{
+				display: "flex",
+				justifyContent: "center",
+				flexDirection: "column",
+				alignItems: "center",
+			}}
+		>
+			<h1 style={{ marginBottom: "10px" }}>
+				Deleting{" "}
+				<strong>
+					{user.firstName} {user.lastName}
+				</strong>
+			</h1>
+			<p className="danger" style={{ textAlign: "center", margin: "10px" }}>
+				This action will <strong>permanently</strong> delete this account.
+			</p>
+			<p style={{ margin: "20px 0" }}>Continue?</p>
+		</div>
+	);
+};
