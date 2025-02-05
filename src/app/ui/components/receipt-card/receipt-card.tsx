@@ -152,7 +152,11 @@ const ReceiptCard = (props: Props) => {
 						</div>
 						<Card className={`receipt-details ${receipt.status?.toLowerCase() || ""}`}>
 							<div className="header">
-								<span>{`${receipt.userRef.firstName} ${receipt.userRef.lastName}`}</span>
+								<span>
+									{receipt.userRef
+										? `${receipt.userRef.firstName} ${receipt.userRef.lastName}`
+										: "[DELETED]"}
+								</span>
 								<div style={{ display: "flex", gap: "5px" }}>
 									{receipt.cutoff === CUTOFF_TYPE.MID ? <IconMid /> : <IconEnd />}
 									<button className="invisible">...</button>

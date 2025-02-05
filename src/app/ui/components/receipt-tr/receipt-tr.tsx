@@ -69,11 +69,15 @@ const ReceiptTr = (props: Props) => {
 						fontSize: "15px",
 						fontWeight: "800",
 					}}
-				>{`${receipt.userRef.firstName} ${receipt.userRef.lastName}`}</span>
+				>
+					{receipt.userRef
+						? `${receipt.userRef.firstName} ${receipt.userRef.lastName}`
+						: "[DELETED]"}
+				</span>
 				<br />
 				<span style={{ fontSize: "13px" }}>{receipt.planRef.subdRef.name}</span>
 				<br />
-				{receipt.userRef.accountNumber}
+				{receipt.userRef ? receipt.userRef.accountNumber : "[DELETED]"}
 			</td>
 			<td>
 				<span>{receipt.planRef.name}</span>
