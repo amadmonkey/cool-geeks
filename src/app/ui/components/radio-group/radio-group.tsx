@@ -12,8 +12,8 @@ const RadioGroup = (props: any) => {
 							<input
 								type="radio"
 								className="radio-toggle__item__input"
-								name={`item-${item.name}-${i}`}
-								id={`item-${item.name}-${i}`}
+								name={`item${props.name ? "-" + props.name : ""}-${item.name}-${i}`}
+								id={`item${props.name ? "-" + props.name : ""}-${item.name}-${i}`}
 								checked={props.selected === item.name}
 								value={item.name}
 								onChange={() => props.onChange(item.name)}

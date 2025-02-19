@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { DateTime } from "luxon";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { STRING_UTILS } from "@/utility";
 
 // components
 import Button from "@/app/ui/components/button/button";
@@ -21,6 +23,7 @@ import "./page.scss";
 
 export default function AddAccount() {
 	const { push } = useRouter();
+	const [isCustomPassword, setIsCustomPassword] = useState<Boolean>(true);
 	const [form, setForm] = useState({
 		firstName: "",
 		middleName: "",
@@ -28,6 +31,7 @@ export default function AddAccount() {
 		address: "",
 		contactNo: "",
 		email: "",
+		password: "",
 		cutoff: "",
 		subd: { _id: "", price: "", code: "" },
 		plan: { name: "", price: "" },
@@ -198,7 +202,12 @@ export default function AddAccount() {
 	};
 
 	const setAccountNumber = (code: string, count: number) =>
-		`${code}-${new Date().getFullYear()}-${(count + "").padStart(4, "0")}`.toUpperCase();
+		`${code}-${DateTime.now().year}-${(count + "").padStart(4, "0")}`.toUpperCase();
+
+	const setPassword = (count: number) =>
+		STRING_UTILS.CAPITALIZE(
+			`${form.lastName.replaceAll(" ", "")}#${(count + "").padStart(4, "0")}`
+		);
 
 	const validate = (e: any) => {
 		e.preventDefault();
@@ -209,6 +218,12 @@ export default function AddAccount() {
 		return true;
 	};
 
+	useEffect(() => {
+		updateForm({
+			target: { name: "password", value: isCustomPassword ? "" : setPassword(userCount) },
+		});
+	}, [isCustomPassword, form.lastName]);
+
 	return (
 		<Section title={sectionTitle}>
 			<div style={{ display: "flex", justifyContent: "center", gap: 50 }}>
@@ -216,8 +231,8 @@ export default function AddAccount() {
 					onSubmit={(e: any) => validate(e) && handleSubmit(e)}
 					style={{ display: "flex", flexDirection: "column", gap: 50 }}
 				>
-					<div style={{ display: "flex", flexDirection: "row", gap: 50 }}>
-						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
+					<div style={{ display: "flex", flexDirection: "row", gap: 20 }}>
+						<div style={{ width: "450px", display: "flex", flexDirection: "column", gap: 20 }}>
 							<FormGroup label="First Name">
 								<TextInput
 									type="text"
@@ -255,7 +270,7 @@ export default function AddAccount() {
 									/>
 								</FormGroup>
 							</div>
-							<FormGroup label="Address">
+							<FormGroup label="Address (Should be segregated with dropdowns for cities)">
 								<TextInput
 									type="text"
 									name="address"
@@ -286,7 +301,7 @@ export default function AddAccount() {
 								/>
 							</FormGroup>
 						</div>
-						<div style={{ width: "400px", display: "flex", flexDirection: "column", gap: 20 }}>
+						<div style={{ width: "420px", display: "flex", flexDirection: "column", gap: 20 }}>
 							<div
 								style={{
 									display: "flex",
@@ -362,6 +377,40 @@ export default function AddAccount() {
 									</div>
 								</div>
 							)}
+
+							<FormGroup label="Password">
+								{isCustomPassword ? (
+									<TextInput type="text" name="password" minLength="8" onChange={updateForm} />
+								) : (
+									<span style={{ fontSize: "30px", lineHeight: "25px" }}>
+										{setPassword(userCount)}
+									</span>
+								)}
+								<label
+									style={{
+										display: "flex",
+										gap: "5px",
+										fontSize: "13px",
+										fontWeight: "bold",
+										alignItems: "center",
+										justifyContent: "left",
+										cursor: "pointer",
+									}}
+								>
+									<input
+										type="checkbox"
+										name="generatePass"
+										id="generatePass"
+										aria-label="auto-generate"
+										value={isCustomPassword.toString()}
+										onChange={() => {
+											setIsCustomPassword(!isCustomPassword);
+										}}
+									/>
+									auto-generate
+									<pre className="inline">&lt;lastname&gt;#&lt;user number&gt;</pre>
+								</label>
+							</FormGroup>
 							<FormGroup label="Preferred Cutoff">
 								<div className="cutoff-container">
 									<label className={form.cutoff === "MID" ? "active" : ""} tabIndex={0}>
@@ -391,25 +440,10 @@ export default function AddAccount() {
 							ADD CLIENT
 						</Button>
 					</FormGroup>
-					{/* <pre>{JSON.stringify(planList, undefined, 2)}</pre> */}
+					<pre>{JSON.stringify(form, undefined, 2)}</pre>
 				</form>
 			</div>
 		</Section>
-		// <section
-		// 	style={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}
-		// >
-		// 	<header className="page-header">
-		// 		<h1
-		// 			className="section-title"
-		// 			style={{
-		// 				display: "flex",
-		// 				marginBottom: "unset",
-		// 				gap: "5px",
-		// 				alignItems: "center",
-		// 			}}
-		// 		></h1>
-		// 	</header>
-		// </section>
 	);
 }
 

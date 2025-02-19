@@ -309,6 +309,7 @@ const STRING_UTILS = {
 	ADD_CC: (text: string) => `(+63)${text}`,
 	SPACE_TO_DASH: (name: string) => name.split(" ").join("-"),
 	DASH_TO_SPACE: (name: string) => name.split("-").join(" "),
+	CAPITALIZE: (name: string) => name.charAt(0).toUpperCase() + String(name).slice(1),
 };
 
 const TABLE_HEADERS = {

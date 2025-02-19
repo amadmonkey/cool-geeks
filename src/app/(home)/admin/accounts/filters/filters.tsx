@@ -17,6 +17,7 @@ import IconEnd from "@/public/end-of-month.svg";
 
 // styles
 import "./filters.scss";
+import Pagination from "@/app/ui/components/pagination/pagination";
 
 interface DateRange {
 	start: string;
@@ -26,6 +27,7 @@ interface DateRange {
 interface AccountsFilter {
 	search: string;
 	sort: Object;
+	currentPage: string;
 	dateRange: DateRange;
 	cutOffType: string;
 	status: Object;
@@ -74,6 +76,7 @@ const AccountsFilters = (props: any) => {
 	const [form, setForm] = useState<AccountsFilter>({
 		search: "",
 		sort: { firstName: "asc" },
+		currentPage: "1",
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
 			start: "",
@@ -131,7 +134,7 @@ const AccountsFilters = (props: any) => {
 			immediate.current = false;
 			clearTimeout(timer);
 		};
-	}, [form]);
+	}, [form, filters]);
 
 	useEffect(() => {
 		updateForm({
@@ -149,13 +152,6 @@ const AccountsFilters = (props: any) => {
 		>
 			<div style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}>
 				<div style={{ display: "flex", gap: "10px" }}>
-					{/* <FormGroup row>
-						<RadioGroup
-							list={sortOrderList}
-							selected={Object.valuesform.sort}
-							onChange={(v: any) => updateForm({ target: { name: "sortOrder", value: v } })}
-						/>
-					</FormGroup> */}
 					<div style={{ position: "relative" }}>
 						<FormGroup row>
 							<Dropdown
@@ -197,7 +193,6 @@ const AccountsFilters = (props: any) => {
 						</DetectOutsideClick>
 					</div>
 				</div>
-				{/* HERE: finish accounts filters */}
 				<FormGroup row>
 					<TextInput
 						name="search"
@@ -209,7 +204,7 @@ const AccountsFilters = (props: any) => {
 					/>
 				</FormGroup>
 			</div>
-			<div style={{ display: "flex", gap: "10px" }}>
+			<div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
 				<RadioGroup
 					style={{ fontSize: "12px" }}
 					list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {
@@ -218,6 +213,21 @@ const AccountsFilters = (props: any) => {
 					selected={form.status}
 					onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 				/>
+				<Pagination
+					filters={filters}
+					handleFilter={(v: any) => updateForm({ target: { name: "currentPage", value: v } })}
+				/>
+				{/* <RadioGroup
+					style={{ fontSize: "12px" }}
+					list={Array.from({ length: filters.pagesTotal }, (_, i) => i + 1).map((item: any) => {
+						return { name: item.toString(), label: item.toString() };
+					})}
+					selected={filters.pagesCurrent}
+					onChange={(v: any) => {
+						filters.setPagesCurrent(v);
+						updateForm({ target: { name: "currentPage", value: v } });
+					}}
+				/> */}
 			</div>
 			<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
 				Showing{" "}

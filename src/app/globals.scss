@@ -434,6 +434,13 @@ pre {
 	padding: 20px;
 	border-radius: 15px;
 	background-color: #f1f1f1;
+
+	&.inline {
+		padding: 1px 5px;
+		user-select: none;
+		border-radius: 5px;
+		border: 1px solid lighten($dark, 40%);
+	}
 }
 
 .error-message {
@@ -560,4 +567,14 @@ section {
 
 .pointer {
 	cursor: pointer;
+}
+
+.noselect {
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none; /* Non-prefixed version, currently
+									supported by Chrome, Edge, Opera and Firefox */
 }

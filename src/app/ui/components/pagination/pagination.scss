@@ -1,0 +1,50 @@
+@import "../../../variables.scss";
+
+.pagination {
+	display: flex;
+	button {
+		margin: 0 5px;
+		&:hover {
+			border-radius: 5px;
+			background-color: lighten($dark, 50%);
+		}
+	}
+	&__first svg {
+		transform: rotate(90deg);
+	}
+	&__last svg {
+		transform: rotate(-90deg);
+	}
+	&__first,
+	&__last {
+		display: flex;
+		padding: 0 7px;
+		gap: 0;
+		align-items: center;
+		svg {
+			height: 15px;
+			width: 15px;
+			position: relative;
+			&:first-of-type {
+				right: -5px;
+			}
+			&:last-of-type {
+				left: -5px;
+			}
+		}
+	}
+	&__previous svg {
+		transform: rotate(90deg);
+	}
+	&__next svg {
+		transform: rotate(-90deg);
+	}
+	&__previous,
+	&__next {
+		padding: 0 15px;
+		svg {
+			height: 15px;
+			width: 15px;
+		}
+	}
+}

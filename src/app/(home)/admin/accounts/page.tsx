@@ -46,8 +46,7 @@ export default function Accounts(props: any) {
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {
-				page: "1",
-				limit: "9",
+				limit: "10",
 				sort: {
 					firstName: "asc",
 				},
@@ -122,7 +121,6 @@ export default function Accounts(props: any) {
 			body: JSON.stringify(accountNumber),
 			credentials: "include",
 		}).then((res) => res.json());
-		debugger;
 		switch (code) {
 			case 200:
 				// setPlan({ ...data, ...{ users: plan.users } });
@@ -208,7 +206,9 @@ export default function Accounts(props: any) {
 				<AccountsFilters
 					loading={loading}
 					filters={filters}
-					handleFilter={getAccounts}
+					handleFilter={(_: boolean, form: Filters) => {
+						getAccounts();
+					}}
 					style={{ marginBottom: "10px" }}
 				/>
 			)}
@@ -320,6 +320,28 @@ export default function Accounts(props: any) {
 						</tr>
 					)}
 				</Table>
+				{list && list.length && (
+					<>
+						{/* <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+							<Pagination name={1} filters={filters} />
+						</div> */}
+						<p
+							style={{
+								letterSpacing: 2,
+								fontSize: 11,
+								marginTop: "30px",
+								textAlign: "center",
+							}}
+						>
+							TODO:{" "}
+							<ol style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+								<li>Finish pagination</li>
+								<li>Fix emails for the 3 password options</li>
+								<li>Add ability to see user`s submissions history akin to client view</li>
+							</ol>
+						</p>
+					</>
+				)}
 			</div>
 			{props.title && (
 				<Link
@@ -329,16 +351,6 @@ export default function Accounts(props: any) {
 					VIEW MORE
 				</Link>
 			)}
-			<p
-				style={{
-					letterSpacing: 2,
-					fontSize: 11,
-					marginTop: "30px",
-					textAlign: "center",
-				}}
-			>
-				TODO: Add ability to see user`s submissions history akin to client view
-			</p>
 		</Section>
 	);
 }
