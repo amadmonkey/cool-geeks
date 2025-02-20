@@ -70,6 +70,7 @@ const cutOffTypeList = [
 // TODO: column sort
 const AccountsFilters = (props: any) => {
 	const filters = props.filters;
+	const [pagesCurrent, setPagesCurrent] = useState<Number>(1);
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
 	const [form, setForm] = useState<AccountsFilter>({
@@ -214,15 +215,14 @@ const AccountsFilters = (props: any) => {
 						selected={form.status}
 						onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 					/>
-					{!props.loading && (
-						<Pagination
-							filters={filters}
-							handleFilter={(e: any) => {
-								console.log("filters", e);
-								props.handleFilter(false, { ...e, ...form });
-							}}
-						/>
-					)}
+					<Pagination
+						pagesCurrent={pagesCurrent}
+						filters={filters}
+						handleFilter={(e: any) => {
+							setPagesCurrent(e);
+							props.handleFilter(false, { ...e, ...form });
+						}}
+					/>
 				</div>
 				{props.loading ? (
 					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
@@ -259,18 +259,17 @@ const AccountsFilters = (props: any) => {
 				)}
 			</div>
 			{props.children}
-			{!props.loading && (
-				<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-					<Pagination
-						name={2}
-						filters={filters}
-						handleFilter={(e: any) => {
-							console.log("filters", e);
-							props.handleFilter(false, { ...e, ...form });
-						}}
-					/>
-				</div>
-			)}
+			<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+				<Pagination
+					name={2}
+					pagesCurrent={pagesCurrent}
+					filters={filters}
+					handleFilter={(e: any) => {
+						setPagesCurrent(e);
+						props.handleFilter(false, { ...e, ...form });
+					}}
+				/>
+			</div>
 		</>
 	);
 };
