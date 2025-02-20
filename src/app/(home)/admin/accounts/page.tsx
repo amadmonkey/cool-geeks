@@ -20,7 +20,6 @@ import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
-import Pagination from "@/app/ui/components/pagination/pagination";
 import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 import AccountsFilters from "./filters/filters";
@@ -43,7 +42,7 @@ export default function Accounts(props: any) {
 	const signal = useRef<any>();
 	const controller = useRef<any>();
 	const [list, setList] = useState<any>({});
-	const [loading, setLoading] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(true);
 	const [filters] = useState(
 		new Filters(
 			props.searchOptions || {

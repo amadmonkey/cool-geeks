@@ -14,6 +14,7 @@ import FormGroup from "@/app/ui/components/form-group/form-group";
 import TextInput from "@/app/ui/components/text-input/text-input";
 
 // svgs
+import IconLoading from "@/public/loading.svg";
 import IconAddUser from "@/public/add-user.svg";
 import IconMidmonth from "@/public/midmonth.svg";
 import IconEndOfMonth from "@/public/end-of-month.svg";
@@ -45,6 +46,7 @@ export default function AddAccount() {
 	const onSelect = async (selectId: any, newVal: any) => {
 		let newFormObj = { ...form, ...{ [`${selectId}`]: newVal } };
 		if (selectId === "subd") {
+			setPlanList([]);
 			// if subd changed refresh plans
 			newFormObj = { ...newFormObj, ...{ plan: { name: "", price: "" } } };
 			await getPlans(newFormObj.subd._id);
@@ -319,14 +321,28 @@ export default function AddAccount() {
 										required
 									/>
 								</FormGroup>
-								<FormGroup label="Plan">
-									<Dropdown
-										list={planList}
-										value={form.plan}
-										onChange={(newVal: any) => onSelect("plan", newVal)}
-										placeholder="Select Plan"
-										required
-									/>
+								<FormGroup label="Plan" style={{ width: "50%" }}>
+									{form.subd._id && !planList.length ? (
+										// {true ? (
+										<div
+											style={{
+												height: "100%",
+												display: "flex",
+												justifyContent: "center",
+												alignItems: "center",
+											}}
+										>
+											<IconLoading style={{ width: "20%" }} />
+										</div>
+									) : (
+										<Dropdown
+											list={planList}
+											value={form.plan}
+											onChange={(newVal: any) => onSelect("plan", newVal)}
+											placeholder="Select Plan"
+											required
+										/>
+									)}
 								</FormGroup>
 							</div>
 							{form.subd && form.plan.price && (

@@ -214,13 +214,15 @@ const AccountsFilters = (props: any) => {
 						selected={form.status}
 						onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 					/>
-					<Pagination
-						filters={filters}
-						handleFilter={(e: any) => {
-							console.log("filters", e);
-							props.handleFilter(false, { ...e, ...form });
-						}}
-					/>
+					{!props.loading && (
+						<Pagination
+							filters={filters}
+							handleFilter={(e: any) => {
+								console.log("filters", e);
+								props.handleFilter(false, { ...e, ...form });
+							}}
+						/>
+					)}
 				</div>
 				{props.loading ? (
 					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
@@ -257,16 +259,18 @@ const AccountsFilters = (props: any) => {
 				)}
 			</div>
 			{props.children}
-			<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-				<Pagination
-					name={2}
-					filters={filters}
-					handleFilter={(e: any) => {
-						console.log("filters", e);
-						props.handleFilter(false, { ...e, ...form });
-					}}
-				/>
-			</div>
+			{!props.loading && (
+				<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+					<Pagination
+						name={2}
+						filters={filters}
+						handleFilter={(e: any) => {
+							console.log("filters", e);
+							props.handleFilter(false, { ...e, ...form });
+						}}
+					/>
+				</div>
+			)}
 		</>
 	);
 };
