@@ -27,7 +27,6 @@ interface DateRange {
 interface AccountsFilter {
 	search: string;
 	sort: Object;
-	currentPage: string;
 	dateRange: DateRange;
 	cutOffType: string;
 	status: Object;
@@ -76,7 +75,6 @@ const AccountsFilters = (props: any) => {
 	const [form, setForm] = useState<AccountsFilter>({
 		search: "",
 		sort: { firstName: "asc" },
-		currentPage: "1",
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
 			start: "",
@@ -146,121 +144,130 @@ const AccountsFilters = (props: any) => {
 	}, []);
 
 	return (
-		<div
-			className={`filters ${props.className || ""}`}
-			style={{ ...props.style, ...{ flexDirection: "column", gap: "10px" } }}
-		>
-			<div style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}>
-				<div style={{ display: "flex", gap: "10px" }}>
-					<div style={{ position: "relative" }}>
-						<FormGroup row>
-							<Dropdown
-								name=""
-								style={{ width: "140px" }}
-								list={dateTypeList}
-								value={dateType}
-								onChange={(v: any) => setDateType(v)}
-								placeholder="Date"
-								required
-							/>
-							<RadioGroup
-								list={cutOffTypeList}
-								selected={form.cutOffType}
-								onChange={(v: any) => updateForm({ target: { name: "cutOffType", value: v } })}
-							/>
-						</FormGroup>
-						<DetectOutsideClick action={() => setDateRangeActive(false)} isShown={true}>
-							<div className={`date-range${dateRangeActive ? " active" : ""}`}>
-								<div className="content-wrapper">
-									<input
-										name="dateRange_start"
-										aria-label="Start"
-										type="date"
-										placeholder="From"
-										value={DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")}
-										onChange={updateFormDate}
-									/>
-									<input
-										name="dateRange_end"
-										aria-label="End"
-										type="date"
-										placeholder="To"
-										value={DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")}
-										onChange={updateFormDate}
-									/>
+		<>
+			<div
+				className={`filters ${props.className || ""}`}
+				style={{ ...props.style, ...{ flexDirection: "column", gap: "10px" } }}
+			>
+				<div
+					style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}
+				>
+					<div style={{ display: "flex", gap: "10px" }}>
+						<div style={{ position: "relative" }}>
+							<FormGroup row>
+								<Dropdown
+									name=""
+									style={{ width: "140px" }}
+									list={dateTypeList}
+									value={dateType}
+									onChange={(v: any) => setDateType(v)}
+									placeholder="Date"
+									required
+								/>
+								<RadioGroup
+									list={cutOffTypeList}
+									selected={form.cutOffType}
+									onChange={(v: any) => updateForm({ target: { name: "cutOffType", value: v } })}
+								/>
+							</FormGroup>
+							<DetectOutsideClick action={() => setDateRangeActive(false)} isShown={true}>
+								<div className={`date-range${dateRangeActive ? " active" : ""}`}>
+									<div className="content-wrapper">
+										<input
+											name="dateRange_start"
+											aria-label="Start"
+											type="date"
+											placeholder="From"
+											value={DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")}
+											onChange={updateFormDate}
+										/>
+										<input
+											name="dateRange_end"
+											aria-label="End"
+											type="date"
+											placeholder="To"
+											value={DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")}
+											onChange={updateFormDate}
+										/>
+									</div>
 								</div>
-							</div>
-						</DetectOutsideClick>
+							</DetectOutsideClick>
+						</div>
 					</div>
+					<FormGroup row>
+						<TextInput
+							name="search"
+							placeholder="Search"
+							value={form.search}
+							icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
+							onChange={updateForm}
+							hasIcon
+						/>
+					</FormGroup>
 				</div>
-				<FormGroup row>
-					<TextInput
-						name="search"
-						placeholder="Search"
-						value={form.search}
-						icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
-						onChange={updateForm}
-						hasIcon
+				<div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
+					<RadioGroup
+						style={{ fontSize: "12px" }}
+						list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {
+							return { name: item, label: item };
+						})}
+						selected={form.status}
+						onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 					/>
-				</FormGroup>
+					<Pagination
+						filters={filters}
+						handleFilter={(e: any) => {
+							console.log("filters", e);
+							props.handleFilter(false, { ...e, ...form });
+						}}
+					/>
+				</div>
+				{props.loading ? (
+					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+						Showing <span className="text-info skeleton" style={{ fontWeight: 800 }}></span> out of{" "}
+						<span className="text-info skeleton" style={{ fontWeight: 800 }}></span> results from
+						<span
+							className={`text-info skeleton`}
+							style={{ fontWeight: 800, width: "100px" }}
+						></span>{" "}
+						to{" "}
+						<span className={`text-info skeleton`} style={{ fontWeight: 800, width: "100px" }}>
+							{" "}
+						</span>
+					</span>
+				) : (
+					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+						Showing{" "}
+						<span className="text-info" style={{ fontWeight: 800 }}>
+							{filters.itemsCurrent}
+						</span>{" "}
+						out of{" "}
+						<span className="text-info" style={{ fontWeight: 800 }}>
+							{filters.itemsTotal}
+						</span>{" "}
+						results from{" "}
+						<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+							{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
+						</span>{" "}
+						to{" "}
+						<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+							{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
+						</span>
+					</span>
+				)}
 			</div>
-			<div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
-				<RadioGroup
-					style={{ fontSize: "12px" }}
-					list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {
-						return { name: item, label: item };
-					})}
-					selected={form.status}
-					onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
-				/>
+			{props.children}
+			<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
 				<Pagination
+					name={2}
 					filters={filters}
-					handleFilter={(v: any) => updateForm({ target: { name: "currentPage", value: v } })}
-				/>
-				{/* <RadioGroup
-					style={{ fontSize: "12px" }}
-					list={Array.from({ length: filters.pagesTotal }, (_, i) => i + 1).map((item: any) => {
-						return { name: item.toString(), label: item.toString() };
-					})}
-					selected={filters.pagesCurrent}
-					onChange={(v: any) => {
-						filters.setPagesCurrent(v);
-						updateForm({ target: { name: "currentPage", value: v } });
+					handleFilter={(e: any) => {
+						console.log("filters", e);
+						props.handleFilter(false, { ...e, ...form });
 					}}
-				/> */}
+				/>
 			</div>
-			<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
-				Showing{" "}
-				<span
-					className={`text-info ${props.loading ? "skeleton" : ""}`}
-					style={{ fontWeight: 800 }}
-				>
-					{props.loading ? "" : filters.itemsCurrent}
-				</span>{" "}
-				out of{" "}
-				<span
-					className={`text-info ${props.loading ? "skeleton" : ""}`}
-					style={{ fontWeight: 800 }}
-				>
-					{props.loading ? "" : filters.itemsTotal}
-				</span>{" "}
-				result
-				{filters.itemsCurrent > 1 ? "s" : ""} from{" "}
-				<span
-					className={`text-info ${props.loading ? "skeleton" : ""}`}
-					style={{ fontWeight: 800, width: "100px" }}
-				>
-					{props.loading ? "" : DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
-				</span>{" "}
-				to{" "}
-				<span
-					className={`text-info ${props.loading ? "skeleton" : ""}`}
-					style={{ fontWeight: 800, width: "100px" }}
-				>
-					{props.loading ? "" : DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
-				</span>
-			</span>
-		</div>
+		</>
 	);
 };
 

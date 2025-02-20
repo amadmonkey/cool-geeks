@@ -14,7 +14,17 @@ const Pagination = (props: any) => {
 
 	return (
 		<div className="pagination">
-			<button className="pagination__first invisible" disabled>
+			<button
+				className="pagination__first invisible"
+				onClick={() => {
+					if (Number(f.pagesCurrent) > 1) {
+						f.setPagesCurrent(1);
+						props.handleFilter({
+							target: { name: "pagesCurrent", value: 1 },
+						});
+					}
+				}}
+			>
 				<IconCaret />
 				<IconCaret />
 			</button>
@@ -22,9 +32,10 @@ const Pagination = (props: any) => {
 				className="pagination__previous invisible"
 				onClick={() => {
 					if (Number(f.pagesCurrent) > 1) {
-						f.setPagesCurrent(Number(f.pagesCurrent) - 1);
+						const newPage = Number(f.pagesCurrent) - 1;
+						f.setPagesCurrent(newPage);
 						props.handleFilter({
-							target: { name: "currentPage", value: Number(f.currentPage) - 1 },
+							target: { name: "pagesCurrent", value: newPage.toString() },
 						});
 					}
 				}}
@@ -39,24 +50,36 @@ const Pagination = (props: any) => {
 				})}
 				selected={f.pagesCurrent}
 				onChange={(v: any) => {
+					console.log(v);
 					f.setPagesCurrent(v);
-					props.handleFilter({ target: { name: "currentPage", value: v } });
+					props.handleFilter({ target: { name: "pagesCurrent", value: v } });
 				}}
 			/>
 			<button
 				className="pagination__next invisible"
-				onClick={() => {
-					// if (Number(f.pagesCurrent) < Number(f.pagesTotal)) {
-					f.setPagesCurrent(Number(f.pagesCurrent) + 1);
-					props.handleFilter({
-						target: { name: "currentPage", value: Number(f.currentPage) + 1 },
-					});
-					// }
+				onClick={(v: any) => {
+					if (Number(f.pagesCurrent) < Number(f.pagesTotal)) {
+						const newPage = Number(f.pagesCurrent) + 1;
+						f.setPagesCurrent(newPage);
+						props.handleFilter({
+							target: { name: "pagesCurrent", value: newPage },
+						});
+					}
 				}}
 			>
 				<IconCaret />
 			</button>
-			<button className="pagination__last invisible" disabled>
+			<button
+				className="pagination__last invisible"
+				onClick={() => {
+					if (Number(f.pagesCurrent) < Number(f.pagesTotal)) {
+						f.setPagesCurrent(String(f.pagesTotal));
+						props.handleFilter({
+							target: { name: "pagesCurrent", value: String(f.pagesTotal) },
+						});
+					}
+				}}
+			>
 				<IconCaret />
 				<IconCaret />
 			</button>

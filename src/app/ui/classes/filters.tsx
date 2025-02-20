@@ -20,13 +20,13 @@ export class Filters {
 
 	get valuesString() {
 		return {
+			sort: this.sort,
 			query: this.query,
 			limit: this.limit,
 			itemsTotal: this.itemsTotal,
-			itemsCurrent: this.itemsCurrent,
 			pagesTotal: this.pagesTotal,
+			itemsCurrent: this.itemsCurrent,
 			pagesCurrent: this.pagesCurrent,
-			sort: this.sort,
 		};
 	}
 

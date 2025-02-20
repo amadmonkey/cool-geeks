@@ -20,6 +20,7 @@ import Switch from "@/app/ui/components/switch/switch";
 import Section from "@/app/ui/components/section/section";
 import Skeleton from "@/app/ui/components/skeleton/skeleton";
 import ListEmpty from "@/app/ui/components/table/empty/list-empty";
+import Pagination from "@/app/ui/components/pagination/pagination";
 import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 import AccountsFilters from "./filters/filters";
@@ -60,13 +61,12 @@ export default function Accounts(props: any) {
 				setList(null);
 				setLoading(true);
 
-				// reset list when something in the filter changed
-				if (fromFilter) {
-					filters.setPagesCurrent(1);
-					filters.setItemsCurrent(0);
-				}
+				console.log("getAccounts", query);
 
-				// if has db query, set it
+				// set page to 1 if anything from filter, except pagination, changed (i.e: )
+				if (fromFilter) filters.setPagesCurrent(1);
+
+				// if has mongoose query, set it
 				if (query) {
 					filters.setQuery(query);
 					filters.setSort(query.sort);
@@ -92,7 +92,7 @@ export default function Accounts(props: any) {
 					case 200:
 						const { list, totalCount } = data;
 						filters.setItemsTotal(totalCount);
-						filters.addItemsCurrent(list.length);
+						filters.setItemsCurrent(list.length);
 						setList(list);
 						break;
 					case 401:
@@ -123,14 +123,12 @@ export default function Accounts(props: any) {
 		}).then((res) => res.json());
 		switch (code) {
 			case 200:
-				// setPlan({ ...data, ...{ users: plan.users } });
-				// Object.assign(planInitial, { ...data, ...{ users: plan.users } });
 				getAccounts();
 				toast.success("User deleted");
 				break;
 			default:
-				// console.log(data);
-				// toast.error("Something went wrong. Please try again.");
+				console.log(data);
+				toast.error("Something went wrong. Please try again.");
 				break;
 		}
 	};
@@ -202,147 +200,141 @@ export default function Accounts(props: any) {
 
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
-			{!props.title && (
-				<AccountsFilters
-					loading={loading}
-					filters={filters}
-					handleFilter={(_: boolean, form: Filters) => {
-						getAccounts();
-					}}
-					style={{ marginBottom: "10px" }}
-				/>
-			)}
-			<div>
-				<Table
-					type="accounts"
-					headers={TABLE_HEADERS.accounts}
-					className={list === null ? "loading" : ""}
-				>
-					{list === null ? (
-						<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
-					) : list.length ? (
-						list?.map((user: any, index: number) => {
-							return (
-								<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
-									<td>
-										<span
-											style={{
-												color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
-												fontSize: "15px",
-												fontWeight: "800",
-											}}
-										>{`${user.firstName} ${user.lastName}`}</span>
-										{user.subdRef && (
-											<>
-												<br />
-												<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
-											</>
-										)}
-										<br />
-										{user.accountNumber}
-									</td>
-									<td>
-										{user.cutoff === CUTOFF_TYPE.MID ? (
-											<IconMidmonth style={cutoffTypeStyles} />
-										) : (
-											<IconEndOfMonth style={cutoffTypeStyles} />
-										)}
-									</td>
-									<td>{user.address}</td>
-									<td>{user.contactNo}</td>
-									<td>
-										{user.planRef ? (
-											<>
-												{user.planRef.name}
-												<br />
-												{STRING_UTILS.TO_PESO(user.planRef.price)}
-											</>
-										) : (
-											"N/A"
-										)}
-									</td>
-									<td>{user.email}</td>
-									{user.updatedAt ? (
-										<td>{DATE_READABLE(user.updatedAt)}</td>
-									) : (
+			<AccountsFilters
+				loading={loading}
+				filters={filters}
+				handleFilter={getAccounts}
+				style={{ marginBottom: "10px" }}
+			>
+				<div>
+					<Table
+						type="accounts"
+						headers={TABLE_HEADERS.accounts}
+						className={list === null ? "loading" : ""}
+					>
+						{list === null ? (
+							<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
+						) : list.length ? (
+							list?.map((user: any, index: number) => {
+								return (
+									<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
 										<td>
-											<div className="skeleton" style={{ height: "100%" }}></div>
+											<span
+												style={{
+													color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
+													fontSize: "15px",
+													fontWeight: "800",
+												}}
+											>{`${user.firstName} ${user.lastName}`}</span>
+											{user.subdRef && (
+												<>
+													<br />
+													<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
+												</>
+											)}
+											<br />
+											{user.accountNumber}
 										</td>
-									)}
-									<td className={`account-options${user.status ? " ACTIVE" : ""}`}>
-										{user.status}
-									</td>
-									<td>
-										<Switch
-											name="active"
-											id={user._id}
-											checked={user.status === ACCOUNT_STATUS.STANDARD}
-											onChange={(e: any) => toggleUserStatus(e, user)}
-											confirmTemplate={() => toggleUserStatusTemplate(user)}
-										/>
-									</td>
-									<td>
-										{/* <button onClick={() => console.log("")} style={{ border: "none" }}>
+										<td>
+											{user.cutoff === CUTOFF_TYPE.MID ? (
+												<IconMidmonth style={cutoffTypeStyles} />
+											) : (
+												<IconEndOfMonth style={cutoffTypeStyles} />
+											)}
+										</td>
+										<td>{user.address}</td>
+										<td>{user.contactNo}</td>
+										<td>
+											{user.planRef ? (
+												<>
+													{user.planRef.name}
+													<br />
+													{STRING_UTILS.TO_PESO(user.planRef.price)}
+												</>
+											) : (
+												"N/A"
+											)}
+										</td>
+										<td>{user.email}</td>
+										{user.updatedAt ? (
+											<td>{DATE_READABLE(user.updatedAt)}</td>
+										) : (
+											<td>
+												<div className="skeleton" style={{ height: "100%" }}></div>
+											</td>
+										)}
+										<td className={`account-options${user.status ? " ACTIVE" : ""}`}>
+											{user.status}
+										</td>
+										<td>
+											<Switch
+												name="active"
+												id={user._id}
+												checked={user.status === ACCOUNT_STATUS.STANDARD}
+												onChange={(e: any) => toggleUserStatus(e, user)}
+												confirmTemplate={() => toggleUserStatusTemplate(user)}
+											/>
+										</td>
+										<td>
+											{/* <button onClick={() => console.log("")} style={{ border: "none" }}>
 											<IconTrash
 												className="danger-dark"
 												style={{ height: "20px", width: "auto" }}
 											/>
 										</button> */}
 
-										<ConfirmModal
-											template={() => deleteConfirmTemplate(user)}
-											continue={(e: any) => {
-												handleAccountDelete(e, { accountNumber: user.accountNumber });
-											}}
-										>
-											{(showConfirmModal: any) => {
-												return (
-													<HoverBubble message="Delete user" type={UI_TYPE.danger}>
-														<button onClick={showConfirmModal} style={{ border: "none" }}>
-															<IconTrash
-																className="danger-dark"
-																style={{ height: "20px", width: "auto" }}
-															/>
-														</button>
-													</HoverBubble>
-												);
-											}}
-										</ConfirmModal>
-									</td>
-								</tr>
-							);
-						})
-					) : (
-						<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
-							<td>
-								<ListEmpty label="No entries found" />
-							</td>
-						</tr>
-					)}
-				</Table>
-				{list && list.length && (
-					<>
-						{/* <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-							<Pagination name={1} filters={filters} />
-						</div> */}
-						<p
-							style={{
-								letterSpacing: 2,
-								fontSize: 11,
-								marginTop: "30px",
-								textAlign: "center",
-							}}
-						>
-							TODO:{" "}
-							<ol style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-								<li>Finish pagination</li>
-								<li>Fix emails for the 3 password options</li>
-								<li>Add ability to see user`s submissions history akin to client view</li>
-							</ol>
-						</p>
-					</>
-				)}
-			</div>
+											<ConfirmModal
+												template={() => deleteConfirmTemplate(user)}
+												continue={(e: any) => {
+													handleAccountDelete(e, { accountNumber: user.accountNumber });
+												}}
+											>
+												{(showConfirmModal: any) => {
+													return (
+														<HoverBubble message="Delete user" type={UI_TYPE.danger}>
+															<button onClick={showConfirmModal} style={{ border: "none" }}>
+																<IconTrash
+																	className="danger-dark"
+																	style={{ height: "20px", width: "auto" }}
+																/>
+															</button>
+														</HoverBubble>
+													);
+												}}
+											</ConfirmModal>
+										</td>
+									</tr>
+								);
+							})
+						) : (
+							<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
+								<td>
+									<ListEmpty label="No entries found" />
+								</td>
+							</tr>
+						)}
+					</Table>
+				</div>
+			</AccountsFilters>
+			{list && list.length && (
+				<>
+					<div
+						style={{
+							letterSpacing: 2,
+							fontSize: 11,
+							marginTop: "30px",
+							textAlign: "center",
+						}}
+					>
+						TODO:{" "}
+						<ol style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+							<li>Fix emails for the 3 password options</li>
+							<li>Add column sorting</li>
+							<li>Add ability to see user`s submissions history akin to client view</li>
+						</ol>
+					</div>
+				</>
+			)}
 			{props.title && (
 				<Link
 					href="/admin/accounts"
