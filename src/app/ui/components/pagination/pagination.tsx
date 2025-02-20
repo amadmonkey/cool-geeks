@@ -11,10 +11,11 @@ import "./pagination.scss";
 
 const Pagination = (props: any) => {
 	const f = props.filters;
+	const [pagesCurrent, setPagesCurrent] = useState<Number>(1);
 	const [pages, setPages] = useState<any>([]);
 
 	useEffect(() => {
-		let startPage = 0;
+		let startPage;
 		console.log("f.pagesCurrent", f.pagesCurrent);
 
 		if (f.pagesCurrent > 3) {
@@ -27,16 +28,19 @@ const Pagination = (props: any) => {
 			startPage = 1;
 		}
 
-		const pages = Array.from({ length: 5 }, (_, i) => Number(startPage) + i).map((item: any) => {
-			console.log(item);
-			return { name: item.toString(), label: item.toString() };
-		});
+		const pages = Array.from({ length: f.pagesTotal }, (_, i) => Number(startPage) + i).map(
+			(item: any) => {
+				console.log(item);
+				return { name: item.toString(), label: item.toString() };
+			}
+		);
 
 		setPages(pages);
-	}, [props.pagesCurrent]);
+	}, [pagesCurrent]);
 
 	const updatePage = (newPage: Number) => {
 		f.setPagesCurrent(newPage);
+		setPagesCurrent(newPage);
 		props.handleFilter({
 			target: { name: "pagesCurrent", value: newPage },
 		});
@@ -44,11 +48,16 @@ const Pagination = (props: any) => {
 
 	return (
 		<div className="pagination">
-			<button className="pagination__first invisible" onClick={() => updatePage(1)}>
+			<button
+				disabled={Number(f.pagesCurrent) === 1}
+				className="pagination__first invisible"
+				onClick={() => updatePage(1)}
+			>
 				<IconCaret />
 				<IconCaret />
 			</button>
 			<button
+				disabled={Number(f.pagesCurrent) === 1}
 				className="pagination__previous invisible"
 				onClick={() => updatePage(Number(f.pagesCurrent) - 1)}
 			>
@@ -62,12 +71,17 @@ const Pagination = (props: any) => {
 				onChange={(v: any) => updatePage(v)}
 			/>
 			<button
+				disabled={Number(f.pagesCurrent) >= Number(f.pagesTotal)}
 				className="pagination__next invisible"
 				onClick={() => updatePage(Number(f.pagesCurrent) + 1)}
 			>
 				<IconCaret />
 			</button>
-			<button className="pagination__last invisible" onClick={() => updatePage(f.pagesTotal)}>
+			<button
+				disabled={Number(f.pagesCurrent) >= Number(f.pagesTotal)}
+				className="pagination__last invisible"
+				onClick={() => updatePage(f.pagesTotal)}
+			>
 				<IconCaret />
 				<IconCaret />
 			</button>
