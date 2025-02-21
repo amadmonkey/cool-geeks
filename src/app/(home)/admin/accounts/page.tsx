@@ -205,108 +205,106 @@ export default function Accounts(props: any) {
 				handleFilter={getAccounts}
 				style={{ marginBottom: "10px" }}
 			>
-				<div>
-					<Table
-						type="accounts"
-						headers={TABLE_HEADERS.accounts}
-						className={list === null ? "loading" : ""}
-					>
-						{list === null ? (
-							<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
-						) : list.length ? (
-							list?.map((user: any, index: number) => {
-								return (
-									<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
-										<td>
-											<span
-												style={{
-													color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
-													fontSize: "15px",
-													fontWeight: "800",
-												}}
-											>{`${user.firstName} ${user.lastName}`}</span>
-											{user.subdRef && (
-												<>
-													<br />
-													<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
-												</>
-											)}
-											<br />
-											{user.accountNumber}
-										</td>
-										<td>
-											{user.cutoff === CUTOFF_TYPE.MID ? (
-												<IconMidmonth style={cutoffTypeStyles} />
-											) : (
-												<IconEndOfMonth style={cutoffTypeStyles} />
-											)}
-										</td>
-										<td>{user.address}</td>
-										<td>{user.contactNo}</td>
-										<td>
-											{user.planRef ? (
-												<>
-													{user.planRef.name}
-													<br />
-													{STRING_UTILS.TO_PESO(user.planRef.price)}
-												</>
-											) : (
-												"N/A"
-											)}
-										</td>
-										<td>{user.email}</td>
-										{user.updatedAt ? (
-											<td>{DATE_READABLE(user.updatedAt)}</td>
-										) : (
-											<td>
-												<div className="skeleton" style={{ height: "100%" }}></div>
-											</td>
+				<Table
+					type="accounts"
+					headers={TABLE_HEADERS.accounts}
+					className={list === null ? "loading" : ""}
+				>
+					{list === null ? (
+						<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
+					) : list.length ? (
+						list?.map((user: any, index: number) => {
+							return (
+								<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
+									<td>
+										<span
+											style={{
+												color: user.status === "FAILED" ? "#e46d6d" : "#5576c7",
+												fontSize: "15px",
+												fontWeight: "800",
+											}}
+										>{`${user.firstName} ${user.lastName}`}</span>
+										{user.subdRef && (
+											<>
+												<br />
+												<span style={{ fontSize: "13px" }}>{user.subdRef.name}</span>
+											</>
 										)}
-										<td className={`account-options${user.status ? " ACTIVE" : ""}`}>
-											{user.status}
-										</td>
+										<br />
+										{user.accountNumber}
+									</td>
+									<td>
+										{user.cutoff === CUTOFF_TYPE.MID ? (
+											<IconMidmonth style={cutoffTypeStyles} />
+										) : (
+											<IconEndOfMonth style={cutoffTypeStyles} />
+										)}
+									</td>
+									<td>{user.address}</td>
+									<td>{user.contactNo}</td>
+									<td>
+										{user.planRef ? (
+											<>
+												{user.planRef.name}
+												<br />
+												{STRING_UTILS.TO_PESO(user.planRef.price)}
+											</>
+										) : (
+											"N/A"
+										)}
+									</td>
+									<td>{user.email}</td>
+									{user.updatedAt ? (
+										<td>{DATE_READABLE(user.updatedAt)}</td>
+									) : (
 										<td>
-											<Switch
-												name="active"
-												id={user._id}
-												checked={user.status === ACCOUNT_STATUS.STANDARD}
-												onChange={(e: any) => toggleUserStatus(e, user)}
-												confirmTemplate={() => toggleUserStatusTemplate(user)}
-											/>
+											<div className="skeleton" style={{ height: "100%" }}></div>
 										</td>
-										<td>
-											<ConfirmModal
-												template={() => deleteConfirmTemplate(user)}
-												continue={(e: any) => {
-													handleAccountDelete(e, { accountNumber: user.accountNumber });
-												}}
-											>
-												{(showConfirmModal: any) => {
-													return (
-														<HoverBubble message="Delete user" type={UI_TYPE.danger}>
-															<button onClick={showConfirmModal} style={{ border: "none" }}>
-																<IconTrash
-																	className="danger-dark"
-																	style={{ height: "20px", width: "auto" }}
-																/>
-															</button>
-														</HoverBubble>
-													);
-												}}
-											</ConfirmModal>
-										</td>
-									</tr>
-								);
-							})
-						) : (
-							<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
-								<td>
-									<ListEmpty label="No entries found" />
-								</td>
-							</tr>
-						)}
-					</Table>
-				</div>
+									)}
+									<td className={`account-options${user.status ? " ACTIVE" : ""}`}>
+										{user.status}
+									</td>
+									<td>
+										<Switch
+											name="active"
+											id={user._id}
+											checked={user.status === ACCOUNT_STATUS.STANDARD}
+											onChange={(e: any) => toggleUserStatus(e, user)}
+											confirmTemplate={() => toggleUserStatusTemplate(user)}
+										/>
+									</td>
+									<td>
+										<ConfirmModal
+											template={() => deleteConfirmTemplate(user)}
+											continue={(e: any) => {
+												handleAccountDelete(e, { accountNumber: user.accountNumber });
+											}}
+										>
+											{(showConfirmModal: any) => {
+												return (
+													<HoverBubble message="Delete user" type={UI_TYPE.danger}>
+														<button onClick={showConfirmModal} style={{ border: "none" }}>
+															<IconTrash
+																className="danger-dark"
+																style={{ height: "20px", width: "auto" }}
+															/>
+														</button>
+													</HoverBubble>
+												);
+											}}
+										</ConfirmModal>
+									</td>
+								</tr>
+							);
+						})
+					) : (
+						<tr style={{ backgroundColor: "unset", boxShadow: "unset" }}>
+							<td>
+								<ListEmpty label="No entries found" />
+							</td>
+						</tr>
+					)}
+				</Table>
 			</AccountsFilters>
 			{list && list.length && (
 				<>

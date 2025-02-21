@@ -13,7 +13,7 @@ const Pagination = (props: any) => {
 	const f = props.filters;
 	const [pages, setPages] = useState<any>([]);
 
-	useEffect(() => {
+	const aaaa = () => {
 		let startPage;
 		if (f.pagesCurrent > 3) {
 			if (Number(f.pagesCurrent) + 2 > Number(f.pagesTotal)) {
@@ -33,7 +33,11 @@ const Pagination = (props: any) => {
 		);
 
 		setPages(pages);
-	}, []);
+	};
+
+	useEffect(() => {
+		aaaa();
+	}, [props.pagesCurrent]);
 
 	const updatePage = (newPage: Number) => {
 		f.setPagesCurrent(newPage);

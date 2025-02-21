@@ -217,8 +217,9 @@ const AccountsFilters = (props: any) => {
 						selected={form.status}
 						onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 					/>
-					{!props.loading && (
+					{filters.itemsTotal > 1 && (
 						<Pagination
+							pagesCurrent={pagesCurrent}
 							filters={filters}
 							handleFilter={(e: any) => {
 								setPagesCurrent(e.value);
@@ -262,7 +263,7 @@ const AccountsFilters = (props: any) => {
 				)}
 			</div>
 			{props.children}
-			{!props.loading && (
+			{filters.itemsTotal > 1 && (
 				<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
 					<Pagination
 						name={2}
