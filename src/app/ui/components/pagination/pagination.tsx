@@ -11,13 +11,10 @@ import "./pagination.scss";
 
 const Pagination = (props: any) => {
 	const f = props.filters;
-	const [pagesCurrent, setPagesCurrent] = useState<Number>(1);
 	const [pages, setPages] = useState<any>([]);
 
 	useEffect(() => {
 		let startPage;
-		console.log("f.pagesCurrent", f.pagesCurrent);
-
 		if (f.pagesCurrent > 3) {
 			if (Number(f.pagesCurrent) + 2 > Number(f.pagesTotal)) {
 				startPage = Number(f.pagesTotal) - 4;
@@ -36,11 +33,10 @@ const Pagination = (props: any) => {
 		);
 
 		setPages(pages);
-	}, [pagesCurrent]);
+	}, []);
 
 	const updatePage = (newPage: Number) => {
 		f.setPagesCurrent(newPage);
-		setPagesCurrent(newPage);
 		props.handleFilter({
 			target: { name: "pagesCurrent", value: newPage },
 		});

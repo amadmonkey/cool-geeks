@@ -275,13 +275,6 @@ export default function Accounts(props: any) {
 											/>
 										</td>
 										<td>
-											{/* <button onClick={() => console.log("")} style={{ border: "none" }}>
-											<IconTrash
-												className="danger-dark"
-												style={{ height: "20px", width: "auto" }}
-											/>
-										</button> */}
-
 											<ConfirmModal
 												template={() => deleteConfirmTemplate(user)}
 												continue={(e: any) => {

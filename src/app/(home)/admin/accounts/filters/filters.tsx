@@ -27,6 +27,7 @@ interface DateRange {
 interface AccountsFilter {
 	search: string;
 	sort: Object;
+	pagesCurrent: Number;
 	dateRange: DateRange;
 	cutOffType: string;
 	status: Object;
@@ -70,12 +71,14 @@ const cutOffTypeList = [
 // TODO: column sort
 const AccountsFilters = (props: any) => {
 	const filters = props.filters;
+	const [pagesCurrent, setPagesCurrent] = useState(1);
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
 	const [form, setForm] = useState<AccountsFilter>({
 		search: "",
-		sort: { firstName: "asc" },
+		sort: { dateUpdated: "asc" },
 		cutOffType: cutOffTypeList[0].name,
+		pagesCurrent: 1,
 		dateRange: {
 			start: "",
 			end: "",
@@ -218,6 +221,7 @@ const AccountsFilters = (props: any) => {
 						<Pagination
 							filters={filters}
 							handleFilter={(e: any) => {
+								setPagesCurrent(e.value);
 								props.handleFilter(false, { ...e, ...form });
 							}}
 						/>
@@ -262,6 +266,8 @@ const AccountsFilters = (props: any) => {
 				<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
 					<Pagination
 						name={2}
+						pagesCurrent={pagesCurrent}
+						form={form}
 						filters={filters}
 						handleFilter={(e: any) => {
 							props.handleFilter(false, { ...e, ...form });
