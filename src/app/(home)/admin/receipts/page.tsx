@@ -60,7 +60,7 @@ export default function Receipts(props: any) {
 				// reset list when something in the filter changed
 				if (fromFilter) {
 					listRef.current = [];
-					filters.setPagesCurrent(1);
+					filters.setPage(1);
 					filters.setItemsCurrent(0);
 				}
 
@@ -122,7 +122,7 @@ export default function Receipts(props: any) {
 		const el = document.documentElement;
 
 		clearTimeout(timeoutId.current);
-		if (Number(filters.pagesCurrent) >= Number(filters.pagesTotal)) return;
+		if (Number(filters.page) >= Number(filters.pagesTotal)) return;
 		timeoutId.current = window.setTimeout(() => {
 			if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
 				filters.incrementPage();
@@ -176,7 +176,7 @@ export default function Receipts(props: any) {
 									<ListEmpty label="No entries found" />
 								)}
 								{/* view more skeleton */}
-								{!props.title && Number(filters.pagesCurrent) < Number(filters.pagesTotal) && (
+								{!props.title && Number(filters.page) < Number(filters.pagesTotal) && (
 									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
 								)}
 							</div>

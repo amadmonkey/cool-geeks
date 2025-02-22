@@ -128,7 +128,7 @@ const Admin = () => {
 				searchOptions={{
 					page: "1",
 					limit: "5",
-					sort: JSON.stringify({ createdAt: "desc" }),
+					sort: { updatedAt: "desc" },
 				}}
 			/>
 		</div>

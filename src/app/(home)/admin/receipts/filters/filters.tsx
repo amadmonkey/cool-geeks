@@ -19,7 +19,7 @@ import IconEnd from "@/public/end-of-month.svg";
 
 // styles
 import "./filters.scss";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 interface DateRange {
 	start: string;

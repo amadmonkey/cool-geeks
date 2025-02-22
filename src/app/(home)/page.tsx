@@ -287,7 +287,6 @@ export default function Home() {
 		const searchOptions = new URLSearchParams({
 			page: "1",
 			limit: "10",
-			sort: JSON.stringify({ createdAt: "desc" }),
 		});
 		const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
 			method: "GET",

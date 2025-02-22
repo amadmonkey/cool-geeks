@@ -24,9 +24,6 @@ import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 import ConfirmModal from "@/app/ui/components/confirm-modal/confirm-modal";
 import AccountsFilters from "./filters/filters";
 
-// types
-import { Filters } from "@/app/ui/classes/filters";
-
 // svgs
 import IconTrash from "@/public/trash2.svg";
 import IconAccounts from "@/public/users.svg";
@@ -43,49 +40,25 @@ export default function Accounts(props: any) {
 	const controller = useRef<any>();
 	const [list, setList] = useState<any>({});
 	const [loading, setLoading] = useState<boolean>(true);
-	const [filters] = useState(
-		new Filters(
-			props.searchOptions || {
-				limit: "10",
-				sort: {
-					firstName: "asc",
-				},
-			}
-		)
-	);
 
 	const getAccounts = useCallback(
-		async (fromFilter?: boolean, query?: any) => {
+		async (filters?: any) => {
 			try {
 				setList(null);
 				setLoading(true);
-
-				console.log("getAccounts", query);
-
-				// set page to 1 if anything from filter, except pagination, changed (i.e: )
-				if (fromFilter) filters.setPagesCurrent(1);
-
-				// if has mongoose query, set it
-				if (query) {
-					filters.setQuery(query);
-					filters.setSort(query.sort);
-				}
 
 				// abort previous calls
 				if (controller.current) controller.current.abort();
 				controller.current = new AbortController();
 				signal.current = controller.current.signal;
 
-				const { code, data } = await fetch(
-					`/api/user?${new URLSearchParams(filters.valuesString)}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						credentials: "include",
-					}
-				).then((res) => res.json());
+				const { code, data } = await fetch(`/api/user?${new URLSearchParams(filters)}`, {
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+				}).then((res) => res.json());
 
 				switch (code) {
 					case 200:
@@ -135,7 +108,7 @@ export default function Accounts(props: any) {
 	const toggleUserStatus = async (e: any, user: any) => {
 		e && e.preventDefault();
 		try {
-			const { code, data } = await fetch("/api/user", {
+			const { code } = await fetch("/api/user", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -200,10 +173,10 @@ export default function Accounts(props: any) {
 	return (
 		<Section title={sectionTitle(props.title)} others={sectionOthers()}>
 			<AccountsFilters
+				searchOptions={props.searchOptions}
 				loading={loading}
-				filters={filters}
 				handleFilter={getAccounts}
-				style={{ marginBottom: "10px" }}
+				style={{ paddingBottom: "10px", marginBottom: "10px", borderBottom: "1px solid #ddd" }}
 			>
 				<Table
 					type="accounts"
@@ -306,24 +279,21 @@ export default function Accounts(props: any) {
 					)}
 				</Table>
 			</AccountsFilters>
-			{list && list.length && (
-				<>
-					<div
-						style={{
-							letterSpacing: 2,
-							fontSize: 11,
-							marginTop: "30px",
-							textAlign: "center",
-						}}
-					>
-						TODO:{" "}
-						<ol style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-							<li>Fix emails for the 3 password options</li>
-							<li>Add column sorting</li>
-							<li>Add ability to see user`s submissions history akin to client view</li>
-						</ol>
-					</div>
-				</>
+			{list && (
+				<div
+					style={{
+						letterSpacing: 2,
+						fontSize: 11,
+						marginTop: "30px",
+						textAlign: "center",
+					}}
+				>
+					TODO:{" "}
+					<ol style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+						<li>Add column sorting</li>
+						<li>Add ability to see user`s submissions history akin to client view</li>
+					</ol>
+				</div>
 			)}
 			{props.title && (
 				<Link

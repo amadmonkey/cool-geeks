@@ -13,11 +13,20 @@
 	}
 	&.danger {
 		background-color: $danger;
+		border-color: $danger !important;
 		border: none;
 		color: #fff;
+		fill: #fff;
+
 		&:hover {
 			background-color: darken($danger, 10%);
 		}
+	}
+	&.success {
+		border-color: $success;
+	}
+	&.info {
+		background-color: $info;
 	}
 	&.hanging {
 		border-radius: 10px;

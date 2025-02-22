@@ -1,23 +1,31 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DateTime } from "luxon";
-import { ACCOUNT_STATUS, CUTOFF_TYPE } from "@/utility";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { ACCOUNT_STATUS, CUTOFF_TYPE, UI_TYPE } from "@/utility";
 
 // components
+import Button from "@/app/ui/components/button/button";
 import Dropdown from "@/app/ui/components/dropdown/dropdown";
 import TextInput from "@/app/ui/components/text-input/text-input";
 import FormGroup from "@/app/ui/components/form-group/form-group";
+import Pagination from "@/app/ui/components/pagination/pagination";
 import RadioGroup from "@/app/ui/components/radio-group/radio-group";
 import DetectOutsideClick from "@/app/ui/components/detect-outside-click/detect-outside-click";
 
+// types
+import { Filters } from "@/app/ui/classes/filters";
+
 // svgs
+import IconXLS from "@/public/dl-xls.svg";
 import IconCheck from "@/public/check.svg";
 import IconMid from "@/public/midmonth.svg";
 import IconSearch from "@/public/search.svg";
+import IconRefresh from "@/public/refresh.svg";
 import IconEnd from "@/public/end-of-month.svg";
 
 // styles
 import "./filters.scss";
-import Pagination from "@/app/ui/components/pagination/pagination";
+import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 
 interface DateRange {
 	start: string;
@@ -27,7 +35,7 @@ interface DateRange {
 interface AccountsFilter {
 	search: string;
 	sort: Object;
-	pagesCurrent: Number;
+	page: string;
 	dateRange: DateRange;
 	cutOffType: string;
 	status: Object;
@@ -70,27 +78,66 @@ const cutOffTypeList = [
 
 // TODO: column sort
 const AccountsFilters = (props: any) => {
-	const filters = props.filters;
-	const [pagesCurrent, setPagesCurrent] = useState(1);
+	const urlParams = useSearchParams();
+	const pathname = usePathname();
+	const { replace, refresh } = useRouter();
+	const [params, setParams] = useState("");
 	const [dateType, setDateType] = useState(dateTypeList[0]);
 	const [dateRangeActive, setDateRangeActive] = useState(false);
+	const [filters] = useState(new Filters(props.searchOptions || urlParams.entries()));
 	const [form, setForm] = useState<AccountsFilter>({
-		search: "",
-		sort: { dateUpdated: "asc" },
-		cutOffType: cutOffTypeList[0].name,
-		pagesCurrent: 1,
-		dateRange: {
-			start: "",
-			end: "",
-		},
-		status: "ALL",
+		search: urlParams.get("search") || "",
+		cutOffType: urlParams.get("cutoff")?.toUpperCase() || cutOffTypeList[0].name,
+		page: urlParams.get("page") || "1",
+		sort: urlParams.get("sort") || { updatedAt: "asc" },
+		dateRange: urlParams.get("dateRange")
+			? JSON.parse(urlParams.get("dateRange") || "")
+			: {
+					start: "",
+					end: "",
+			  },
+		status: urlParams.get("status")?.toUpperCase() || "ALL",
 	});
 
 	const updateForm = (e: any) => {
 		let { name, value } = e.target;
-		setForm((prev) => ({ ...prev, [name]: value }));
+		const newVal = { [name]: value };
+
+		const params = new URLSearchParams(Array.from(urlParams.entries()));
+		params.sort();
+		params.set(name, typeof value === "object" ? JSON.stringify(value) : value);
+
+		if (name !== "page") {
+			params.set("page", "1");
+			Object.assign(newVal, { page: "1" });
+		}
+
+		setParams(params.toString());
+		setForm((prev) => ({ ...prev, ...newVal }));
 	};
 
+	const immediate = useRef(true);
+	useEffect(() => {
+		let timer: any;
+		if (form.dateRange.start) {
+			immediate.current = true;
+			timer = setTimeout(
+				() => {
+					filters.setQuery(form);
+					filters.setPage(Number(form.page));
+					!props.searchOptions && replace(`${pathname}?${params}`);
+					props.handleFilter(filters);
+				},
+				immediate.current ? 200 : 1000
+			);
+		}
+		return () => {
+			immediate.current = false;
+			clearTimeout(timer);
+		};
+	}, [form]);
+
+	// on date range change. either start or end
 	const updateFormDate = (e: any) => {
 		let { name, value } = e.target;
 		setForm((prev) => ({
@@ -102,6 +149,7 @@ const AccountsFilters = (props: any) => {
 		}));
 	};
 
+	// on date type change (e.g: last 30 days, last 60 days, date range)
 	useEffect(() => {
 		if (dateType !== dateTypeList[2]) {
 			updateForm({
@@ -115,36 +163,14 @@ const AccountsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
-	const immediate = useRef(true);
-	useEffect(() => {
-		let timer: any;
-		form.dateRange = {
-			start: DateTime.now().minus({ days: 30 }).toString(),
-			end: DateTime.now().toString(),
-		};
-		if (form.dateRange.start) {
-			immediate.current = true;
-			timer = setTimeout(
-				() => {
-					props.handleFilter(true, form);
-				},
-				immediate.current ? 200 : 1000
-			);
-		}
-		return () => {
-			immediate.current = false;
-			clearTimeout(timer);
-		};
-	}, [form, filters]);
-
-	useEffect(() => {
-		updateForm({
-			target: {
-				name: "dateRange",
-				value: dateTypeList[0].range,
-			},
-		});
-	}, []);
+	// useEffect(() => {
+	// 	updateForm({
+	// 		target: {
+	// 			name: "dateRange",
+	// 			value: dateTypeList[0].range,
+	// 		},
+	// 	});
+	// }, []);
 
 	return (
 		<>
@@ -152,128 +178,159 @@ const AccountsFilters = (props: any) => {
 				className={`filters ${props.className || ""}`}
 				style={{ ...props.style, ...{ flexDirection: "column", gap: "10px" } }}
 			>
-				<div
-					style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}
-				>
-					<div style={{ display: "flex", gap: "10px" }}>
-						<div style={{ position: "relative" }}>
-							<FormGroup row>
-								<Dropdown
-									name=""
-									style={{ width: "140px" }}
-									list={dateTypeList}
-									value={dateType}
-									onChange={(v: any) => setDateType(v)}
-									placeholder="Date"
-									required
-								/>
+				{!props.searchOptions && (
+					<>
+						<div
+							style={{
+								display: "flex",
+								width: "100%",
+								justifyContent: "space-between",
+								gap: "10px",
+							}}
+						>
+							<div style={{ display: "flex", gap: "10px" }}>
+								<div style={{ position: "relative" }}>
+									<FormGroup row>
+										<Dropdown
+											name=""
+											style={{ width: "140px" }}
+											list={dateTypeList}
+											value={dateType}
+											onChange={(v: any) => setDateType(v)}
+											placeholder="Date"
+											required
+										/>
+										<RadioGroup
+											list={cutOffTypeList}
+											selected={form.cutOffType}
+											onChange={(v: any) =>
+												updateForm({ target: { name: "cutOffType", value: v } })
+											}
+										/>
+									</FormGroup>
+									<DetectOutsideClick action={() => setDateRangeActive(false)} isShown={true}>
+										<div className={`date-range${dateRangeActive ? " active" : ""}`}>
+											<div className="content-wrapper">
+												<input
+													name="dateRange_start"
+													aria-label="Start"
+													type="date"
+													placeholder="From"
+													value={DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")}
+													onChange={updateFormDate}
+												/>
+												<input
+													name="dateRange_end"
+													aria-label="End"
+													type="date"
+													placeholder="To"
+													value={DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")}
+													onChange={updateFormDate}
+												/>
+											</div>
+										</div>
+									</DetectOutsideClick>
+								</div>
 								<RadioGroup
-									list={cutOffTypeList}
-									selected={form.cutOffType}
-									onChange={(v: any) => updateForm({ target: { name: "cutOffType", value: v } })}
+									style={{ fontSize: "12px" }}
+									list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {
+										return { name: item, label: item };
+									})}
+									selected={form.status}
+									onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
 								/>
-							</FormGroup>
-							<DetectOutsideClick action={() => setDateRangeActive(false)} isShown={true}>
-								<div className={`date-range${dateRangeActive ? " active" : ""}`}>
-									<div className="content-wrapper">
-										<input
-											name="dateRange_start"
-											aria-label="Start"
-											type="date"
-											placeholder="From"
-											value={DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")}
-											onChange={updateFormDate}
-										/>
-										<input
-											name="dateRange_end"
-											aria-label="End"
-											type="date"
-											placeholder="To"
-											value={DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")}
-											onChange={updateFormDate}
-										/>
+							</div>
+							<FormGroup row>
+								<TextInput
+									name="search"
+									placeholder="Search"
+									value={form.search}
+									icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
+									onChange={updateForm}
+									hasIcon
+								/>
+								<div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
+									<div style={{ display: "flex", gap: "5px" }}>
+										<HoverBubble message="Clear filters" left>
+											<Button
+												style={{ width: "50px" }}
+												danger
+												onClick={() => {
+													replace(`${pathname}`);
+													setDateType(dateTypeList[0]);
+													setForm({
+														search: "",
+														cutOffType: cutOffTypeList[0].name,
+														page: "1",
+														sort: { updatedAt: "asc" },
+														dateRange: {
+															start: DateTime.now().minus({ days: 30 }).toISO(),
+															end: DateTime.now().toISO(),
+														},
+														status: "ALL",
+													});
+													refresh();
+												}}
+											>
+												<IconRefresh style={{ width: "25px" }} />
+											</Button>
+										</HoverBubble>
+										<HoverBubble message="Download as XLS" left>
+											<Button style={{ width: "50px" }} disabled>
+												<IconXLS style={{ width: "30px", height: "30px" }} fill="#555" />
+											</Button>
+										</HoverBubble>
 									</div>
 								</div>
-							</DetectOutsideClick>
+							</FormGroup>
 						</div>
-					</div>
-					<FormGroup row>
-						<TextInput
-							name="search"
-							placeholder="Search"
-							value={form.search}
-							icon={<IconSearch style={{ height: "15px", width: "auto" }} />}
-							onChange={updateForm}
-							hasIcon
-						/>
-					</FormGroup>
-				</div>
-				<div style={{ display: "flex", justifyContent: "space-between", gap: "10px" }}>
-					<RadioGroup
-						style={{ fontSize: "12px" }}
-						list={["ALL", ...Object.keys(ACCOUNT_STATUS)].map((item: any) => {
-							return { name: item, label: item };
-						})}
-						selected={form.status}
-						onChange={(v: any) => updateForm({ target: { name: "status", value: v } })}
-					/>
-					{filters.itemsTotal > 1 && (
-						<Pagination
-							pagesCurrent={pagesCurrent}
-							filters={filters}
-							handleFilter={(e: any) => {
-								setPagesCurrent(e.value);
-								props.handleFilter(false, { ...e, ...form });
-							}}
-						/>
-					)}
-				</div>
-				{props.loading ? (
-					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
-						Showing <span className="text-info skeleton" style={{ fontWeight: 800 }}></span> out of{" "}
-						<span className="text-info skeleton" style={{ fontWeight: 800 }}></span> results from
-						<span
-							className={`text-info skeleton`}
-							style={{ fontWeight: 800, width: "100px" }}
-						></span>{" "}
-						to{" "}
-						<span className={`text-info skeleton`} style={{ fontWeight: 800, width: "100px" }}>
-							{" "}
-						</span>
-					</span>
-				) : (
-					<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
-						Showing{" "}
-						<span className="text-info" style={{ fontWeight: 800 }}>
-							{filters.itemsCurrent}
-						</span>{" "}
-						out of{" "}
-						<span className="text-info" style={{ fontWeight: 800 }}>
-							{filters.itemsTotal}
-						</span>{" "}
-						results from{" "}
-						<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
-							{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
-						</span>{" "}
-						to{" "}
-						<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
-							{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
-						</span>
-					</span>
+						<div style={{ display: "flex", justifyContent: "space-between" }}>
+							{props.loading ? (
+								<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+									Showing <span className="text-info skeleton" style={{ fontWeight: 800 }}></span>{" "}
+									out of <span className="text-info skeleton" style={{ fontWeight: 800 }}></span>{" "}
+									results from
+									<span
+										className={`text-info skeleton`}
+										style={{ fontWeight: 800, width: "100px" }}
+									></span>{" "}
+									to{" "}
+									<span
+										className={`text-info skeleton`}
+										style={{ fontWeight: 800, width: "100px" }}
+									>
+										{" "}
+									</span>
+								</span>
+							) : (
+								<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+									Showing{" "}
+									<span className="text-info" style={{ fontWeight: 800 }}>
+										{filters.itemsCurrent}
+									</span>{" "}
+									out of{" "}
+									<span className="text-info" style={{ fontWeight: 800 }}>
+										{filters.itemsTotal}
+									</span>{" "}
+									results from{" "}
+									<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+										{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
+									</span>{" "}
+									to{" "}
+									<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+										{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
+									</span>
+								</span>
+							)}
+							{!props.loading && <Pagination filters={filters} handleFilter={updateForm} />}
+						</div>
+					</>
 				)}
 			</div>
 			{props.children}
-			{filters.itemsTotal > 1 && (
+			{!props.searchOptions && !props.loading && (
 				<div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
-					<Pagination
-						name={2}
-						pagesCurrent={pagesCurrent}
-						form={form}
-						filters={filters}
-						handleFilter={(e: any) => {
-							props.handleFilter(false, { ...e, ...form });
-						}}
-					/>
+					<Pagination name={2} filters={filters} handleFilter={updateForm} />
 				</div>
 			)}
 		</>

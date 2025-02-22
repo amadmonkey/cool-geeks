@@ -33,6 +33,15 @@ export default function RootLayout({
 					theme="light"
 					transition={Bounce}
 				/>
+				{/* <footer id="main">
+					<p>Cool Geeks © 2025 All rights reserved</p>
+					<ul id="asd">
+						<label htmlFor="asd">Contact us:</label>
+						<li>facebook</li>
+						<li>instagram</li>
+						<li>gmail</li>
+					</ul>
+				</footer> */}
 			</body>
 		</html>
 	);
