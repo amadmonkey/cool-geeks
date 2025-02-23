@@ -118,9 +118,9 @@ export default function Accounts(props: any) {
 					...user,
 					...{
 						status:
-							user.status === ACCOUNT_STATUS.STANDARD
+							user.status === ACCOUNT_STATUS.ACTIVE
 								? ACCOUNT_STATUS.DEACTIVATED
-								: ACCOUNT_STATUS.STANDARD,
+								: ACCOUNT_STATUS.ACTIVE,
 					},
 				}),
 			}).then((res) => res.json());
@@ -148,7 +148,7 @@ export default function Accounts(props: any) {
 					alignItems: "center",
 				}}
 			>
-				{user.status === ACCOUNT_STATUS.STANDARD ? (
+				{user.status === ACCOUNT_STATUS.ACTIVE ? (
 					<>
 						<h1 style={{ marginBottom: "10px" }}>Deactivating Account</h1>
 						<p>asdasdasdasd</p>
@@ -182,13 +182,19 @@ export default function Accounts(props: any) {
 					type="accounts"
 					headers={TABLE_HEADERS.accounts}
 					className={list === null ? "loading" : ""}
+					handleSort={() => console.log("process sort")}
 				>
 					{list === null ? (
 						<Skeleton type={SKELETON_TYPES.ACCOUNTS} />
 					) : list.length ? (
 						list?.map((user: any, index: number) => {
 							return (
-								<tr key={index} className={`accounts ${!user.status ? "inactive" : ""}`}>
+								<tr
+									key={index}
+									className={`accounts ${!user.status ? "inactive" : ""} pointer`}
+									tabIndex={0}
+									onClick={() => console.log("view submission history")}
+								>
 									<td>
 										<span
 											style={{
@@ -241,7 +247,7 @@ export default function Accounts(props: any) {
 										<Switch
 											name="active"
 											id={user._id}
-											checked={user.status === ACCOUNT_STATUS.STANDARD}
+											checked={user.status === ACCOUNT_STATUS.ACTIVE}
 											onChange={(e: any) => toggleUserStatus(e, user)}
 											confirmTemplate={() => toggleUserStatusTemplate(user)}
 										/>

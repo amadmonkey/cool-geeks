@@ -23,7 +23,7 @@
 			}
 			&.accounts {
 				// grid-template-columns: 20% 5% 20% 10% 10% 15% 15% 5%;
-				grid-template-columns: 20% 5% 15% 10% 10% 15% 15% 5% 5%;
+				grid-template-columns: 18% 7% 15% 10% 10% 15% 15% 5% 5%;
 			}
 			&.receipts {
 				grid-template-columns: 20% 10% 10% 15% 15% 10% 10% 10%;
@@ -59,8 +59,17 @@
 		thead {
 			position: relative;
 			th {
-				color: #a8a8a8;
-				font-weight: 800;
+				button {
+					width: 100%;
+					color: #a8a8a8;
+					font-weight: 800;
+					border-radius: 5px;
+					&:hover,
+					:focus {
+						background-color: lighten($info, 10%);
+						color: #fff;
+					}
+				}
 			}
 			tr {
 				display: grid;
@@ -87,7 +96,10 @@
 					overflow-wrap: break-word;
 				}
 				&:not(.loading):not(.row-failed):not(.error):hover {
-					background-color: #f5f5f5;
+					// background-color: #f5f5f5;
+					background-color: lighten($info, 40%);
+					transform: scale(103%);
+					z-index: 2;
 				}
 				&.row-failed {
 					grid-template-columns: 20% 10% 10% 40% 20%;

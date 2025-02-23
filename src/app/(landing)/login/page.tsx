@@ -204,7 +204,7 @@ const LoginForm = () => {
 
 	const getTemplate = (status: string | null) => {
 		switch (status) {
-			case ACCOUNT_STATUS.STANDARD:
+			case ACCOUNT_STATUS.ACTIVE:
 				return (
 					<>
 						<FormGroup label="Password">
@@ -377,7 +377,7 @@ const LoginForm = () => {
 					accountStatus !== ACCOUNT_STATUS.VERIFY && (
 						<FormGroup>
 							<Button type="submit" className="info">
-								{accountStatus === ACCOUNT_STATUS.STANDARD ? "LOGIN" : "CONTINUE"}
+								{accountStatus === ACCOUNT_STATUS.ACTIVE ? "LOGIN" : "CONTINUE"}
 							</Button>
 						</FormGroup>
 					)}

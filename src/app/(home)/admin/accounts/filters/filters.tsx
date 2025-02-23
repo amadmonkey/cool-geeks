@@ -22,21 +22,17 @@ import IconMid from "@/public/midmonth.svg";
 import IconSearch from "@/public/search.svg";
 import IconRefresh from "@/public/refresh.svg";
 import IconEnd from "@/public/end-of-month.svg";
+import IconCalendar from "@/public/calendar.svg";
 
 // styles
 import "./filters.scss";
 import HoverBubble from "@/app/ui/components/hover-bubble/hover-bubble";
 
-interface DateRange {
-	start: string;
-	end: string;
-}
-
 interface AccountsFilter {
 	search: string;
 	sort: Object;
 	page: string;
-	dateRange: DateRange;
+	dateRange: any;
 	cutOffType: string;
 	status: Object;
 }
@@ -44,6 +40,11 @@ interface AccountsFilter {
 const dateTypeList = [
 	{
 		_id: "1",
+		name: "All",
+		range: null,
+	},
+	{
+		_id: "2",
 		name: "Last 30 days",
 		range: {
 			start: DateTime.now().minus({ days: 30 }).toISO(),
@@ -51,14 +52,14 @@ const dateTypeList = [
 		},
 	},
 	{
-		_id: "2",
+		_id: "3",
 		name: "Last 60 days",
 		range: {
 			start: DateTime.now().minus({ days: 60 }).toISO(),
 			end: DateTime.now().toISO(),
 		},
 	},
-	{ _id: "3", name: "Set range", range: null },
+	{ _id: "4", name: "Set range", range: { start: "", end: "" } },
 ];
 
 const cutOffTypeList = [
@@ -90,12 +91,7 @@ const AccountsFilters = (props: any) => {
 		cutOffType: urlParams.get("cutoff")?.toUpperCase() || cutOffTypeList[0].name,
 		page: urlParams.get("page") || "1",
 		sort: urlParams.get("sort") || { updatedAt: "asc" },
-		dateRange: urlParams.get("dateRange")
-			? JSON.parse(urlParams.get("dateRange") || "")
-			: {
-					start: "",
-					end: "",
-			  },
+		dateRange: urlParams.get("dateRange") ? JSON.parse(urlParams.get("dateRange") || "") : null,
 		status: urlParams.get("status")?.toUpperCase() || "ALL",
 	});
 
@@ -119,18 +115,16 @@ const AccountsFilters = (props: any) => {
 	const immediate = useRef(true);
 	useEffect(() => {
 		let timer: any;
-		if (form.dateRange.start) {
-			immediate.current = true;
-			timer = setTimeout(
-				() => {
-					filters.setQuery(form);
-					filters.setPage(Number(form.page));
-					!props.searchOptions && replace(`${pathname}?${params}`);
-					props.handleFilter(filters);
-				},
-				immediate.current ? 200 : 1000
-			);
-		}
+		immediate.current = true;
+		timer = setTimeout(
+			() => {
+				filters.setQuery(form);
+				filters.setPage(Number(form.page));
+				!props.searchOptions && replace(`${pathname}?${params}`);
+				props.handleFilter(filters);
+			},
+			immediate.current ? 200 : 1000
+		);
 		return () => {
 			immediate.current = false;
 			clearTimeout(timer);
@@ -151,7 +145,7 @@ const AccountsFilters = (props: any) => {
 
 	// on date type change (e.g: last 30 days, last 60 days, date range)
 	useEffect(() => {
-		if (dateType !== dateTypeList[2]) {
+		if (dateType !== dateTypeList[3]) {
 			updateForm({
 				target: {
 					name: "dateRange",
@@ -163,14 +157,14 @@ const AccountsFilters = (props: any) => {
 		}
 	}, [dateType]);
 
-	// useEffect(() => {
-	// 	updateForm({
-	// 		target: {
-	// 			name: "dateRange",
-	// 			value: dateTypeList[0].range,
-	// 		},
-	// 	});
-	// }, []);
+	useEffect(() => {
+		updateForm({
+			target: {
+				name: "dateRange",
+				value: dateTypeList[0].range,
+			},
+		});
+	}, []);
 
 	return (
 		<>
@@ -191,6 +185,7 @@ const AccountsFilters = (props: any) => {
 							<div style={{ display: "flex", gap: "10px" }}>
 								<div style={{ position: "relative" }}>
 									<FormGroup row>
+										<IconCalendar style={{ height: "20px", width: "20px", stroke: "#555" }} />
 										<Dropdown
 											name=""
 											style={{ width: "140px" }}
@@ -216,7 +211,11 @@ const AccountsFilters = (props: any) => {
 													aria-label="Start"
 													type="date"
 													placeholder="From"
-													value={DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")}
+													value={
+														form.dateRange
+															? DateTime.fromISO(form.dateRange.start).toFormat("yyyy-LL-dd")
+															: ""
+													}
 													onChange={updateFormDate}
 												/>
 												<input
@@ -224,7 +223,11 @@ const AccountsFilters = (props: any) => {
 													aria-label="End"
 													type="date"
 													placeholder="To"
-													value={DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")}
+													value={
+														form.dateRange
+															? DateTime.fromISO(form.dateRange.end).toFormat("yyyy-LL-dd")
+															: ""
+													}
 													onChange={updateFormDate}
 												/>
 											</div>
@@ -263,10 +266,7 @@ const AccountsFilters = (props: any) => {
 														cutOffType: cutOffTypeList[0].name,
 														page: "1",
 														sort: { updatedAt: "asc" },
-														dateRange: {
-															start: DateTime.now().minus({ days: 30 }).toISO(),
-															end: DateTime.now().toISO(),
-														},
+														dateRange: null,
 														status: "ALL",
 													});
 													refresh();
@@ -286,7 +286,16 @@ const AccountsFilters = (props: any) => {
 						</div>
 						<div style={{ display: "flex", justifyContent: "space-between" }}>
 							{props.loading ? (
-								<span style={{ marginTop: "10px", fontSize: "15px", textAlign: "right" }}>
+								<span
+									style={{
+										gap: "5px",
+										display: "flex",
+										fontSize: "15px",
+										marginTop: "10px",
+										textAlign: "right",
+										alignItems: "center",
+									}}
+								>
 									Showing <span className="text-info skeleton" style={{ fontWeight: 800 }}></span>{" "}
 									out of <span className="text-info skeleton" style={{ fontWeight: 800 }}></span>{" "}
 									results from
@@ -313,13 +322,23 @@ const AccountsFilters = (props: any) => {
 										{filters.itemsTotal}
 									</span>{" "}
 									results from{" "}
-									<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
-										{DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")}
-									</span>{" "}
-									to{" "}
-									<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
-										{DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")}
-									</span>
+									{form.dateRange ? (
+										<>
+											<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+												{form.dateRange
+													? DateTime.fromISO(form.dateRange.start).toFormat("LLLL dd, yyyy")
+													: ""}
+											</span>{" "}
+											to{" "}
+											<span className="text-info" style={{ fontWeight: 800, width: "100px" }}>
+												{form.dateRange
+													? DateTime.fromISO(form.dateRange.end).toFormat("LLLL dd, yyyy")
+													: ""}
+											</span>
+										</>
+									) : (
+										"the start of time"
+									)}
 								</span>
 							)}
 							{!props.loading && <Pagination filters={filters} handleFilter={updateForm} />}

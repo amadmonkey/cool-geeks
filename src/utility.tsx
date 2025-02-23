@@ -28,7 +28,7 @@ const CUTOFF_TYPE = {
 };
 
 const ACCOUNT_STATUS = {
-	STANDARD: "STANDARD", // can login
+	ACTIVE: "ACTIVE", // can login
 	PENDING: "PENDING", // cannot login, ask for password
 	DEACTIVATED: "DEACTIVATED", // cannot login
 	VERIFY: "VERIFY",

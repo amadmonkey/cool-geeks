@@ -1,9 +1,8 @@
 import React from "react";
 
 import "./table.scss";
-import Pagination from "../pagination/pagination";
 
-const Table = ({ children, headers, className, type }: any) => {
+const Table = ({ children, headers, className, type, handleSort }: any) => {
 	return (
 		<div className={`cg-table ${type} ${className}`}>
 			<table>
@@ -12,7 +11,13 @@ const Table = ({ children, headers, className, type }: any) => {
 						<tr className={`${type} ${className}`}>
 							{Object.keys(headers).map((header, i) => {
 								if (header.includes("nbsp")) return <th key={i}>&nbsp;</th>;
-								return <th key={i}>{header.split("_").join(" ").toUpperCase()}</th>;
+								return (
+									<th key={i}>
+										<button className="invisible" onClick={() => handleSort(headers[header])}>
+											{header.split("_").join(" ").toUpperCase()}
+										</button>
+									</th>
+								);
 							})}
 						</tr>
 					</thead>
