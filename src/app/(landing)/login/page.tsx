@@ -34,8 +34,8 @@ const LoginForm = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [verificationMessage, setVerificationMessage] = useState<any>(null);
 	const [form, setForm] = useState({
-		emailAccountNo: useSearchParams().get("u") || "PEX-2024-0002",
-		password: "@W00tw00t",
+		emailAccountNo: useSearchParams().get("u") || "",
+		password: "",
 		confirmPassword: "",
 	});
 
