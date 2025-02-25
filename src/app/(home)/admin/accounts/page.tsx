@@ -3,7 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
 	UI_TYPE,
 	CUTOFF_TYPE,
@@ -193,8 +193,10 @@ export default function Accounts(props: any) {
 									key={index}
 									className={`accounts ${!user.status ? "inactive" : ""} pointer`}
 									tabIndex={0}
-									onClick={() => console.log("view submission history")}
 								>
+									<td>
+										<Link href={`/admin/accounts/${user.accountNumber}`}>&nbsp;</Link>
+									</td>
 									<td>
 										<span
 											style={{

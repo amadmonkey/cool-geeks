@@ -10,8 +10,8 @@
 	align-items: center;
 	flex-direction: column;
 	justify-content: center;
-	backdrop-filter: blur(5px);
-	background-color: #00000041;
+	backdrop-filter: blur(10px);
+	background-color: hsla(0, 0%, 0%, 0);
 	&.clear {
 		background: none;
 		backdrop-filter: unset;

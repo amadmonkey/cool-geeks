@@ -151,7 +151,6 @@ const SubdPlans = (props: SubdPlansProps) => {
 						</th>
 					</tr>
 				</thead>
-				{/* plans !== null */}
 				{plans !== null ? (
 					plans.length ? (
 						<>

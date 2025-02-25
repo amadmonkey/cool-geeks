@@ -93,7 +93,7 @@ const SkeletonTable = (props: any) => {
 			case SKELETON_TYPES.ACCOUNTS:
 				return Array.from(Array(5).keys()).map((_: any, x: number) => {
 					return (
-						<tr key={x} className="accounts">
+						<tr key={x} className="accounts s">
 							<td>
 								<span
 									className="skeleton"

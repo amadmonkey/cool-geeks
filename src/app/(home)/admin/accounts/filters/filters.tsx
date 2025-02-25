@@ -88,7 +88,7 @@ const AccountsFilters = (props: any) => {
 	const [filters] = useState(new Filters(props.searchOptions || urlParams.entries()));
 	const [form, setForm] = useState<AccountsFilter>({
 		search: urlParams.get("search") || "",
-		cutOffType: urlParams.get("cutoff")?.toUpperCase() || cutOffTypeList[0].name,
+		cutOffType: urlParams.get("cutOffType")?.toUpperCase() || cutOffTypeList[0].name,
 		page: urlParams.get("page") || "1",
 		sort: urlParams.get("sort") || { updatedAt: "asc" },
 		dateRange: urlParams.get("dateRange") ? JSON.parse(urlParams.get("dateRange") || "") : null,

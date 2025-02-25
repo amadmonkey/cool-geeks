@@ -26,7 +26,6 @@ import IconDownload from "@/public/download.svg";
 import {
 	CONSTANTS,
 	CUTOFF_TYPE,
-	PRE,
 	RECEIPT_STATUS,
 	RECEIPT_STATUS_ICON,
 	STRING_UTILS,
@@ -82,6 +81,7 @@ export default function Home() {
 	const settings = getCookie("settings") && JSON.parse(getCookie("settings")!);
 	const gracePeriod = settings.filter((item: any) => item._id === "66f05edc10a64439d3807f83")[0]
 		.value;
+	console.log("settings", gracePeriod);
 	const [qrUrl, setQrUrl] = useState(CONSTANTS.loaderFixed);
 
 	const recognize = async (file: any) => {
@@ -285,6 +285,7 @@ export default function Home() {
 
 	const getHistoryList = async () => {
 		const searchOptions = new URLSearchParams({
+			sort: JSON.stringify({ updatedAt: "desc" }),
 			page: "1",
 			limit: "10",
 		});

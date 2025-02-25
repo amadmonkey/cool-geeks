@@ -128,101 +128,8 @@ const HistoryTable = (props: any) => {
 
 	return (
 		<>
-			<div>
-				{filteredList ? (
-					filteredList.length ? (
-						<table className="history-table">
-							<thead className="sr-only">
-								<tr>
-									<th>Date</th>
-									<th>Rate</th>
-									<th>Reference Number</th>
-									<th>Receipt</th>
-									<th>Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								{filteredList.map((item: Receipt, index: number) => {
-									return (
-										<tr key={item._id + index} className={item.status?.toLowerCase()}>
-											<td>
-												<span className="date">
-													{DateTime.fromISO(item.receiptDate).toFormat("LLLL yyyy")}
-												</span>
-											</td>
-											<td>
-												<span className="rate">₱{item.planRef.price}</span>
-											</td>
-											<td>
-												{item.referenceType ? (
-													<span className="refNo">
-														<Image
-															src={item.referenceType && `/${item.referenceType.name}.png`}
-															height={0}
-															width={0}
-															style={{ height: "20px", width: "auto" }}
-															sizes="100vw"
-															alt="Picture of the author"
-															onErrorCapture={(e: any) => {
-																e.currentTarget.src = "/leaf.png";
-																e.currentTarget.className = "error";
-															}}
-														/>
-														{item.referenceNumber}
-													</span>
-												) : (
-													<span>RECEIPT SUBMISSION FAILED</span>
-												)}
-											</td>
-											{item.status !== "FAILED" && (
-												<>
-													<td>
-														<button
-															className="receipt-button invisible"
-															onClick={() => showReceipt(item)}
-														>
-															<Image
-																src={`/image.svg`}
-																height={0}
-																width={0}
-																style={{ height: "20px", width: "auto" }}
-																sizes="100vw"
-																alt="Picture of the author"
-																onErrorCapture={(e: any) => {
-																	e.currentTarget.src = "/leaf.png";
-																	e.currentTarget.className = "error";
-																}}
-															/>
-														</button>
-													</td>
-													<td>
-														<HoverBubble
-															style={{ display: "flex", gap: "3px" }}
-															message={item.rejectReason}
-															disabled={item.status !== RECEIPT_STATUS.DENIED}
-															right
-														>
-															<span
-																className="invisible"
-																onMouseEnter={() =>
-																	item.status === RECEIPT_STATUS.DENIED && getRejectReason(item)
-																}
-															>
-																{RECEIPT_STATUS_ICON(item.status, null)}
-															</span>
-														</HoverBubble>
-													</td>
-												</>
-											)}
-										</tr>
-									);
-								})}
-							</tbody>
-						</table>
-					) : (
-						<ListEmpty label="NO ENTRIES" />
-					)
-				) : (
+			{filteredList ? (
+				filteredList.length ? (
 					<table className="history-table">
 						<thead className="sr-only">
 							<tr>
@@ -233,38 +140,76 @@ const HistoryTable = (props: any) => {
 								<th>Status</th>
 							</tr>
 						</thead>
-						<tbody className="loading">
-							{Array.from(Array(5).keys()).map((item: any, index: number) => {
+						<tbody>
+							{filteredList.map((item: Receipt, index: number) => {
 								return (
-									<tr key={index} className={item.status?.toLowerCase()}>
+									<tr key={item._id + index} className={item.status?.toLowerCase()}>
 										<td>
-											<span className="date skeleton" style={{ width: "100%" }}>
-												&nbsp;
+											<span className="date">
+												{DateTime.fromISO(item.receiptDate).toFormat("LLLL yyyy")}
 											</span>
 										</td>
 										<td>
-											<span
-												className="rate skeleton"
-												style={{ width: "100%", borderRadius: "5px" }}
-											>
-												&nbsp;
-											</span>
+											<span className="rate">₱{item.planRef.price}</span>
 										</td>
 										<td>
-											<span
-												className="refNo skeleton"
-												style={{ width: "100%", borderRadius: "5px" }}
-											>
-												&nbsp;
-											</span>
+											{item.referenceType ? (
+												<span className="refNo">
+													<Image
+														src={item.referenceType && `/${item.referenceType.name}.png`}
+														height={0}
+														width={0}
+														style={{ height: "20px", width: "auto" }}
+														sizes="100vw"
+														alt="Picture of the author"
+														onErrorCapture={(e: any) => {
+															e.currentTarget.src = "/leaf.png";
+															e.currentTarget.className = "error";
+														}}
+													/>
+													{item.referenceNumber}
+												</span>
+											) : (
+												<span>RECEIPT SUBMISSION FAILED</span>
+											)}
 										</td>
 										{item.status !== "FAILED" && (
 											<>
-												<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
-													<button className="invisible">&nbsp;</button>
+												<td>
+													<button
+														className="receipt-button invisible"
+														onClick={() => showReceipt(item)}
+													>
+														<Image
+															src={`/image.svg`}
+															height={0}
+															width={0}
+															style={{ height: "20px", width: "auto" }}
+															sizes="100vw"
+															alt="Picture of the author"
+															onErrorCapture={(e: any) => {
+																e.currentTarget.src = "/leaf.png";
+																e.currentTarget.className = "error";
+															}}
+														/>
+													</button>
 												</td>
-												<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
-													&nbsp;
+												<td>
+													<HoverBubble
+														style={{ display: "flex", gap: "3px" }}
+														message={item.rejectReason}
+														disabled={item.status !== RECEIPT_STATUS.DENIED}
+														right
+													>
+														<span
+															className="invisible"
+															onMouseEnter={() =>
+																item.status === RECEIPT_STATUS.DENIED && getRejectReason(item)
+															}
+														>
+															{RECEIPT_STATUS_ICON(item.status, null)}
+														</span>
+													</HoverBubble>
 												</td>
 											</>
 										)}
@@ -273,8 +218,55 @@ const HistoryTable = (props: any) => {
 							})}
 						</tbody>
 					</table>
-				)}
-			</div>
+				) : (
+					<ListEmpty label="NO ENTRIES" />
+				)
+			) : (
+				<table className="history-table">
+					<thead className="sr-only">
+						<tr>
+							<th>Date</th>
+							<th>Rate</th>
+							<th>Reference Number</th>
+							<th>Receipt</th>
+							<th>Status</th>
+						</tr>
+					</thead>
+					<tbody className="loading">
+						{Array.from(Array(5).keys()).map((item: any, index: number) => {
+							return (
+								<tr key={index} className={item.status?.toLowerCase()}>
+									<td>
+										<span className="date skeleton" style={{ width: "100%" }}>
+											&nbsp;
+										</span>
+									</td>
+									<td>
+										<span className="rate skeleton" style={{ width: "100%", borderRadius: "5px" }}>
+											&nbsp;
+										</span>
+									</td>
+									<td>
+										<span className="refNo skeleton" style={{ width: "100%", borderRadius: "5px" }}>
+											&nbsp;
+										</span>
+									</td>
+									{item.status !== "FAILED" && (
+										<>
+											<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
+												<button className="invisible">&nbsp;</button>
+											</td>
+											<td className="skeleton" style={{ borderRadius: "5px", margin: "5px" }}>
+												&nbsp;
+											</td>
+										</>
+									)}
+								</tr>
+							);
+						})}
+					</tbody>
+				</table>
+			)}
 			<Modal isShown={isModalShown}>
 				<DetectOutsideClick action={closeModal}>
 					<div

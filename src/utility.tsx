@@ -107,7 +107,7 @@ const RECEIPT_STATUS_ICON = (status: any, styles: any) => {
 	if (styles) test = { ...test, ...styles };
 	switch (status?.toUpperCase()) {
 		case RECEIPT_STATUS.PENDING:
-			return <IconPending style={{ ...test, ...{ fill: "#b6b6b6" } }} height="20" />;
+			return <IconPending style={{ ...test, ...{ fill: "#6d6d6d" } }} height="20" />;
 		case RECEIPT_STATUS.ACCEPTED:
 			return <IconAccepted style={{ ...test }} className="success" />;
 		case RECEIPT_STATUS.DENIED:
