@@ -44,7 +44,7 @@ export default function Receipts(props: any) {
 				page: "1",
 				limit: "9",
 				sort: {
-					createdAt: "desc",
+					updatedAt: "desc",
 				},
 			}
 		)

@@ -38,7 +38,7 @@ import HoverBubble from "../ui/components/hover-bubble/hover-bubble";
 
 const worker = createWorker("eng", 1, {
 	logger: (m: any) => {
-		console.log(m);
+		// console.log(m);
 	},
 	errorHandler: (err) => {
 		console.log(err);
@@ -64,7 +64,6 @@ const defaultForm = {
 };
 
 export default function Home() {
-	const { push } = useRouter();
 	const mounted = useRef(false);
 	const [inputInfo, setInputInfo] = useState(
 		"Select the correct payment method you used and enter the reference number"
@@ -283,36 +282,38 @@ export default function Home() {
 		return res.data;
 	};
 
-	const getHistoryList = async () => {
-		const searchOptions = new URLSearchParams({
-			sort: JSON.stringify({ updatedAt: "desc" }),
-			page: "1",
-			limit: "10",
-		});
-		const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		}).then((res) => res.json());
+	const getHistoryList = async (filters?: any) => {
+		console.log("filters", filters);
+		setHistoryList(null);
 
-		// .then((res) => {
-		if (mounted) {
-			switch (code) {
-				case 200:
-					setHistoryList(data.list);
-					setCurrentReceipt(data.latestReceipt);
-					setFormShown(
-						data.latestReceipt && data.latestReceipt.status !== RECEIPT_STATUS.FAILED ? false : true
-					);
-					break;
-				case 401:
-					push("/login");
-					break;
-				default:
-					push("/login");
-					break;
+		if (filters) {
+			const { code, data } = await fetch(`/api/receipt?${new URLSearchParams(filters)}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}).then((res) => res.json());
+
+			// .then((res) => {
+			if (mounted) {
+				switch (code) {
+					case 200:
+						setHistoryList(data.list);
+						setCurrentReceipt(data.latestReceipt);
+						setFormShown(
+							data.latestReceipt && data.latestReceipt.status !== RECEIPT_STATUS.FAILED
+								? false
+								: true
+						);
+						break;
+					case 401:
+						// push("/login");
+						break;
+					default:
+						// push("/login");
+						break;
+				}
 			}
 		}
 	};
@@ -503,25 +504,32 @@ export default function Home() {
 							</li>
 							<li className="summary__item">
 								<span>RATE</span>
-								<p>
-									<span style={{ width: "70px", display: "inline-block" }}>
-										<HoverBubble
-											message={
-												<span>
-													Rate found from the receipt does not match or is lower than your current
-													plan`s rate. If you think it`s correct, please disregard this warning.
-													<br />
-													<br />
-													Found rate:{" "}
-													<span className="text-danger">
-														{STRING_UTILS.TO_PESO(form.accuracy.amount)}
-													</span>
+								<HoverBubble
+									style={{ width: "100%" }}
+									message={
+										<span>
+											<strong>
+												Rate does not match or is lower than your current plan`s rate.
+											</strong>
+											<br />
+											<br />
+											If you think it`s correct, please disregard this warning.
+											<br />
+											<br />
+											<span>
+												Found rate:{" "}
+												<span className="text-danger">
+													<strong>{STRING_UTILS.TO_PESO(form.accuracy.amount)}</strong>
 												</span>
-											}
-											left
-											type="warning"
-											disabled={!form.receipt}
-										>
+											</span>
+										</span>
+									}
+									left
+									type="warning"
+									disabled={!form.receipt}
+								>
+									<p>
+										<span style={{ width: "70px", display: "inline-block" }}>
 											<span
 												className={
 													form.receipt && !form.accuracy.amountIsEnough ? "text-warning" : ""
@@ -533,21 +541,21 @@ export default function Home() {
 													<IconEx style={{ height: "15px" }} />
 												)}
 											</span>
-										</HoverBubble>
-										{/* {STRING_UTILS.TO_AMOUNT(user.planRef.price.toString())}
+											{/* {STRING_UTILS.TO_AMOUNT(user.planRef.price.toString())}
 										<br />
 										{STRING_UTILS.TO_AMOUNT(form.accuracy.amount)} */}
-									</span>
-									{/* <p
+										</span>
+										{/* <p
 										className={
 											Number(form.accuracy.amount) >= user.planRef.price
-												? "text-success"
-												: "text-danger"
-										}
-									>
-										₱{form.accuracy.amount}
-									</p> */}
-								</p>
+											? "text-success"
+											: "text-danger"
+											}
+											>
+											₱{form.accuracy.amount}
+											</p> */}
+									</p>
+								</HoverBubble>
 							</li>
 							<li className="summary__item">
 								<span>CUTOFF</span>
@@ -579,55 +587,11 @@ export default function Home() {
 					flexBasis: "800px",
 				}}
 			>
-				<div
-					style={{
-						display: "flex",
-						justifyContent: "space-between",
-						alignItems: "center",
-						marginBottom: "30px",
-					}}
-				>
-					<div style={{ display: "flex", width: "70%", gap: "10px" }}>
-						{/* <Dropdown
-								list={[
-									{ id: 1, name: "2024" },
-									{ id: 2, name: "2023" },
-									{ id: 3, name: "2022" },
-									{ id: 4, name: "2021" },
-									{ id: 5, name: "2020" },
-									{ id: 6, name: "2019" },
-									{ id: 7, name: "2018" },
-								]}
-								style={{ width: "100px" }}
-								placeholder="YEAR"
-							/>
-							<Dropdown
-								list={[
-									{ id: 1, name: "January" },
-									{ id: 2, name: "February" },
-									{ id: 3, name: "March" },
-									{ id: 4, name: "April" },
-									{ id: 5, name: "May" },
-									{ id: 6, name: "June" },
-									{ id: 7, name: "July" },
-									{ id: 8, name: "August" },
-									{ id: 9, name: "September" },
-									{ id: 10, name: "October" },
-									{ id: 11, name: "November" },
-									{ id: 12, name: "December" },
-								]}
-								style={{ width: "200px" }}
-								placeholder="MONTH"
-							/> */}
-					</div>
-					<Link href="" prefetch={false}>
-						VIEW ALL
-					</Link>
-				</div>
-				<div className="home-table">
+				<div className="home-table" style={{ padding: "50px 0" }}>
 					<HistoryTable
 						list={historyList}
 						handleFileChange={handleFileChange}
+						handleGetHistoryList={getHistoryList}
 						getImage={getImage}
 					/>
 				</div>

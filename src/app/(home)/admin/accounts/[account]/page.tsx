@@ -114,6 +114,7 @@ export default function Account(props: any) {
 						>
 							<HistoryTable
 								list={[...historyList, ...historyList, ...historyList, ...historyList]}
+								handleGetHistoryList={() => console.log("handleGetHistoryList")}
 								getImage={getImage}
 							/>
 						</div>

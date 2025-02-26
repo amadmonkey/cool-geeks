@@ -6,7 +6,7 @@ export class Filters {
 	page: string = "1"; // current page
 	pagesTotal: string = "1"; // current items total / limit
 	sort: string = JSON.stringify({
-		createdAt: "desc",
+		updatedAt: "desc",
 	});
 
 	constructor(values?: any) {

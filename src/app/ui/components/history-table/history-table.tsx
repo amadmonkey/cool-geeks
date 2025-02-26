@@ -11,6 +11,7 @@ import Receipt from "../../types/Receipt";
 import ListEmpty from "../table/empty/list-empty";
 import HoverBubble from "../hover-bubble/hover-bubble";
 import DetectOutsideClick from "../detect-outside-click/detect-outside-click";
+import ReceiptsFilters from "./filters/filters";
 
 import IconLoader from "@/public/loader.svg";
 import IconReplace from "@/public/replace.svg";
@@ -128,6 +129,12 @@ const HistoryTable = (props: any) => {
 
 	return (
 		<>
+			<ReceiptsFilters
+				searchOptions={props.searchOptions}
+				loading={false}
+				handleFilter={(e: any) => props.handleGetHistoryList(e)}
+				style={{ paddingBottom: "10px", marginBottom: "50px", borderBottom: "1px solid #ddd" }}
+			/>
 			{filteredList ? (
 				filteredList.length ? (
 					<table className="history-table">

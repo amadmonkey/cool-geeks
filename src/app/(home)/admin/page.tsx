@@ -117,7 +117,7 @@ const Admin = () => {
 					page: "1",
 					limit: "3",
 					sort: {
-						createdAt: "desc",
+						updatedAt: "desc",
 					},
 				}}
 				viewMode={VIEW_MODES.GRID}

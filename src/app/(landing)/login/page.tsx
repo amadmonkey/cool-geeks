@@ -34,8 +34,8 @@ const LoginForm = () => {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [verificationMessage, setVerificationMessage] = useState<any>(null);
 	const [form, setForm] = useState({
-		emailAccountNo: useSearchParams().get("u") || "",
-		password: "",
+		emailAccountNo: useSearchParams().get("u") || "PEX-2024-0002",
+		password: "@W00tw00t",
 		confirmPassword: "",
 	});
 
@@ -84,11 +84,9 @@ const LoginForm = () => {
 			const { code, data } = await res.json();
 			switch (code) {
 				case 200:
-					debugger;
 					setError(null);
 					setCookie("user", data.user);
 					setCookie("settings", data.settings);
-					console.log("login", data);
 					push(data.user.admin ? "/admin" : "/");
 					break;
 				default:

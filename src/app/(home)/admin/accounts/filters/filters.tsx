@@ -113,6 +113,7 @@ const AccountsFilters = (props: any) => {
 	};
 
 	const immediate = useRef(true);
+
 	useEffect(() => {
 		let timer: any;
 		immediate.current = true;
