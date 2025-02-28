@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { DateTime } from "luxon";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import { RECEIPT_STATUS, RECEIPT_STATUS_ICON } from "@/utility";
 import Image from "next/image";
+import { DateTime } from "luxon";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { Filters } from "../../classes/filters";
+import { RECEIPT_STATUS, RECEIPT_STATUS_ICON } from "@/utility";
 
 import Modal from "../modal/modal";
 import Button from "../button/button";
@@ -30,6 +31,17 @@ const HistoryTable = (props: any) => {
 	const [isModalShown, setIsModalShown] = useState<boolean>(false);
 	const [receipt, setReceipt] = useState<Receipt | null>(null);
 	const [receiptUrl, setReceiptUrl] = useState<string>("");
+	const [filters] = useState(
+		new Filters(
+			props.searchOptions || {
+				page: "1",
+				limit: "9",
+				sort: {
+					createdAt: "desc",
+				},
+			}
+		)
+	);
 
 	const showReceipt = (newReceipt: Receipt) => {
 		if (receipt?._id === newReceipt._id) {
@@ -96,6 +108,7 @@ const HistoryTable = (props: any) => {
 		}
 	};
 
+	// update receipt image
 	useEffect(() => {
 		const getImage = async (id: string) => {
 			const imageUrl = await props.getImage(id);
@@ -103,7 +116,6 @@ const HistoryTable = (props: any) => {
 			const newList = filteredList.map((item: Receipt) =>
 				item._id === receipt!._id ? { ...item, ...{ receiptUrl: imageUrl } } : item
 			);
-
 			setFilteredList(newList);
 			setReceiptUrl(imageUrl);
 		};
@@ -132,7 +144,8 @@ const HistoryTable = (props: any) => {
 			<ReceiptsFilters
 				searchOptions={props.searchOptions}
 				loading={false}
-				handleFilter={(e: any) => props.handleGetHistoryList(e)}
+				filters={filters}
+				handleFilter={props.handleGetHistoryList}
 				style={{ paddingBottom: "10px", marginBottom: "50px", borderBottom: "1px solid #ddd" }}
 			/>
 			{filteredList ? (

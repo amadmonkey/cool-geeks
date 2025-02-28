@@ -80,7 +80,6 @@ export default function Home() {
 	const settings = getCookie("settings") && JSON.parse(getCookie("settings")!);
 	const gracePeriod = settings.filter((item: any) => item._id === "66f05edc10a64439d3807f83")[0]
 		.value;
-	console.log("settings", gracePeriod);
 	const [qrUrl, setQrUrl] = useState(CONSTANTS.loaderFixed);
 
 	const recognize = async (file: any) => {
@@ -283,7 +282,6 @@ export default function Home() {
 	};
 
 	const getHistoryList = async (filters?: any) => {
-		console.log("filters", filters);
 		setHistoryList(null);
 
 		if (filters) {
@@ -299,6 +297,9 @@ export default function Home() {
 			if (mounted) {
 				switch (code) {
 					case 200:
+						const { list, totalCount } = data;
+						filters.setItemsTotal(totalCount);
+						filters.setItemsCurrent(list.length);
 						setHistoryList(data.list);
 						setCurrentReceipt(data.latestReceipt);
 						setFormShown(

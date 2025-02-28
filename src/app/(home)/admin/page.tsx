@@ -109,7 +109,7 @@ const Admin = () => {
 				</Link>
 			</section>
 			<Receipts
-				title={"Recent Receipts"}
+				title={"New Receipts"}
 				searchOptions={{
 					query: {
 						status: RECEIPT_STATUS.PENDING,
@@ -117,7 +117,7 @@ const Admin = () => {
 					page: "1",
 					limit: "3",
 					sort: {
-						updatedAt: "desc",
+						createdAt: "desc",
 					},
 				}}
 				viewMode={VIEW_MODES.GRID}

@@ -27,12 +27,11 @@
 				white-space: nowrap;
 				justify-content: end;
 				&::after {
-					// top: 10px;
 					top: 50%;
-					right: 5px;
+					right: 7px;
 					content: "";
-					width: 20px;
-					height: 20px;
+					width: 16px;
+					height: 16px;
 					position: absolute;
 					border-radius: 50%;
 					background-color: $info;
@@ -67,15 +66,20 @@
 				border-radius: 5px;
 				background-color: #fff;
 				box-shadow: $box-shadow_fade;
+				&:not(.skeleton) {
+					&::before {
+						content: "";
+					}
+				}
 				&::before {
-					width: 0;
-					top: 10px;
-					height: 0;
-					content: "";
-					right: -15px;
+					top: 15px;
+					width: 10px;
+					height: 10px;
+					right: -1px;
 					position: absolute;
-					border-left-color: #fff;
-					border: 8px solid transparent;
+					transform: rotate(45deg) translateY(-50%);
+					box-shadow: 3px -3px 7px rgba(0, 0, 0, 0.1);
+					background-color: #fff;
 				}
 			}
 			.refNo {
@@ -86,10 +90,13 @@
 			&.failed {
 				grid-template-columns: 35% 10% 55%;
 				td:first-child {
-					span {
+					.date {
 						background-color: lighten($danger, 20%);
 						font-weight: 800;
 						color: $danger;
+						&::before {
+							background-color: lighten($danger, 20%);
+						}
 					}
 					&::after {
 						background-color: $danger;

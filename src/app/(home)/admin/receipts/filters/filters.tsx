@@ -28,6 +28,7 @@ interface DateRange {
 
 interface ReceiptsFilter {
 	search: string;
+	sort: Object;
 	sortOrder: string;
 	dateRange: DateRange;
 	cutOffType: string;
@@ -89,6 +90,7 @@ const ReceiptsFilters = (props: any) => {
 	const [form, setForm] = useState<ReceiptsFilter>({
 		search: urlParams.get("search") || "",
 		sortOrder: sortOrderList[0].name,
+		sort: { createdAt: "desc" },
 		cutOffType: cutOffTypeList[0].name,
 		dateRange: {
 			start: "",
@@ -135,23 +137,14 @@ const ReceiptsFilters = (props: any) => {
 		};
 		if (form.dateRange.start) {
 			timer = setTimeout(() => {
-				props.handleFilter(true, form);
+				filters.setQuery({ ...form, sort: { createdAt: "desc" } });
+				props.handleFilter();
 				immediate.current = true;
 			}, 1000);
 			immediate.current ? 100 : 1000;
 		}
 		return () => clearTimeout(timer);
 	}, [form]);
-
-	useEffect(() => {
-		// set date after render for hydration issue
-		updateForm({
-			target: {
-				name: "dateRange",
-				value: dateTypeList[0].range,
-			},
-		});
-	}, []);
 
 	return (
 		<div

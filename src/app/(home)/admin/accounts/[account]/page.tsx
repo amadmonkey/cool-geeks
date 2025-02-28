@@ -1,12 +1,20 @@
 "use client";
 import { useParams } from "next/navigation";
 import React, { use, useEffect, useRef, useState } from "react";
+import { SKELETON_TYPES } from "@/utility";
+import { Filters } from "@/app/ui/classes/filters";
 
 // components
 import Receipt from "@/app/ui/types/Receipt";
 import Section from "@/app/ui/components/section/section";
+import Skeleton from "@/app/ui/components/skeleton/skeleton";
+import FormGroup from "@/app/ui/components/form-group/form-group";
+import ListEmpty from "@/app/ui/components/table/empty/list-empty";
 import ReceiptCard from "@/app/ui/components/receipt-card/receipt-card";
 import HistoryTable from "@/app/ui/components/history-table/history-table";
+
+// types
+import User from "@/app/ui/types/User";
 
 // icons
 import IconUser from "@/public/user.svg";
@@ -17,34 +25,71 @@ import "../../receipts/page.scss";
 
 export default function Account(props: any) {
 	const params = useParams();
-	const [account, setAccount] = useState(null);
-	const [historyList, setHistoryList] = useState([]);
+	const [account, setAccount] = useState<User>();
+	const [historyList, setHistoryList] = useState<any>(null);
+	const [receiptsList, setReceiptsList] = useState<any>(null);
 
 	useEffect(() => {
 		getHistoryList();
+		getAccount();
 	}, []);
 
-	const getHistoryList = async () => {
-		const searchOptions = new URLSearchParams({
-			page: "1",
-			limit: "10",
-			sort: JSON.stringify({
-				updatedAt: "desc",
-			}),
-		});
-		const { code, data } = await fetch(`/api/receipt?${searchOptions}`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			credentials: "include",
-		}).then((res) => res.json());
-		console.log("code", code);
-		console.log("data", data);
-		// .then((res) => {
+	const getAccount = async () => {
+		const { code, data } = await fetch(
+			`/api/user?${new URLSearchParams(
+				new Filters({ query: { accountNumber: params.account } }).valuesString
+			)}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		).then((res) => res.json());
 		switch (code) {
 			case 200:
-				setHistoryList(data.list);
+				setAccount(data.list[0]);
+				break;
+			case 401:
+				push("/login");
+				break;
+			default:
+				push("/login");
+				break;
+		}
+	};
+
+	const getHistoryList = async (filters?: any) => {
+		filters && filters.setInQuery({ accountNumber: params.account });
+		if (!filters) return;
+
+		const { code, data } = await fetch(
+			`/api/receipt?${new URLSearchParams({ ...filters, history: "true" })}`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			}
+		).then((res) => res.json());
+		switch (code) {
+			case 200:
+				const { list, totalCount } = data;
+				if (filters) {
+					filters.setItemsTotal(totalCount);
+					filters.setItemsCurrent(list.length);
+				}
+
+				// currently same api call for both history and receipts.
+				// receipts dont need failed status so removing them after fetch
+				setHistoryList(list);
+				setReceiptsList(
+					list.filter((item: any) => {
+						return item.status !== "FAILED";
+					})
+				);
 				break;
 			case 401:
 				break;
@@ -77,7 +122,7 @@ export default function Account(props: any) {
 
 	const sectionOthers = () => <></>;
 
-	const sectionTitle = (title: string) => (
+	const sectionTitle = () => (
 		<>
 			<IconUser />
 			{params.account || "Accounts"}
@@ -89,8 +134,49 @@ export default function Account(props: any) {
 			className={`account-container ${props.intercept ? "intercept" : ""}`}
 			style={{ width: props.intercept ? "90vw" : "100%", maxWidth: "1500px" }}
 		>
-			<Section title={sectionTitle("asd")} others={sectionOthers()}>
-				<div className="info">show info here</div>
+			<Section title={sectionTitle()} others={sectionOthers()}>
+				{account && (
+					<div className="info">
+						<FormGroup row>
+							<label>Name</label>
+							<span>
+								{account.firstName} {account.lastName}
+							</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Address</label>
+							<span>{account.address}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Cutoff</label>
+							<span>{account.cutoff}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Phone</label>
+							<span>{account.contactNo}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Email</label>
+							<span>{account.email}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Plan</label>
+							<span>{account.planRef.name}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Subdivision</label>
+							<span>{account.subdRef.name}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Created</label>
+							<span>{account.createdAt}</span>
+						</FormGroup>
+						<FormGroup row>
+							<label>Updated</label>
+							<span>{account.updatedAt}</span>
+						</FormGroup>
+					</div>
+				)}
 				<div
 					style={{
 						display: "inline-grid",
@@ -110,11 +196,12 @@ export default function Account(props: any) {
 								maxHeight: "60vh",
 								overflowY: "auto",
 								overflowX: "hidden",
+								paddingRight: "30px",
 							}}
 						>
 							<HistoryTable
-								list={[...historyList, ...historyList, ...historyList, ...historyList]}
-								handleGetHistoryList={() => console.log("handleGetHistoryList")}
+								list={historyList}
+								handleGetHistoryList={getHistoryList}
 								getImage={getImage}
 							/>
 						</div>
@@ -130,9 +217,17 @@ export default function Account(props: any) {
 							}}
 						>
 							<div className={`receipt-cards-container`}>
-								{historyList.map((item: Receipt) => (
-									<ReceiptCard key={item._id} data={item} updateConfirmTemplate={() => <></>} />
-								))}
+								{receiptsList ? (
+									receiptsList.length ? (
+										receiptsList.map((item: Receipt) => (
+											<ReceiptCard key={item._id} data={item} updateConfirmTemplate={() => <></>} />
+										))
+									) : (
+										<ListEmpty label="No entries found" />
+									)
+								) : (
+									<Skeleton type={SKELETON_TYPES.RECEIPT_CARD} />
+								)}
 							</div>
 						</div>
 					</div>

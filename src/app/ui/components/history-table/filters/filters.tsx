@@ -38,7 +38,7 @@ const dateTypeList = [
 		_id: "1",
 		name: "Past year",
 		range: {
-			start: DateTime.now().minus({ year: 2 }).toISO(),
+			start: DateTime.now().minus({ year: 1 }).toISO(),
 			end: DateTime.now().toISO(),
 		},
 	},
@@ -50,31 +50,18 @@ const dateTypeList = [
 			end: DateTime.now().toISO(),
 		},
 	},
-	{
-		_id: "3",
-		name: "All",
-		range: null,
-	},
-	// { _id: "3", name: "Set range", range: null },
+	{ _id: "3", name: "Set range", range: null },
 ];
 
 // TODO: column sort
 const ReceiptsFilters = (props: any) => {
-	const pathname = usePathname();
-	const urlParams = useSearchParams();
+	const filters = props.filters;
 	const [dateType, setDateType] = useState(dateTypeList[0]);
-	const [filters] = useState(new Filters(props.searchOptions || urlParams.entries()));
 	const [dateRangeActive, setDateRangeActive] = useState(false);
 	const [form, setForm] = useState<ReceiptsFilter>({
 		dateRange: dateTypeList[0].range,
 		status: "ALL",
 	});
-
-	const searchOptions = {
-		sort: JSON.stringify({ updatedAt: "desc" }),
-		page: "1",
-		limit: "10",
-	};
 
 	const updateForm = (e: any) => {
 		let { name, value } = e.target;
@@ -92,17 +79,26 @@ const ReceiptsFilters = (props: any) => {
 		}));
 	};
 
-	const immediate = useRef(true);
+	// on date type change (e.g: last 30 days, last 60 days, date range)
+	useEffect(() => {
+		if (dateType !== dateTypeList[2]) {
+			updateForm({
+				target: {
+					name: "dateRange",
+					value: dateType.range,
+				},
+			});
+		} else {
+			setDateRangeActive(true);
+		}
+	}, [dateType]);
+
 	useEffect(() => {
 		let timer: any;
-		if (form.dateRange.start) {
-			timer = setTimeout(() => {
-				filters.setQuery(form);
-				props.handleFilter(filters);
-				immediate.current = true;
-			}, 1000);
-			immediate.current ? 100 : 1000;
-		}
+		timer = setTimeout(async () => {
+			filters.setQuery(form);
+			props.handleFilter(filters);
+		}, 1000);
 		return () => clearTimeout(timer);
 	}, [form]);
 
@@ -114,11 +110,13 @@ const ReceiptsFilters = (props: any) => {
 			<div style={{ display: "flex", width: "100%", justifyContent: "space-between", gap: "10px" }}>
 				<div style={{ display: "flex", gap: "10px" }}>
 					<FormGroup row>
-						<RadioGroup
+						{/* <RadioGroup
 							list={sortOrderList}
-							selected={"desc"}
-							onChange={(v: any) => updateForm({ target: { name: "sortOrder", value: v } })}
-						/>
+							selected={form.sort}
+							onChange={(v: any) => {
+								updateForm({ target: { name: "sort", value: { createdAt: v } } });
+							}}
+						/> */}
 					</FormGroup>
 					<div style={{ position: "relative" }}>
 						<Dropdown

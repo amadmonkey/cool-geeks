@@ -34,6 +34,10 @@ export class Filters {
 		this.query = query ? JSON.stringify(query) : "";
 	}
 
+	setInQuery(newParam: any) {
+		this.query = JSON.stringify({ ...JSON.parse(this.query), ...newParam });
+	}
+
 	getInQuery(param: string) {
 		return JSON.parse(this.query)[param];
 	}

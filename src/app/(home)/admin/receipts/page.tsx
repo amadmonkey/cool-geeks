@@ -44,77 +44,61 @@ export default function Receipts(props: any) {
 				page: "1",
 				limit: "9",
 				sort: {
-					updatedAt: "desc",
+					createdAt: "desc",
 				},
 			}
 		)
 	);
 
-	const getHistoryList = useCallback(
-		async (fromFilter?: boolean, query?: any) => {
-			try {
-				listRef.current = null;
-				setList(null);
-				setLoading(true);
+	const getHistoryList = useCallback(async () => {
+		try {
+			listRef.current = null;
+			setList(null);
+			setLoading(true);
 
-				// reset list when something in the filter changed
-				if (fromFilter) {
-					listRef.current = [];
-					filters.setPage(1);
-					filters.setItemsCurrent(0);
+			// abort previous calls
+			if (controller.current) controller.current.abort();
+			controller.current = new AbortController();
+			signal.current = controller.current.signal;
+
+			const { code, data } = await fetch(
+				`/api/receipt?${new URLSearchParams(filters.valuesString)}`,
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					signal: signal.current,
+					credentials: "include",
 				}
+			).then((res) => res.json());
 
-				// if has db query, set it
-				if (query) {
-					filters.setQuery(query);
-					filters.setSort({ createdAt: query.sortOrder });
-				}
-
-				// abort previous calls
-				if (controller.current) controller.current.abort();
-				controller.current = new AbortController();
-				signal.current = controller.current.signal;
-
-				const { code, data } = await fetch(
-					`/api/receipt?${new URLSearchParams(filters.valuesString)}`,
-					{
-						method: "GET",
-						headers: {
-							"Content-Type": "application/json",
-						},
-						signal: signal.current,
-						credentials: "include",
+			switch (code) {
+				case 200:
+					if (mounted.current) {
+						const { list, totalCount } = data;
+						filters.setItemsTotal(totalCount);
+						filters.addItemsCurrent(list.length);
+						listRef.current = listRef.current ? [...listRef.current, ...list] : list;
+						setList(list);
 					}
-				).then((res) => res.json());
-
-				switch (code) {
-					case 200:
-						if (mounted.current) {
-							const { list, totalCount } = data;
-							filters.setItemsTotal(totalCount);
-							filters.addItemsCurrent(list.length);
-							listRef.current = listRef.current ? [...listRef.current, ...list] : list;
-							setList(list);
-						}
-						break;
-					case 401:
-						push("/login");
-						break;
-					default:
-						console.log("getHistoryList default", data);
-						push("/login");
-						break;
-				}
-
-				setLoading(false);
-			} catch (err: any) {
-				setLoading(false);
-				if (err.name === "AbortError") return;
-				console.log(err);
+					break;
+				case 401:
+					push("/login");
+					break;
+				default:
+					console.log("getHistoryList default", data);
+					push("/login");
+					break;
 			}
-		},
-		[filters]
-	);
+
+			setLoading(false);
+		} catch (err: any) {
+			setLoading(false);
+			if (err.name === "AbortError") return;
+			console.log(err);
+		}
+	}, [filters]);
 
 	let timeoutId = useRef<number>();
 

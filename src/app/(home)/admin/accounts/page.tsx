@@ -99,7 +99,6 @@ export default function Accounts(props: any) {
 				toast.success("User deleted");
 				break;
 			default:
-				console.log(data);
 				toast.error("Something went wrong. Please try again.");
 				break;
 		}

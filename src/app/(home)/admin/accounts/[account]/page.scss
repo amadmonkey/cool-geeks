@@ -3,36 +3,19 @@
 .account-container {
 	width: 1000px;
 	&.intercept {
-		// header {
-		// 	padding: 20px;
-		// 	box-sizing: border-box;
-		// 	background-color: #f0f0f0;
-		// 	border-radius: 10px;
-		// 	box-shadow: $box-shadow_fade;
-		// }
 		overflow: auto;
-		.history-table {
-			tbody {
-				tr {
-					td:last-child {
-						span {
-							// background-color: #fff;
-							// padding: 10px;
-							// border-radius: 50%;
-							svg {
-								// fill: #313131;
-							}
-						}
-					}
-					// td:nth-child(2),
-					// td:nth-child(3) {
-					// 	span {
-					// 		background-color: #fff;
-					// 		padding: 5px 10px;
-					// 		border-radius: 5px;
-					// 	}
-					// }
-				}
+	}
+	.info {
+		background-color: #fff;
+		padding: 20px;
+		display: inline-grid;
+		border-radius: 10px;
+		box-shadow: $box-shadow_fade;
+		grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+		.form-group {
+			> span {
+				color: $info;
+				font-weight: bold;
 			}
 		}
 	}
