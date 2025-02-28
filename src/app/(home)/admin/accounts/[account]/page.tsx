@@ -1,5 +1,5 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { use, useEffect, useRef, useState } from "react";
 import { SKELETON_TYPES } from "@/utility";
 import { Filters } from "@/app/ui/classes/filters";
@@ -25,6 +25,7 @@ import "../../receipts/page.scss";
 
 export default function Account(props: any) {
 	const params = useParams();
+	const { push } = useRouter();
 	const [account, setAccount] = useState<User>();
 	const [historyList, setHistoryList] = useState<any>(null);
 	const [receiptsList, setReceiptsList] = useState<any>(null);
